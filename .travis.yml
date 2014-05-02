@@ -1,0 +1,18 @@
+language: python
+
+python:
+    - 3.0
+    - 3.1
+    - 3.2
+    - 3.3
+
+install:
+    - pip install --use-mirrors -r requirements.txt
+    - pip install coveralls
+
+script:
+    - nosetests --with-coverage --cover-package=nikkansports
+
+after_success:
+    - coveralls
+
