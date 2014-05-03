@@ -1,0 +1,3229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"
+	xmlns:og="http://ogp.me/ns#"
+	xmlns:mixi="http://mixi-platform.com/ns#"
+	xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="false" />
+<meta name="description" content="プロ野球、西武対日本ハムのスコアをリアルタイムで更新。日刊スポーツのニュースサイト、ニッカンスポーツ・コムです。" />
+<meta name="keywords" content="西武,日本ハム,スコア,プロ野球,セ・リーグ,パ・リーグ,交流戦,日刊スポーツ" />
+
+<meta property="og:title" content="プロ野球スコア速報 西武対日本ハム" />
+<meta property="og:site_name" content="nikkansports.com" />
+<meta property="og:description" content="プロ野球、西武対日本ハムのスコアをリアルタイムで更新。日刊スポーツのニュースサイト、ニッカンスポーツ・コムです。" />
+<meta property="og:image" content="http://cache2.nipc.jp/mod/img/facebook_nikkansports_logo.jpg" />
+<meta property="mixi:image" content="http://cache2.nipc.jp/mod/img/facebook_nikkansports_logo.jpg" />
+
+<title>プロ野球スコア速報 西武対日本ハム : nikkansports.com</title>
+
+<link rel="start" href="http://www.nikkansports.com/" title="ニッカンスポーツ・コムのトップ" />
+<link rel="chapter" href="http://www.nikkansports.com/baseball/top-baseball.html" title="野球" />
+<link rel="chapter" href="http://www.nikkansports.com/baseball/mlb/top-mlb.html" title="ＭＬＢ" />
+<link rel="chapter" href="http://www.nikkansports.com/soccer/top-soccer.html" title="サッカー" />
+<link rel="chapter" href="http://www.nikkansports.com/soccer/world/top-world.html" title="海外サッカー" />
+<link rel="chapter" href="http://www.nikkansports.com/sports/top-sports.html" title="スポーツ" />
+<link rel="chapter" href="http://www.nikkansports.com/sports/golf/top-golf.html" title="ゴルフ" />
+<link rel="chapter" href="http://www.nikkansports.com/battle/top-battle.html" title="格闘技" />
+<link rel="chapter" href="http://www.nikkansports.com/race/top-race.html" title="競馬" />
+<link rel="chapter" href="http://www.nikkansports.com/race/public_race/top-public_race.html" title="ボート競輪オート" />
+<link rel="chapter" href="http://www.nikkansports.com/entertainment/top-entertainment.html" title="芸能" />
+<link rel="chapter" href="http://www.nikkansports.com/general/top-general.html" title="社会" />
+<link rel="copyright" href="http://www.nikkansports.com/policy/copyright.html" title="著作権について" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon-precomposed" media="screen and (resolution: 163dpi)" href="/mod/img/favicon-57.png" />
+<link rel="apple-touch-icon-precomposed" media="screen and (resolution: 132dpi)" href="/mod/img/favicon-72.png" />
+<link rel="apple-touch-icon-precomposed" media="screen and (resolution: 326dpi)" href="/mod/img/favicon-114.png" />
+
+<link rel="stylesheet" href="/mod/css/common.css" type="text/css" title="nikkansports.com CSS" media="all" />
+<link rel="stylesheet" href="/mod/css/data.css" type="text/css" title="nikkansports.com CSS" media="all" />
+<link rel="stylesheet" href="/mod/css/bb-score.css" type="text/css" title="nikkansports.com CSS" media="all" />
+<link rel="stylesheet" href="/mod/css/mediaQueries_bb.css" type="text/css" title="nikkansports.com CSS" media="all" />
+
+<script type="text/javascript" src="/mod/js/common.js"></script>
+<script type="text/javascript" src="/mod/js/jquery.js"></script>
+
+<script type="text/javascript" src="/mod/js/respond.js"></script>
+</head>
+
+
+<body id="baseball" class="professional themeScore">
+
+
+
+<!-- +++++ スマートフォン版を表示 +++++ -->
+<style type="text/css">
+#smpView{
+	margin: 0;
+	padding:0;
+	width:100%;
+}
+#smpView a {
+	display: block;
+	margin: 0;
+	padding:0;
+	width:100%;
+	border: 1px solid rgba(0,0,0, .3);
+	height: 140px;
+	color: #ffffff;
+	font-size: 300%;
+	font-weight: bold;
+	text-align: center;
+	line-height: 140px;
+	text-shadow: 0 -1px 0 rgba(0,0,0, .6);
+	background: #6b8bb2;
+	background: -webkit-gradient(linear,left top,left bottom,from(#e2cda0),color-stop(50%, #efcd62),color-stop(50%, #efbc22),to(#fbe225));
+	background: -webkit-linear-gradient(top, #e2cda0 0, #efcd62 50%, #efbc22 50%, #fbe225 100%);
+}
+</style>
+<script type="text/javascript"><!--
+agent = navigator.userAgent;
+if ((agent.indexOf("iPhone") != -1) || (agent.indexOf("Android") != -1)) {
+	function setandswitch() {
+		// 有効期限の作成
+		var nowtime = new Date().getTime();
+		var clear_time = new Date(nowtime + (60 * 60 * 24 * 1000 * 180));
+		var expires = clear_time.toGMTString();
+		document.cookie="nssmartphone=no; path=/; expires=" + expires + ";";
+	}
+
+	document.writeln('<div id="smpView">');
+	document.writeln('<a href="'+iphone_url+'" onclick="setandswitch();">スマートフォン版を表示</a>');
+	document.writeln('</div>');
+}
+//--></script>
+<!-- /+++++ スマートフォン版を表示 +++++ -->
+
+<noscript id="noJsMessage">
+お客様のブラウザはジャバスクリプト（JavaScript）に対応していないか無効になっています。詳しくは<a href="/policy/sitepolicy.html">サイトポリシー</a>をご覧ください。
+</noscript>
+
+<!-- GoogleAnalytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-7784433-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- /GoogleAnalytics -->
+
+<!-- UniversalAnalytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-7784433-20', 'nikkansports.com');
+  ga('send', 'pageview');
+
+</script>
+<!-- /UniversalAnalytics -->
+
+<!-- +++++ ヘルプメニュー +++++ -->
+<div class="helpNavi">
+<p><a id="pagetop" name="pagetop" accesskey="q">日刊スポーツのニュースサイト、ニッカンスポーツ・コムです。</a></p>
+<ul>
+<li><a href="#globalnavi">サイトのナビゲーションへ移動</a></li>
+<li><a href="#maincontents">このページの本文へ移動</a></li>
+<li><a href="#topicsnavi">トピックスナビゲーションへ移動</a></li>
+<li><a href="#footernavi">フッターナビゲーションへ移動</a></li>
+</ul>
+</div>
+<!-- /+++++ ヘルプメニュー +++++ -->
+
+
+
+<!-- +++++ wrapper +++++ -->
+<div id="wrapper">
+
+<!-- +++++ ヘッダー +++++ -->
+<div id="header">
+
+
+<!-- +++++ ヘッダーインナー +++++ -->
+<div id="headerInner">
+
+<!-- +++++ ヘッドフレーム +++++ -->
+<div id="headFrame">
+
+<div id="nikkanlogoWrap">
+<div id="nikkanlogo"><a id="backhome" href="http://www.nikkansports.com/">ニッカンスポーツ・コム</a></div>
+</div>
+
+<div id="searchForm">
+<!-- +++++ 検索フォーム +++++ -->
+<!-- popIn searchBox Start -->
+<script type="text/javascript" charset="UTF-8">
+var _popIn_search_box = {
+		"_popin_default" : {
+		"action" : "http://www.nikkansports.com/search/top-search.html",
+		"qname" : "?q={_popIn_word}"
+	}
+};
+</script>
+<script type="text/javascript" src="http://api.popin.cc/searchbox/nikkansports.js" charset="UTF-8"></script>
+<!-- popIn searchBox End -->
+<!-- /+++++ 検索フォーム +++++ -->
+</div>
+
+<!-- +++++ AD 728x90 +++++ -->
+<div id="ad728x90">
+<!--====プロ野球ＮＥＷＳスーパーバナー AD728x90====-->
+<!--====スーパーバナー AD728x90====-->
+<script type="text/javascript" language="JavaScript">
+<!--
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=BASEBALL.PROFESSIONAL/AREA=SUPERBANNER/AAMSZ=728X90/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<iframe src="'+impAserver+'/hserver/acc_random='+impArnd + impAtarget + '/pageid=' + impApid + '"');
+document.write(' noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="728" height="90" allowTransparency="true">');
+if (navigator.userAgent.indexOf("Gecko")==-1 && navigator.userAgent.indexOf("MSIE")==-1){
+document.write('<scr');
+document.write('ipt src="' + impAserver + '/jnserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+}
+document.write('</iframe>');
+//-->
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=BASEBALL.PROFESSIONAL/AREA=SUPERBANNER/AAMSZ=728X90/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="728" height="90" allowTransparency="true">
+</iframe>
+</noscript>
+<!--====スーパーバナー AD728x90====-->
+<!--====プロ野球ＮＥＷＳスーパーバナー AD728x90====-->
+</div>
+<!-- /+++++ AD 728x90 +++++ -->
+
+</div>
+<!-- /+++++ ヘッダーロゴエリア +++++ -->
+
+
+<!-- +++++ ヘルプメニュー +++++ -->
+<div class="helpNavi">
+<p><a id="globalnavi" name="globalnavi">ここからこのサイトのナビゲーションです</a></p>
+<ul>
+<li><a href="#pagetop">このページの先頭へ戻る</a></li>
+<li><a href="#submenu">このページのサブメニューへ移動</a></li>
+<li><a href="#maincontents">このページの本文へ移動</a></li>
+<li><a href="#topicsnavi">トピックスナビゲーションへ移動</a></li>
+<li><a href="#footernavi">フッターナビゲーションへ移動</a></li>
+</ul>
+</div>
+<!-- /+++++ ヘルプメニュー +++++ -->
+
+
+<!-- +++++ グローバルナビ +++++ -->
+<!-- +++++ サイトナビ +++++ -->
+<div id="siteNaviWrap">
+<dl>
+<dt class="skip">サイトナビ</dt>
+<dd><ol>
+<li class="firstChild"><a href="http://p.nikkansports.com/goku-uma/" title="極ウマプレミアム">極ウマ</a></li>
+<li><a href="http://www5.nikkansports.com/" title="コラム">コラム</a></li>
+<!-- <li><a href="/pachinko/top-pachinko.html" title="パチンコ・パチスロ">パチンコ・パチスロ</a></li> -->
+<li><a href="/amusement/pachinko/" title="パチンコ・パチスロ">パチンコ・パチスロ</a></li>
+<!-- <li><a href="/anime_game/top-anime_game.html" title="アニメ・ゲーム">アニメ・ゲーム</a></li> -->
+<li><a href="/amusement/anime_game/" title="アニメ・ゲーム">アニメ・ゲーム</a></li>
+<li><a href="/amusement/casino/" title="カジノ">カジノ</a></li>
+<li><a href="/amusement/mahjong/" title="麻雀">麻雀</a></li>
+<li><a href="/fishing/top-fishing.html" title="釣り">釣り</a></li>
+<li><a href="http://photos.nikkansports.com/" title="ニッカンフォトギャラリー">フォト</a></li>
+<li><a href="/entertainment/komakai/top-komakai.html">細かすぎる情報</a></li>
+<!-- <li><a href="/other/survey/top-survey.html" title="アンケート">アンケート</a></li> -->
+<li><a href="http://www.rakuten.ne.jp/gold/nikkansports-shopping/" title="ショッピング">ショッピング</a></li>
+<!-- <li class="lastChild"><a href="http://housing.nikkansports.com/" title="すまい">すまい</a></li> -->
+</ol></dd>
+</dl>
+<p id="nsID"><a href="/tool/tool-nsid.html">ニッカンＩＤ</a></p>
+<p id="digitalAsahi"><a href="http://digital.asahi.com/info/nikkan/" target="_blank">朝日新聞デジタル</a></p>
+</div>
+<!-- /+++++ サイトナビ +++++ -->
+
+<div id="globalNaviWrap">
+<dl>
+<dt class="skip">共通メニュー</dt>
+<dd id="globalNavi">
+<ol id="globalNaviList">
+<li id="globalNaviHome"><a id="globalNaviHomeanc" href="/" title="ニッカンスポーツ・コムホームへ">ホーム</a></li>
+<li id="globalNaviBB"><a id="globalNaviBBanc" href="/baseball/top-baseball.html" title="野球トップへ">野球</a></li>
+<li id="globalNaviMB"><a id="globalNaviMBanc" href="/baseball/mlb/top-mlb.html" title="ＭＬＢトップへ">ＭＬＢ</a></li>
+<li id="globalNaviSC"><a id="globalNaviSCanc" href="/soccer/top-soccer.html" title="サッカートップへ">サッカー</a></li>
+<li id="globalNaviWD"><a id="globalNaviWDanc" href="/soccer/world/top-world.html" title="海外サッカートップへ">海外サッカー</a></li>
+<li id="globalNaviSP"><a id="globalNaviSPanc" href="/sports/top-sports.html" title="スポーツトップへ">スポーツ</a></li>
+<li id="globalNaviGF"><a id="globalNaviGFanc" href="/sports/golf/" title="ゴルフトップへ">ゴルフ</a></li>
+<li id="globalNaviBT"><a id="globalNaviBTanc" href="/battle/top-battle.html" title="格闘技トップへ">格闘技</a></li>
+<li id="globalNaviRC"><a id="globalNaviRCanc" href="/race/top-race.html" title="競馬トップへ">競馬</a></li>
+<li id="globalNaviPU"><a id="globalNaviPUanc" href="/race/public_race/top-public_race.html" title="ボート競輪オートトップへ">ボート競輪オート</a></li>
+<li id="globalNaviET"><a id="globalNaviETanc" href="/entertainment/top-entertainment.html" title="芸能トップへ">芸能</a></li>
+<li id="globalNaviGN"><a id="globalNaviGNanc" href="/general/top-general.html" title="社会トップへ">社会</a></li>
+</ol>
+</dd>
+</dl>
+</div>
+<!-- /+++++ グローバルナビ +++++ -->
+
+
+</div>
+<!-- /+++++ ヘッダーインナー +++++ -->
+
+</div>
+<!-- /+++++ ヘッダー +++++ -->
+
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++ コンテンツエリア +++++ -->
+<div id="contents">
+
+<!-- +++++ メーンラップ +++++ -->
+<div id="mainWrap">
+
+
+
+<!-- +++++ ヘルプメニュー +++++ -->
+<div class="helpNavi">
+<p><a id="maincontents" name="maincontents">ここからこのページの本文です</a></p>
+<ul>
+<li><a href="#pagetop">このページの先頭へ戻る</a></li>
+<li><a href="#globalnavi">このサイトのナビゲーションへ戻る</a></li>
+<li><a href="#submenu">このページのサブメニューへ移動</a></li>
+<li><a href="#topicsnavi">トピックスナビゲーションへ移動</a></li>
+<li><a href="#footernavi">フッターナビゲーションへ移動</a></li>
+</ul>
+</div>
+<!-- /+++++ ヘルプメニュー +++++ -->
+
+
+
+<!-- +++++ メーンコンテンツ +++++ -->
+<div id="main">
+
+
+
+<!-- +++++ AD PR TEXT +++++ -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37283629-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+<div class="adPRtext">
+<script type="text/javascript" language="JavaScript">
+<!--
+impAserver = "http://as.ik.impact-ad.jp";
+impAtarget1 = "/AAMB1/SITE=OTHER/AREA=TEXT.ALL01/AAMSZ=TEXT";
+impAtarget2 = "/AAMB2/SITE=OTHER/AREA=TEXT.ALL01/AAMSZ=TEXT";
+impAtarget3 = "/AAMB3/SITE=OTHER/AREA=TEXT.ALL01/AAMSZ=TEXT";
+impAtarget4 = "/AAMB4/SITE=OTHER/AREA=TEXT.ALL01/AAMSZ=TEXT";
+impAtarget  = impAtarget1 + impAtarget2 + impAtarget3 + impAtarget4;
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+document.write('<scr');
+document.write('ipt src="' + impAserver + '/bservers/AAMALL/OENCJP=UTF8/acc_random=' + impArnd + '/pageid=' + impApid + impAtarget+'">');
+document.write('</scr');
+document.write('ipt>');
+//-->
+</script>
+
+<!-- 広告並び替え -->
+<script>
+var impAnads = 4;
+var impAbs = new Array(impAnads);
+for ( i = 0 ; i < impAnads ; i++) {
+	eval('impAbs['+i+'] = (typeof(AAMB' + (i+1) + ') != "undefined")?AAMB' + (i+1) + ':"";');
+	impAbs[i] = (impAbs[i].indexOf('AEIK') == -1)?impAbs[i]:'';
+}
+
+impAads = impA_rotate(impAbs);
+
+function impA_rotate(list) {
+	var i = list.length;
+	while (--i) {
+		var j = Math.floor(Math.random() * (i + 1));
+		if (i == j) continue;
+		var k = list[i]; list[i] = list[j]; list[j] = k;
+	}
+	for ( i = 0; i <= list.length; i++){ if ( list[i] == "" ) list.splice(i,1);}
+	return list;
+}
+</script>
+
+<!-- 広告書き出し部分 広告数に応じて書き出す-->
+<!-- コンテンツの書き出しイメージにより適宜修正してください -->
+
+<script>
+
+var impAadsHtml = '';
+var impAadsHtml_Start = '<dl><dt>ＰＲ</dt><dd>';
+var impAadsHtml_End = '</dd></dl>';
+for ( i = 0 ; i < impAnads ; i++) {
+	if (typeof(impAads[i]) !='undefined' && impAads[i] !="") {
+		impAadsHtml += impAadsHtml_Start;
+		impAadsHtml += impAads[i];
+		impAadsHtml += impAadsHtml_End;
+	}
+}
+
+if( impAadsHtml != '' ) {
+	document.write( impAadsHtml );
+}
+</script>
+</div>
+
+<!-- /+++++ AD PR TEXT +++++ -->
+
+
+
+<!-- +++++ パンくずナビ +++++ -->
+<div id="routeNavi">
+<ol>
+<li id="routeNaviHome" class="next"><a href="/" title="ニッカンスポーツ・コムのホームへ">ホーム</a></li>
+<li class="next"><a href="/baseball/top-baseball.html" title="野球トップへ">野球</a></li>
+<li class="next2"><a href="/baseball/professional/top-professional.html" title="プロ野球トップへ">プロ野球</a></li>
+<li id="mainTitle"><a href="/baseball/professional/score/pf-score.html" title="スコア速報トップへ">スコア速報</a></li>
+</ol>
+</div>
+<!-- /+++++ パンくずナビ +++++ -->
+
+
+
+<style>
+.themeClimaxTop #themeNaviClimaxTop a {
+background: none repeat scroll 0 0 #007ADA;
+border-radius: 0.45em 0.45em 0.45em 0.45em;
+color: #FFFFFF;
+font-weight: bold;
+}
+</style>
+
+<!-- +++++ テーマナビ +++++ -->
+<ol id="themeNavi">
+<li id="themeNaviTop"><a href="/baseball/professional/top-professional.html">トップ</a></li>
+<li id="themeNaviScore"><a href="/baseball/professional/score/pf-score.html">スコア速報</a></li>
+<li id="themeNaviRN"><a href="/baseball/professional/relevant-news.html">関連ニュース</a></li>
+<li id="themeNaviRP"><a href="/baseball/professional/relevant-photo.html">関連写真</a></li>
+<!-- <li id="themeNaviCamp"><a href="/baseball/professional/camp/2013/top-camp.html">キャンプ日程</a></li> -->
+<!-- li id="themeNaviData"><a href="/baseball/professional/koukai/2013/top-koukai.html">契約更改</a></li>
+<li id="themeNaviData2"><a href="/baseball/professional/stoveleague/2012/top-stoveleague.html">ストーブリーグ情報</a></li -->
+<li id="themeNaviSch"><a href="/baseball/professional/schedule/top-schedule.html">日程＆結果</a></li>
+<li id="themeNaviSta"><a href="/baseball/professional/data/pf-standings.html">順位表</a></li>
+<li id="themeNaviRepo"><a href="/baseball/professional/report/top-report.html">戦評</a></li>
+<li id="themeNaviteam"><a href="/baseball/professional/team/top-team.html">球団別</a></li>
+<li id="themeNaviData"><a href="/baseball/professional/data/pfdata/person/cl-pitcher.html">個人成績</a></li>
+<li id="themeNaviPlay"><a href="/baseball/professional/player/top-player.html">選手名鑑</a></li>
+<li id="themeNaviFarm"><a href="/baseball/professional/farm/top-farm.html">ファーム</a></li>
+<!--
+<li id="themeNaviJpseries"><a href="/baseball/professional/jpseries/2013/top-jpseries.html">日本シリーズ</a></li>
+<li id="themeNaviAsiaseries"><a href="/baseball/professional/asiaseries/2013/top-asiaseries.html">アジアシリーズ</a></li>
+-->
+</ol>
+<!-- /+++++ テーマナビ +++++ -->
+
+
+
+
+
+<!-- +++++ Ｎ式スコア速報ボックス +++++ -->
+<div id="bbScore">
+
+<h1 id="contentsTitle">スコア速報　西武対日本ハム</h1>
+
+<!-- +++++ ソーシャルブックマーク +++++ -->
+<div id="socialBookmark">
+<ul id="webTool">
+<li id="toolTwitter"><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="nikkansports" data-lang="ja" data-text="スコア速報　西武対日本ハム">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></li>
+<li id="toolFacebook"><iframe src="http://www.facebook.com/plugins/like.php?href=http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html&amp;layout=button_count&amp;show_faces=false&amp;width=105&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:105px; height:21px;" allowTransparency="true"></iframe></li>
+<li id="toolGoogleButton"><g:plusone size="medium"></g:plusone></li>
+<li id="toolHatena"><a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-title="" data-hatena-bookmark-layout="standard" title="この記事をはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script></li>
+<li id="toolMixi"><a href="http://mixi.jp/share.pl" class="mixi-check-button" data-key="4087fedd61e4be8979f4a64b2adbe1754afee867">mixiチェック</a><script type="text/javascript" src="http://static.mixi.jp/js/share.js"></script></li>
+<li id="toolEvernote"><script type="text/javascript" src="http://static.evernote.com/noteit.js"></script><a href="#" onclick="Evernote.doClip({providerName:'nikkansports.com',suggestNotebook:'',contentId:'news',styling:'full',suggestTags:'日刊スポーツ,プロ野球,スコア速報,ニュース,news'}); return false;"><img src="http://static.evernote.com/article-clipper-jp.png" alt="Evernoteにクリップする" /></a></li>
+</ul>
+</div>
+<!-- /+++++ ソーシャルブックマーク +++++ -->
+
+
+<p id="upDate"><span>2014年04月29日17時00分11秒更新</span></p>
+
+<!--SCORE-HEADER-->
+<h4 id="cardTitle">西武&nbsp;対&nbsp;日本ハム</h4>
+<p id="time">【試合終了】
+西武2勝2敗0分け</p>
+<p class="data">◇公式戦◇開始14時00分◇西武ドーム◇観衆27849人</p>
+
+<!--/SCORE-HEADER-->
+
+<!-- +++++ ビジターチーム打席テーブル +++++ -->
+<!--VISITORBAT-->
+<div class="batter">
+<table border="1" cellpadding="0" cellspacing="0" class="batter" summary="ビジターチームの打席成績表">
+<caption>【日本ハム】</caption>
+<tr>
+<th>守備</th>
+<th>選手名</th>
+<th class="vertical">打数</th>
+<th class="vertical">得点</th>
+<th class="vertical">安打</th>
+<th class="vertical">打点</th>
+<th>通算率</th>
+<th>ＨＲ</th>
+<th>&nbsp;１&nbsp;</th>
+<th>&nbsp;２&nbsp;</th>
+<th>&nbsp;３&nbsp;</th>
+<th>&nbsp;４&nbsp;</th>
+<th>&nbsp;５&nbsp;</th>
+<th>&nbsp;６&nbsp;</th>
+<th>&nbsp;７&nbsp;</th>
+<th>&nbsp;８&nbsp;</th>
+<th>&nbsp;９&nbsp;</th>
+</tr>
+<tr>
+<td>(中)</td>
+<td class="left">陽（右）</td>
+<td>３</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.224</td>
+<td>５</td>
+<td>三振</td>
+<td>……</td>
+<td>中飛</td>
+<td>……</td>
+<td>四球</td>
+<td>……</td>
+<td>……</td>
+<td>中飛</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(二)</td>
+<td class="left">西川（左）</td>
+<td>４</td>
+<td>０</td>
+<td>２</td>
+<td>０</td>
+<td>.218</td>
+<td>３</td>
+<td class="hit">中安</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>……</td>
+<td class="hit">中安</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(指)</td>
+<td class="left">大谷（左）</td>
+<td>２</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.375</td>
+<td>１</td>
+<td>四球</td>
+<td>……</td>
+<td>……</td>
+<td>四球</td>
+<td>……</td>
+<td>三邪</td>
+<td>……</td>
+<td>投ゴ</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(左)</td>
+<td class="left">中田（右）</td>
+<td>４</td>
+<td>０</td>
+<td>１</td>
+<td>０</td>
+<td>.240</td>
+<td>５</td>
+<td>三ゴ</td>
+<td>……</td>
+<td>……</td>
+<td>左飛</td>
+<td>……</td>
+<td>遊ゴ</td>
+<td>……</td>
+<td class="hit">左安</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(一)</td>
+<td class="left">ミランダ（左=メキシカンリーグ）</td>
+<td>４</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.194</td>
+<td>２</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>中飛</td>
+<td>……</td>
+<td>中飛</td>
+<td>……</td>
+<td>三振</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(右)</td>
+<td class="left">佐藤賢（左）</td>
+<td>３</td>
+<td>１</td>
+<td>１</td>
+<td>１</td>
+<td>.244</td>
+<td>３</td>
+<td>……</td>
+<td>左飛</td>
+<td>……</td>
+<td>二ゴ</td>
+<td>……</td>
+<td>……</td>
+<td class="hit">右本</td>
+<td>……</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>打</td>
+<td class="left">石川慎（右）</td>
+<td>１</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.333</td>
+<td>０</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>三振</td>
+</tr>
+<tr>
+<td>(三)</td>
+<td class="left">大引（右）</td>
+<td>４</td>
+<td>０</td>
+<td>１</td>
+<td>０</td>
+<td>.282</td>
+<td>３</td>
+<td>……</td>
+<td class="hit">左２</td>
+<td>……</td>
+<td>……</td>
+<td>中飛</td>
+<td>……</td>
+<td>右飛</td>
+<td>……</td>
+<td>遊ゴ</td>
+</tr>
+<tr>
+<td>(捕)</td>
+<td class="left">近藤（左）</td>
+<td>３</td>
+<td>０</td>
+<td>１</td>
+<td>０</td>
+<td>.231</td>
+<td>０</td>
+<td>……</td>
+<td>左飛</td>
+<td>……</td>
+<td>……</td>
+<td class="hit">右安</td>
+<td>……</td>
+<td>中飛</td>
+<td>……</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>打</td>
+<td class="left">小谷野（右）</td>
+<td>１</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.224</td>
+<td>０</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>……</td>
+<td>右飛</td>
+</tr>
+<tr>
+<td>(遊)</td>
+<td class="left">中島（左）</td>
+<td>２</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.256</td>
+<td>０</td>
+<td>……</td>
+<td>……</td>
+<td>遊ゴ</td>
+<td>……</td>
+<td>投ギ</td>
+<td>……</td>
+<td>三ゴ</td>
+<td>……</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td class="total" colspan="2">計</td>
+<td class="total">31</td>
+<td class="total">１</td>
+<td class="total">６</td>
+<td class="total">１</td>
+<td class="total">.227</td>
+<td class="total">22</td>
+<td class="left total" colspan="9">残塁７、併殺２</td>
+</tr>
+</table>
+</div>
+
+<!--/VISITORBAT-->
+<!-- /+++++ ビジターチーム打席テーブル +++++ -->
+
+<!-- +++++ スコアテーブル +++++ -->
+<!--INNING-->
+
+<table border="1" cellpadding="0" cellspacing="0" class="scoreTable" summary="スコア用テーブル">
+<tr>
+<th>チーム</th>
+<th>１</th>
+<th>２</th>
+<th>３</th>
+<th>４</th>
+<th>５</th>
+<th>６</th>
+<th>７</th>
+<th>８</th>
+<th>９</th>
+<th>&nbsp;&nbsp;計&nbsp;&nbsp;</th>
+</tr>
+<tr>
+<td class="team">日本ハム</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td class="totalScore">１</td>
+</tr>
+<tr>
+<td class="team">西&nbsp;&nbsp;武</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>X</td>
+<td class="totalScore">４</td>
+</tr>
+</table>
+
+<!--/INNING-->
+<!-- /+++++ スコアテーブル +++++ -->
+
+<!--====プロ野球スコアビッグバナー AD468x60====-->
+<!--====ビッグバナー AD468x60====-->
+<script type="text/javascript" language="JavaScript">
+<!--
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=BASEBALL.SCORE/AREA=BIGBANNER/AAMSZ=468X60/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<iframe src="'+impAserver+'/hserver/acc_random='+impArnd + impAtarget + '/pageid=' + impApid + '"');
+document.write(' noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="468" height="60" allowTransparency="true">');
+if (navigator.userAgent.indexOf("Gecko")==-1 && navigator.userAgent.indexOf("MSIE")==-1){
+document.write('<scr');
+document.write('ipt src="' + impAserver + '/jnserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+}
+document.write('</iframe>');
+//-->
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=BASEBALL.SCORE/AREA=BIGBANNER/AAMSZ=468X60/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="468" height="60" allowTransparency="true">
+</iframe>
+</noscript>
+<!--====ビッグバナー AD468x60====-->
+<!--====プロ野球スコアビッグバナー AD468x60====-->
+
+<!-- +++++ ホームチーム打席テーブル +++++ -->
+<!--HOMEBAT-->
+<div class="batter">
+<table border="1" cellpadding="0" cellspacing="0" class="batter" summary="ホームチームの打席成績表">
+<caption>【西武】</caption>
+<tr>
+<th>守備</th>
+<th>選手名</th>
+<th class="vertical">打数</th>
+<th class="vertical">得点</th>
+<th class="vertical">安打</th>
+<th class="vertical">打点</th>
+<th>通算率</th>
+<th>ＨＲ</th>
+<th>&nbsp;１&nbsp;</th>
+<th>&nbsp;２&nbsp;</th>
+<th>&nbsp;３&nbsp;</th>
+<th>&nbsp;４&nbsp;</th>
+<th>&nbsp;５&nbsp;</th>
+<th>&nbsp;６&nbsp;</th>
+<th>&nbsp;７&nbsp;</th>
+<th>&nbsp;８&nbsp;</th>
+<th>&nbsp;９&nbsp;</th>
+</tr>
+<tr>
+<td>(遊)</td>
+<td class="left">渡辺（右）</td>
+<td>４</td>
+<td>１</td>
+<td>２</td>
+<td>１</td>
+<td>.341</td>
+<td>０</td>
+<td class="hit">右安</td>
+<td>……</td>
+<td>一ゴ</td>
+<td>……</td>
+<td class="hit">中安</td>
+<td>……</td>
+<td>遊ゴ</td>
+<td>……</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(右)</td>
+<td class="left">大崎（左）</td>
+<td>３</td>
+<td>０</td>
+<td>３</td>
+<td>２</td>
+<td>.325</td>
+<td>１</td>
+<td>投ギ</td>
+<td>……</td>
+<td class="hit">中安</td>
+<td>……</td>
+<td class="hit">中安</td>
+<td>……</td>
+<td>……</td>
+<td class="hit">左安</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>走右</td>
+<td class="left">斉藤（左）</td>
+<td>０</td>
+<td>１</td>
+<td>０</td>
+<td>０</td>
+<td>.000</td>
+<td>０</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(左)</td>
+<td class="left">栗山（左）</td>
+<td>４</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.280</td>
+<td>０</td>
+<td>二ゴ</td>
+<td>……</td>
+<td>三邪</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>……</td>
+<td>三振</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>中</td>
+<td class="left">熊代（右）</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.169</td>
+<td>０</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(二)</td>
+<td class="left">浅村（右）</td>
+<td>４</td>
+<td>０</td>
+<td>２</td>
+<td>１</td>
+<td>.289</td>
+<td>４</td>
+<td>左飛</td>
+<td>……</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td class="hit">左安</td>
+<td>……</td>
+<td class="hit">左２</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(一)</td>
+<td class="left">中村（右）</td>
+<td>４</td>
+<td>０</td>
+<td>１</td>
+<td>０</td>
+<td>.357</td>
+<td>０</td>
+<td>……</td>
+<td>中飛</td>
+<td>……</td>
+<td class="hit">中安</td>
+<td>……</td>
+<td>遊併</td>
+<td>……</td>
+<td>三振</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(三)</td>
+<td class="left">脇谷（左=巨人）</td>
+<td>４</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.207</td>
+<td>０</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>二併</td>
+<td>……</td>
+<td>二ゴ</td>
+<td>……</td>
+<td>中飛</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(指)</td>
+<td class="left">ランサム（右=カブス）</td>
+<td>３</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.203</td>
+<td>１</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>三振</td>
+<td>……</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(捕)</td>
+<td class="left">炭谷（右）</td>
+<td>３</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>.182</td>
+<td>０</td>
+<td>……</td>
+<td>……</td>
+<td>三ゴ</td>
+<td>……</td>
+<td>捕ゴ</td>
+<td>……</td>
+<td>二ゴ</td>
+<td>……</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>(中左)</td>
+<td class="left">木村（右）</td>
+<td>１</td>
+<td>２</td>
+<td>１</td>
+<td>０</td>
+<td>.226</td>
+<td>４</td>
+<td>……</td>
+<td>……</td>
+<td class="hit">左２</td>
+<td>……</td>
+<td>四球</td>
+<td>……</td>
+<td>四球</td>
+<td>……</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td class="total" colspan="2">計</td>
+<td class="total">30</td>
+<td class="total">４</td>
+<td class="total">９</td>
+<td class="total">４</td>
+<td class="total">.231</td>
+<td class="total">10</td>
+<td class="left total" colspan="8">残塁５、併殺０</td>
+</tr>
+</table>
+</div>
+
+<!--/HOMEBAT-->
+<!-- /+++++ ホームチーム打席テーブル +++++ -->
+
+<!-- +++++ 両チームの投手成績表 +++++ -->
+<!--PITCHING-->
+<table border="1" cellpadding="0" cellspacing="0" class="pitcher" summary="両チームの投手成績表">
+<tr>
+<th colspan="2">&nbsp;</th>
+<th>勝利</th>
+<th>敗戦</th>
+<th>Ｓ</th>
+<th>試合</th>
+<th>回数</th>
+<th>打者</th>
+<th>球数</th>
+<th>安打</th>
+<th>三振</th>
+<th>四球</th>
+<th>死球</th>
+<th>失点</th>
+<th>自責</th>
+<th>通算<br />防御</th>
+</tr>
+<tr>
+<td>●</td>
+<td class="left">メンドーサ&nbsp;（右=ロイヤルズ）</td>
+<td>１</td>
+<td>４</td>
+<td>０</td>
+<td>５</td>
+<td>７&nbsp;1/3</td>
+<td>30</td>
+<td>114</td>
+<td>８</td>
+<td>７</td>
+<td>２</td>
+<td>０</td>
+<td>４</td>
+<td>４</td>
+<td>4.25</td>
+</tr>
+<tr>
+<td class="line">&nbsp;</td>
+<td class="line left">武田久&nbsp;（右）</td>
+<td class="line">０</td>
+<td class="line">１</td>
+<td class="line">１</td>
+<td class="line">６</td>
+<td class="line">０&nbsp;2/3</td>
+<td class="line">３</td>
+<td class="line">10</td>
+<td class="line">１</td>
+<td class="line">１</td>
+<td class="line">０</td>
+<td class="line">０</td>
+<td class="line">０</td>
+<td class="line">０</td>
+<td class="line">3.60</td>
+</tr>
+
+<tr>
+<td>○</td>
+<td class="left">牧田&nbsp;（右）</td>
+<td>２</td>
+<td>１</td>
+<td>０</td>
+<td>５</td>
+<td>７</td>
+<td>27</td>
+<td>126</td>
+<td>４</td>
+<td>４</td>
+<td>３</td>
+<td>０</td>
+<td>１</td>
+<td>１</td>
+<td>1.42</td>
+</tr>
+<tr>
+<td>Ｈ</td>
+<td class="left">十亀&nbsp;（右）</td>
+<td>０</td>
+<td>２</td>
+<td>３</td>
+<td>11</td>
+<td>０&nbsp;2/3</td>
+<td>４</td>
+<td>14</td>
+<td>２</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>2.53</td>
+</tr>
+<tr>
+<td>Ｈ</td>
+<td class="left">ウィリアムス&nbsp;（左）</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>10</td>
+<td>０&nbsp;1/3</td>
+<td>１</td>
+<td>６</td>
+<td>０</td>
+<td>１</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>０</td>
+<td>1.74</td>
+</tr>
+<tr>
+<td class="line">Ｓ</td>
+<td class="line left">高橋&nbsp;（左）</td>
+<td class="line">０</td>
+<td class="line">１</td>
+<td class="line">３</td>
+<td class="line">11</td>
+<td class="line">１</td>
+<td class="line">３</td>
+<td class="line">17</td>
+<td class="line">０</td>
+<td class="line">１</td>
+<td class="line">０</td>
+<td class="line">０</td>
+<td class="line">０</td>
+<td class="line">０</td>
+<td class="line">3.27</td>
+</tr>
+
+</table>
+
+<!--/PITCHING-->
+<!-- /+++++ 両チームの投手成績表 +++++ -->
+
+<!--NOTEINFO-->
+<dl class="data">
+<dt>◇本塁打</dt>
+<dd>佐藤賢３号（ソロ115m=牧田）</dd>
+</dl>
+<dl class="data">
+<dt>◇盗塁</dt>
+<dd>木村（５回）</dd>
+<dd>渡辺（５回）</dd>
+<dd>斉藤（８回）</dd>
+<dt>◇失策</dt>
+<dd>近藤（５回）</dd>
+<dt>◇盗塁死</dt>
+<dd>西川（１回）</dd>
+</dl>
+<dl class="data">
+<dt>◇試合時間</dt>
+<dd>２時間48分</dd>
+<dt>◇球審</dt>
+<dd>白井</dd>
+<dt>◇塁審</dt>
+<dd>佐々木</dd>
+<dd>深谷</dd>
+<dd>原</dd>
+</dl>
+
+<!--/NOTEINFO-->
+
+</div>
+<!-- /+++++ Ｎ式スコア速報ボックス +++++ -->
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++ AD GIF TEXT +++++ -->
+<!--====野球ＧＩＦテキスト AD150x125====-->
+<!--====ＧＩＦテキスト AD150x125====-->
+
+
+<!-- impAct AD -->
+<script type="text/javascript" language="JavaScript">
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=BASEBALL.TOP/AREA=GIFTEXT01/AAMSZ=150X125/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<scr');
+document.write('ipt type="text/javascript" language="JavaScript" src="' + impAserver + '/jserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=BASEBALL.TOP/AREA=GIFTEXT01/AAMSZ=150X125/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="500" height="125" allowTransparency="true">
+</iframe>
+</noscript>
+<!-- /impAct AD -->
+
+
+<!--====ＧＩＦテキスト AD150x125====-->
+<!--====野球ＧＩＦテキスト AD150x125====-->
+
+<!-- /+++++ AD GIF TEXT +++++ -->
+
+<!-- +++++ AD Google Adsense +++++ -->
+<div id="adGoogleAdsense">
+<script language="JavaScript"><!--
+function google_ad_request_done(google_ads) {
+var i;
+var s = '';
+
+s += '\n<div class="listHead">\n<h3><a target="_blank" class="ad_attribution" href="'+ google_info.feedback_url+'">Ads by Google</a></h3>\n<p>PR</p>\n</div>\n\n';
+if (google_ads.length == 0) {
+	return;
+}
+
+<!-- 画像の表示 -->
+if (google_ads[0].type == "image") {
+	s += '<a href="' + google_ads[0].url + '" target="_top" title="go to ' + google_ads[0].visible_url + '"><img border="0" src="' + google_ads[0].image_url + '"width="' + google_ads[0].image_width + '"height="' + google_ads[0].image_height + '"></a>';
+}
+
+<!-- Flashの表示 -->
+else if (google_ads[0].type == "flash") {
+	s += '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"' + ' codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"' + ' WIDTH="' + google_ad.image_width + '" HEIGHT="' + google_ad.image_height + '">' + '<PARAM NAME="movie" VALUE="' + google_ad.image_url + '">' + '<PARAM NAME="quality" VALUE="high">' + '<PARAM NAME="AllowScriptAccess" VALUE="never">' + '<EMBED src="' + google_ad.image_url + '" WIDTH="' + google_ad.image_width + '" HEIGHT="' + google_ad.image_height +  '" TYPE="application/x-shockwave-flash"' +  ' AllowScriptAccess="never" ' +  ' PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer"></EMBED></OBJECT>';
+}
+
+else if (google_ads[0].type == "html") {
+	s += google_ads[0].snippet;
+}
+
+<!-- textの表示 -->
+else if (google_ads[0].type == "text") {
+	s +='<table cellpadding="0" cellspacing="10" border="0" width="700">';
+	
+	for(i=0; i < google_ads.length; ++i) {
+		s += '<tr><td width="450" bgcolor="#ffffff">'
+		  +'<a href="' + google_ads[i].url + '" target="_blank">';
+
+		if (google_ads.length == 1) {
+			s += '<font style="text-decoration:underline;margin-bottom:10px;color:#0033ff;font-size:90%;margin-left:4px;padding-left:0px"><strong>' +　google_ads[0].line1 + '</strong></font></a><br />'
+			  +'<font style="margin-bottom:10px;color:#000000;font-size:90%;margin-left:33px;padding-left:0px;">' + google_ads[0].line2 + '</font><br />'
+			  +'<font style="margin-bottom:10px;color:#000000;font-size:90%;margin-left:33px;padding-left:0px;">' + google_ads[0].line3 + '</font><br />'
+			  +'<font style="color:green;font-size:90%;margin-left:33px;padding-left:0px;">' +'<a href="' + google_ads[0].url + '" target="_blank">' + google_ads[0].visible_url + '</font></a>'
+		}
+		else if (google_ads.length == 2) {
+			s += '<font style="text-decoration:underline;margin-bottom:10px;color:#0033ff;font-size:90%;margin-left:4px;padding-left:0px"><strong>' + google_ads[i].line1 + '</strong></font></a><br />'
+			  +'<font style="margin-bottom:10px;color:#000000;font-size:80%;margin-left:0px;padding-left:0px;">' + google_ads[i].line2 + '&nbsp;' + google_ads[i].line3 + '</font><br />'
+			  +'<font style="color:green;font-size:80%;margin-left:0px;padding-left:0px;">' +'<a href="' + google_ads[i].url + '" target="_blank">' + google_ads[i].visible_url + '</font></a>'
+		}
+		else if (google_ads.length == 3) {
+			s += '<font style="text-decoration:underline;margin-bottom:100px;color:#0033ff;font-size:90%;margin-left:4px;padding-left:0px"><strong>' + google_ads[i].line1 + '</strong></font>&nbsp;&nbsp;'
+			  +'<font style="color:green;font-size:80%;">' +　google_ads[i].visible_url + '</font></a><br />'
+			  +'<font style="margin-bottom:10px;color:#000000;font-size:80%;margin-left:0px;padding-left:0px;">' + google_ads[i].line2 + '&nbsp;' + google_ads[i].line3 + '</font>';
+		}
+		else if (google_ads.length == 4) {
+			s += '<font style="text-decoration:underline;margin-bottom:100px;color:#0033ff;font-size:90%;margin-left:4px;padding-left:0px"><strong>' + google_ads[i].line1 + '</strong></font>&nbsp;&nbsp;'
+			  +'<font style="color:green;font-size:80%;margin-bottom:100px;">' +　google_ads[i].visible_url + '</font></a><br />'
+			  +'<font style="margin-bottom:10px;color:#000000;font-size:80%;margin-left:0px;padding-left:0px;">' + google_ads[i].line2 + '&nbsp;' + google_ads[i].line3 + '</font><br />';
+		}
+		else if (google_ads.length == 5) {
+			s += '<font style="text-decoration:underline;margin-bottom:100px;color:#0033ff;font-size:90%;margin-left:4px;padding-left:0px"><strong>' + google_ads[i].line1 + '</strong></font>&nbsp;&nbsp;'
+			  +'<font style="color:green;font-size:80%;margin-bottom:100px;">' +　google_ads[i].visible_url + '</font></a><br />'
+			  +'<font style="margin-bottom:10px;color:#000000;font-size:80%;margin-left:0px;padding-left:0px;">' + google_ads[i].line2 + '&nbsp;' + google_ads[i].line3 + '</font><br />';
+		}
+	}
+	
+	s +='</td></tr></table>';
+}
+
+
+		document.write(s);
+		return;
+	}
+// --></script>
+
+<script type="text/javascript" language="JavaScript"><!--
+	google_ad_client = 'ca-nikkansports_js'; 
+	google_ad_section = 's1';
+	google_ad_output = 'js';
+	google_max_num_ads = '5';
+	google_ad_type = 'text, image, flash, html';
+	google_language = 'ja';
+	google_image_size = '336x280,300x250,250x250';
+	google_encoding = 'utf8';
+	google_safe = 'high';
+
+	 if(document.URL.length > 0){
+		currentURL = document.URL;
+		if (currentURL.split('/')[2] == 'www.nikkansports.com' && currentURL.split('/')[4] == 'golf'){
+			google_ad_channel = 'golf';
+		}
+		else if(currentURL.split('/')[2] == 'www.nikkansports.com' && currentURL.split('/')[3] != 'index.htm')
+		{
+		 	currentURL = currentURL.split('/')[3];
+			currentURL = currentURL.split('/')[0];
+			if(currentURL.length > 0){
+			google_ad_channel = currentURL;
+			 }
+		}
+		else {
+			google_ad_channel = 'others';
+		}
+	 }
+// --></script>
+<script language="JavaScript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+
+</div>
+<!-- /+++++ AD Google Adsense +++++ -->
+
+
+
+<hr class="hide" />
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++++++++++++ bottom area +++++++++++++++ -->
+<div id="bottomArea">
+
+<!-- +++++ ジャンル別記事リスト +++++ -->
+
+<div class="listHead">
+<h3><a href="/baseball/top-baseball.html">野球</a></h3>
+<p><a href="/baseball/news/backnumber-baseball.html">記事一覧</a></p>
+</div>
+
+<ul class="newsList01">
+<li><span>アマ野球</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp3-20140503-1294955.html">東大70連敗も文武両道の最高峰目指す</a><img src="http://cache2.nipc.jp/mod/img/icon-camera.gif" alt="写真つき記事" width="16" height="12" />[3日09:33]</li>
+<li><span>プロ野球</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294808.html">西武岸ノーヒットノーラン　１四球準完全</a><img src="http://cache2.nipc.jp/mod/img/icon-camera.gif" alt="写真つき記事" width="16" height="12" />[3日07:29]</li>
+<li><span>プロ野球</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294816.html">菅野５先発、開幕６連勝の江川に並べ</a>[3日07:20]</li>
+<li><span>戦評</span><a href="http://www.nikkansports.com/baseball/news/f-bb-tp1-20140503-1294873.html">ロッテ－西武は14時開始</a>[3日07:18]</li>
+<li><span>戦評</span><a href="http://www.nikkansports.com/baseball/news/f-bb-tp1-20140503-1294872.html">楽天－ソフトバンクは14時開始</a>[3日07:17]</li>
+<li><span>戦評</span><a href="http://www.nikkansports.com/baseball/news/f-bb-tp1-20140503-1294871.html">日本ハム－オリックスは15時開始</a>[3日07:16]</li>
+<li><span>戦評</span><a href="http://www.nikkansports.com/baseball/news/f-bb-tp1-20140503-1294870.html">広島－ＤｅＮＡは13時30分開始</a>[3日07:15]</li>
+<li><span>戦評</span><a href="http://www.nikkansports.com/baseball/news/f-bb-tp1-20140503-1294869.html">中日－巨人は14時開始</a>[3日07:14]</li>
+<li><span>プロ野球</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294819.html">中日が西武武山を金銭トレードで獲得</a>[3日07:13]</li>
+<li><span>プロ野球</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294818.html">原監督「阿部は小さなおむすび」</a><img src="http://cache2.nipc.jp/mod/img/icon-camera.gif" alt="写真つき記事" width="16" height="12" />[3日07:13]</li>
+<li><span>プロ野球</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294815.html">楽天ＡＪビデオアピールで本塁打</a>[3日07:13]</li>
+<li><span>戦評</span><a href="http://www.nikkansports.com/baseball/news/f-bb-tp1-20140503-1294868.html">ヤクルト－阪神は18時開始</a>[3日07:12]</li>
+<li><span>プロ野球</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294813.html">ハム西川＆中田弾、２夜連続＆２者連続</a><img src="http://cache2.nipc.jp/mod/img/icon-camera.gif" alt="写真つき記事" width="16" height="12" />[3日07:12]</li>
+<li><span>監督語録</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140503-1294866.html">「まだ、小さなおむすびだね」／原監督</a>[3日07:08]</li>
+<li><span>監督語録</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140503-1294865.html">「後ろでハラハラするのは嫌」／中畑監督</a>[3日07:03]</li>
+<li><span>監督語録</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140503-1294864.html">「１－２で来ていれば…」／星野監督</a>[3日06:59]</li>
+<li><span>監督語録</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140503-1294863.html">「いいんじゃないですか」／秋山監督</a>[3日06:57]</li>
+<li><span>監督語録</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140503-1294862.html">「最も悔しいゲーム」／森脇監督</a>[3日06:55]</li>
+<li><span>監督語録</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140503-1294860.html">「やっと翔も前に踏み出した」／栗山監督</a>[3日06:54]</li>
+<li><span>監督語録</span><a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140503-1294859.html">「失投はなかった」／伊東監督</a>[3日06:49]</li>
+</ul>
+
+<div class="listHead">
+<h3><a href="/baseball/highschool/top-highschool.html">高校野球</a></h3>
+<p><a href="/baseball/highschool/news/backnumber-highschool.html">記事一覧</a></p>
+</div>
+
+<ul class="newsList01">
+<li><span>高校野球</span><a href="http://www.nikkansports.com/baseball/highschool/news/p-bb-tp3-20140502-1294405.html">更別農13年ぶり出場40戦目の初白星目指す</a><img src="http://cache2.nipc.jp/mod/img/icon-camera.gif" alt="写真つき記事" width="16" height="12" />[2日11:21]</li>
+<li><span>高校野球</span><a href="http://www.nikkansports.com/baseball/highschool/news/f-bb-tp3-20140501-1293990.html">浦学４強　小島好投で優勝候補対決制す</a>[1日17:14]</li>
+
+<li><span>高校野球</span><a href="http://www.nikkansports.com/baseball/highschool/news/f-bb-tp3-20140428-1292390.html">センバツ出場浪速高　部内暴力で予選棄権</a>[28日16:46]</li>
+
+<li><span>高校野球</span><a href="http://www.nikkansports.com/baseball/highschool/news/p-bb-tp3-20140428-1292289.html">浜松工・加藤が初先発初完封</a><img src="http://cache2.nipc.jp/mod/img/icon-camera.gif" alt="写真つき記事" width="16" height="12" />[28日11:54]</li>
+
+<li><span>高校野球</span><a href="http://www.nikkansports.com/baseball/highschool/news/p-bb-tp3-20140428-1292288.html">桐陽　静商撃破で22年ぶりシード</a><img src="http://cache2.nipc.jp/mod/img/icon-camera.gif" alt="写真つき記事" width="16" height="12" />[28日11:50]</li>
+
+</ul>
+
+<!-- /+++++ ジャンル別記事リスト +++++ -->
+
+
+</div>
+<!-- /+++++++++++++++ bottom area +++++++++++++++ -->
+
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++ AD rakuten +++++ -->
+<div class="adRakuten">
+<!-- Rakuten Widget FROM HERE --><script type="text/javascript">
+rakuten_design="slide";
+rakuten_affiliateId="1008318a.89a6dd64.1008318b.4702ce8f";
+rakuten_items="ranking";
+rakuten_genreId="101077";
+rakuten_pattern="H1A";
+rakuten_size="490x290";
+rakuten_target="_blank";
+rakuten_theme="gray";
+rakuten_border="on";
+rakuten_auto_mode="on";
+rakuten_auto_interval=3000;
+rakuten_genre_title="off";
+rakuten_recommend="on";
+rakuten_slideCell="4x2";
+rakuten_pointbackId="_RTmtlk20011919";
+rakuten_moreInfoDisplay="off";</script>
+<script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script>
+<!-- Rakuten Widget TO HERE -->
+</div>
+<!-- /+++++ AD rakuten +++++ -->
+
+
+
+<!-- +++++ AD FooterBanner +++++ -->
+<!--====オールジャンルフッターレクタングル AD300x250====-->
+
+<script type="text/javascript" language="JavaScript">
+<!--
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=OTHER/AREA=RECTANGLE03/AAMSZ=300X250/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<iframe src="'+impAserver+'/hserver/acc_random='+impArnd + impAtarget + '/pageid=' + impApid + '"');
+document.write(' noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="300" height="250" allowTransparency="true">');
+if (navigator.userAgent.indexOf("Gecko")==-1 && navigator.userAgent.indexOf("MSIE")==-1){
+document.write('<scr');
+document.write('ipt src="' + impAserver + '/jnserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+}
+document.write('</iframe>');
+//-->
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=OTHER/AREA=RECTANGLE03/AAMSZ=300X250/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="300" height="250" allowTransparency="true">
+</iframe>
+</noscript>
+
+<!--====オールジャンルフッターレクタングル AD300x250====-->
+<!-- /+++++ AD FooterBanner +++++ -->
+
+
+
+
+
+
+
+
+
+</div>
+<!-- /+++++ #main メーンコンテンツ +++++ -->
+
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++ ヘルプメニュー +++++ -->
+<div class="helpNavi">
+<p><a id="submenu" name="submenu">ここからこのページのサブメニューです</a></p>
+<ul>
+<li><a href="#pagetop">このページの先頭へ戻る</a></li>
+<li><a href="#globalnavi">サイトのナビゲーションへ戻る</a></li>
+<li><a href="#maincontents">このページの本文へ戻る</a></li>
+<li><a href="#topicsnavi">トピックスナビゲーションへ移動</a></li>
+<li><a href="#footernavi">フッターナビゲーションへ移動</a></li>
+</ul>
+</div>
+<!-- /+++++ ヘルプメニュー +++++ -->
+
+
+
+<!-- +++++ サブメニュー +++++ -->
+<div id="menu">
+
+<h2 id="genreHead"><a href="/baseball/top-baseball.html" title="野球トップへ"><img src="/mod/img/genre-head_bb.jpg" alt="野球" /></a></h2>
+
+<!-- +++++ AD Pub +++++ -->
+<div class="adPub">
+<!--====野球ページパブ AD120x120====-->
+<!--====パブ AD120x120====-->
+
+<!-- impAct AD -->
+<script type="text/javascript" language="JavaScript">
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=BASEBALL.TOP/AREA=PUB01/AAMSZ=120X120/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<scr');
+document.write('ipt type="text/javascript" language="JavaScript" src="' + impAserver + '/jserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=BASEBALL.TOP/AREA=PUB01/AAMSZ=120X120/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="120" height="120" allowTransparency="true">
+</iframe>
+</noscript>
+<!-- /impAct AD -->
+
+<!--====パブ AD120x120====-->
+<!--====野球ページパブ AD120x120====-->
+
+</div>
+<!-- /+++++ AD Pub +++++ -->
+
+<!-- ジャンルナビ -->
+<dl id="genreNaviWrap" class="menuBox">
+<dt class="skip">野球メニュー</dt>
+<dd>
+
+<ul id="genreNavi">
+<li id="genreNaviBN"><a href="/baseball/news/backnumber-baseball.html">ニュース</a></li>
+<li id="genreNaviPhoto"><a href="/baseball/news/top-photo.html">写真ニュース</a></li>
+<!--<li id="genreNaviPhoto"><a href="http://stadium.nikkansports.com/">ニッカンスタジアム</a></li>-->
+<!-- <li id="genreNaviDraft"><a href="/baseball/professional/draft/2013/">ドラフト会議2013</a> -->
+<li id="genreNaviPf"><a href="/baseball/professional/top-professional.html">プロ野球</a>
+<ul class="gnInner">
+<!--	<li id="genreNaviCamp"><a href="/baseball/professional/camp/2013/top-camp.html">キャンプ日程</a></li>-->
+	<li id="genreNaviScore"><a href="/baseball/professional/score/pf-score.html">スコア速報</a></li>
+	<li id="genreNaviSche"><a href="/baseball/professional/schedule/top-schedule.html">日程＆結果</a></li>
+	<li id="genreNaviSta"><a href="/baseball/professional/data/pf-standings.html">順位表</a></li>
+	<li id="genreNaviRepo"><a href="/baseball/professional/report/top-report.html">戦評</a></li>
+	<li id="genreNaviDataPerson"><a href="/baseball/professional/data/pfdata/person/cl-pitcher.html">個人成績</a></li>
+	<li id="genreNaviPlayer"><a href="/baseball/professional/player/top-player.html">選手名鑑</a></li>
+	<!-- <li id="genreNaviStove"><a href="/baseball/professional/stoveleague/2013/top-stoveleague.html">ストーブリーグ</a></li> -->
+<!-- 	<li id="genreNaviKoukai"><a href="/baseball/professional/koukai/2014/top-koukai.html">契約更改</a></li> -->
+	<!--li id="genreNaviAll"><a href="/baseball/professional/allstar/2013/top-allstar.html">オールスター</a></li-->
+</ul>
+</li>
+
+<!-- <li id="genreNaviJingu"><a href="/baseball/jingu/2013/top-jingu.html">明治神宮大会</a> -->
+<li id="genreNaviHi"><a href="/baseball/highschool/top-highschool.html">高校野球</a>
+<!--
+<ul class="gnInner">
+	<li id="genreNaviSenbatsu"><a href="/baseball/highschool/senbatsu/2014/score/top-score.html">スコア速報</a></li>
+	<li id="genreNaviSensyuken2"><a href="/baseball/highschool/sensyuken/2013/top-sensyuken.html">夏の甲子園</a></li>
+	<li id="genreNaviSensyuken"><a href="/baseball/highschool/sensyuken/2013/chihou/top-chihou.html">夏の地方大会</a></li>
+	<li id="genreNaviMatsuiyuki"><a href="/baseball/matsuiyuki/top-matsuiyuki.html">松井裕樹特集</a></li>
+	<li id="genreNaviSyunki"><a href="/baseball/highschool/syunki/2013/top-syunki.html">春季大会</a></li>
+	<li id="genreNaviSenbatsu"><a href="/baseball/highschool/senbatsu/2013/senbatsu-schedule.html">センバツ</a></li>
+</ul></li>
+-->
+<!--li id="genreNaviWBC"><a href="/baseball/wbc/2013/top-wbc.html">ＷＢＣ</a></li-->
+<li id="genreNaviSamurai"><a href="/baseball/samurai/top-samurai.html">侍ジャパン</a>
+<li id="genreNaviAm"><a href="/baseball/amateur/top-amateur.html">アマチュア野球</a>
+<ul class="gnInner">
+	<!--li id="genreNaviSyunki"><a href="/baseball/amateur/university/sensyuken/2013/top-sensyuken.html">大学野球選手権</a></li-->
+	<!--li id="genreNaviToshitaikou"><a href="/baseball/amateur/toshitaikou/2013/index.html">都市対抗</a></li-->
+</ul></li>
+
+<li class="noLink"><span>コラム</span>
+<ul class="gnInner" style="font-size:	90%; letter-spacing: -0.12em;">
+	<li id="genreNaviClm-yoshine"><a href="/baseball/column/yoshine/">ヨシネーのひとりごと</a></li>
+	<li id="genreNaviClm-yuki"><a href="/baseball/column/yuki/">いま、会いにゆきます</a></li>
+</ul></li>
+
+<li id="genreNaviTeam"><a href="/baseball/professional/team/top-team.html">チーム情報</a>
+<ul class="gnInner">
+	<li id="genreNaviPf-gi"><a href="/baseball/professional/team/giants/top-giants.html">巨人</a></li>
+	<li id="genreNaviPf-ti"><a href="/baseball/professional/team/tigers/top-tigers.html">阪神</a></li>
+	<li id="genreNaviPf-ca"><a href="/baseball/professional/team/carp/top-carp.html">広島</a></li>
+	<li id="genreNaviPf-dr"><a href="/baseball/professional/team/dragons/top-dragons.html">中日</a></li>
+	<li id="genreNaviPf-by"><a href="/baseball/professional/team/baystars/top-baystars.html">ＤｅＮＡ</a></li>
+	<li id="genreNaviPf-sw"><a href="/baseball/professional/team/swallows/top-swallows.html">ヤクルト</a></li>
+
+	<li id="genreNaviPf-ge"><a href="/baseball/professional/team/eagles/top-eagles.html">楽天</a></li>
+	<li id="genreNaviPf-li"><a href="/baseball/professional/team/lions/top-lions.html">西武</a></li>
+	<li id="genreNaviPf-ma"><a href="/baseball/professional/team/marines/top-marines.html">ロッテ</a></li>
+	<li id="genreNaviPf-hw"><a href="/baseball/professional/team/hawks/top-hawks.html">ソフトバンク</a></li>
+	<li id="genreNaviPf-bu"><a href="/baseball/professional/team/buffaloes/top-buffaloes.html">オリックス</a></li>
+	<li id="genreNaviPf-fi"><a href="/baseball/professional/team/fighters/top-fighters.html">日本ハム</a></li>
+
+</ul></li>
+<li class="noLink"><span>注目</span>
+<ul class="gnInner">
+	<!-- li id="genreNaviPf-ochiai"><a href="/baseball/ochiai/top-ochiai.html">落合博満</a></li -->
+	<li id="genreNaviPf-hoshino"><a href="/baseball/hoshino/top-hoshino.html">星野仙一</a></li>
+	<li id="genreNaviPf-nakahata"><a href="/baseball/nakahata/top-nakahata.html">中畑清</a></li>
+	<!-- li id="genreNaviPf-darbish"><a href="/baseball/darvish/top-darvish.html">ダルビッシュ有</a></li -->
+	<li id="genreNaviPf-saito"><a href="/baseball/saito/top-saito.html">斎藤佑樹</a></li>
+<!-- 	<li id="genreNaviPf-tanaka"><a href="/baseball/tanaka/top-tanaka.html">田中将大</a></li> -->
+<!-- 	<li id="genreNaviPf-sakamoto"><a href="/baseball/sakamoto/top-sakamoto.html">坂本勇人</a></li> -->
+	<li id="genreNaviPf-otani"><a href="/baseball/otani/top-otani.html">大谷翔平</a></li>
+	<li id="genreNaviPf-fujinami"><a href="/baseball/fujinami/top-fujinami.html">藤浪晋太郎</a></li>
+<!-- 	<li id="genreNaviPf-balentien"><a href="/baseball/balentien/index.html">バレンティン</a></li> -->
+	<li id="genreNaviPf-doara"><a href="/baseball/doara/top-doara.html">ドアラ</a></li>
+	<li id="genreNaviPf-tsubakurou"><a href="/baseball/tsubakurou/top-tsubakurou.html">つば九郎</a></li>
+</ul></li>
+
+<li id="genreNaviFarm"><a href="/baseball/professional/farm/top-farm.html">ファーム</a></li>
+<li id="genreNaviData"><a href="/baseball/professional/data/pfdata/top-pfdata.html">データ</a></li>
+</ul>
+
+</dd>
+</dl>
+<!-- /ジャンルナビ -->
+
+<!-- 特集アーカイブズ -->
+<div id="archivesListWrap" class="menuBox">
+
+<h3 id="archivesListHead"><a href="/feature/top-feature.html">特集アーカイブズ</a></h3>
+
+<ul id="archivesList">
+<p>▼ 2013年</p>
+ <li><a href="/baseball/professional/draft/2013/">ドラフト会議</a></a></li>
+<li><a href="/baseball/professional/asiaseries/2013/top-asiaseries.html">アジアシリーズ</a></li>
+<li><a href="/baseball/professional/jpseries/2013/top-jpseries.html">日本シリーズ</a></li>
+<li><a href="/baseball/professional/climax/2013/top-climax.html">クライマックスＳ</a></li>
+<li><a href="/baseball/jingu/2013/top-jingu.html">明治神宮大会</a></li>
+<li><a href="/baseball/highschool/syuuki/2013/top-syuuki.html">高校野球秋季大会</a></li>
+<li><a href="/baseball/highschool/sensyuken/2013/top-sensyuken.html">夏の甲子園</a></li>
+<li><a href="/baseball/highschool/sensyuken/2013/chihou/top-chihou.html">夏の地方大会</a></li>
+<li><a href="/baseball/amateur/university/sensyuken/2013/top-sensyuken.html">全日本大学野球選手権</a></li>
+<li><a href="/baseball/highschool/senbatsu/2013/senbatsu-schedule.html">センバツ</a></li>
+<li><a href="/baseball/wbc/2013/top-wbc.html">第３回ＷＢＣ</a></li>
+
+
+<hr class="line" />
+
+<li><a href="/baseball/wbc/2009/top-wbc.html">第２回ＷＢＣ</a></li>
+</ul>
+</div>
+<!-- /特集アーカイブズ -->
+
+
+<hr class="hide" />
+
+
+<!-- カレンダー -->
+
+<!-- /カレンダー -->
+
+<!-- エンジョイ・イベント情報・ソーシャルメディア -->
+<div id="ejEvSmWrap" class="menuBox">
+<!-- エンジョイ -->
+<dl id="menuEnjoy">
+<dt id="mejHead" class="menuBoxHead"><a id="mejHeadAnc" href="http://enjoy.nikkansports.com/" title="別ウィンドウで開きます" target="_blank">エンジョイ</a></dt>
+<dd id="mejLink">「走る」で挑戦！フルマラソン４時間以内<br />
+<a href="http://enjoy.nikkansports.com/" title="別ウィンドウで開きます" target="_blank">エンジョイ・ニッカンスポーツ</a></dd>
+</dl>
+<!-- /エンジョイ -->
+
+<!-- イベント情報 -->
+<dl id="menuEvent">
+<dt id="mevHead" class="menuBoxHead"><a id="mevHeadAnc" href="http://event.nikkansports.com/" title="別ウィンドウで開きます" target="_blank">イベント情報</a></dt>
+<dd id="mevLink">神宮花火大会、富士山マラソン等イベント情報<br />
+<a href="http://event.nikkansports.com/" title="別ウィンドウで開きます" target="_blank">イベント情報へ</a></dd>
+</dl>
+<!-- /イベント情報 -->
+
+<!-- ソーシャルメディア -->
+<div id="menuSocialMediaWrap">
+<ul id="menuSocialMedia">
+<li class="msl"><a id="mslTw" href="http://twitter.com/nikkansportscom" title="別ウィンドウで開きます" target="_blank"><span></span>Twitter</a></li>
+<li class="msl"><a id="mslFb" href="http://www.facebook.com/nikkansports" title="別ウィンドウで開きます" target="_blank"><span></span>Facebook</a></li>
+<li class="msl"><a id="mslGl" href="https://plus.google.com/107443644089489361265" title="別ウィンドウで開きます" target="_blank"><span></span>Google+</a></li>
+<li class="msl"><a id="mslMx" href="http://p.mixi.jp/nikkansports" title="別ウィンドウで開きます" target="_blank"><span></span>mixi</a></li>
+<li class="msl"><a id="mslYt" href="http://www.youtube.com/user/nikkansportscom" title="別ウィンドウで開きます" target="_blank"><span></span>YouTube</a></li>
+<li class="msl"><a id="mslNc" href="http://ch.nicovideo.jp/channel/ch2000" title="別ウィンドウで開きます" target="_blank"><span></span>ニコニコ動画</a></li>
+<li class="msl lastChild"><a id="mslUst" href="http://www.ustream.tv/channel/nikkansports" title="別ウィンドウで開きます" target="_blank"><span></span>Ustream</a></li>
+</ul>
+</div>
+<!-- /ソーシャルメディア -->
+</div>
+<!-- /エンジョイ・イベント情報・ソーシャルメディア -->
+
+<!-- 有料サイト -->
+<div id="leftPayServiceWrap" class="leftBox">
+<dl>
+<dt><a href="/tool/pay/top-pay.html">日刊スポーツの<br />有料サイト</a></dt>
+<dd>競馬、野球、サッカー、芸能などの専門サイトをケータイ、スマートフォン、アプリ、PCでご用意しました！　日刊スポーツ有料サイトの紹介コーナーです。</dd>
+</dl>
+</div>
+<!-- /有料サイト -->
+
+
+
+</div>
+<!-- /+++++ #menu サブメニュー +++++ -->
+
+</div>
+<!-- /+++++ #mainWrap メーンラップ +++++ -->
+
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++ ヘルプメニュー +++++ -->
+<div class="helpNavi">
+<p><a id="topicsnavi" name="topicsnavi">ここからトピックスナビゲーションです</a></p>
+<ul>
+<li><a href="#pagetop">このページの先頭へ戻る</a></li>
+<li><a href="#maincontents">このページの本文へ戻る</a></li>
+<li><a href="#submenu">このページのサブメニューへ戻る</a></li>
+<li><a href="#globalnavi">このサイトのナビゲーションへ戻る</a></li>
+<li><a href="#footernavi">フッターナビゲーションへ移動</a></li>
+</ul>
+</div>
+<!-- /+++++ ヘルプメニュー +++++ -->
+
+
+
+<!-- +++++ サイドエリア +++++ -->
+<div id="side">
+
+
+<div id="subscription">
+<a href="http://enjoy.nikkansports.com/koudoku/top-koudoku.html" target=”_blank”><img src="/mod/img/ns-subscription.gif" alt="日刊スポーツ購読申し込み" /></a>
+</div>
+
+
+<!-- +++++ AD 300x250 +++++ -->
+<div class="ad300x250">
+<!-- +++++ AD300x600 +++++ -->
+<div class="ad300x600">
+<!--====プロ野球　第１レクタングル AD300x600====-->
+<!-- impAct AD -->
+<script type="text/javascript" language="JavaScript">
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=BASEBALL.PROFESSIONAL/AREA=RECTANGLE01/AAMSZ=300X250/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<scr');
+document.write('ipt type="text/javascript" language="JavaScript" src="' + impAserver + '/jserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=BASEBALL.PROFESSIONAL/AREA=RECTANGLE01/AAMSZ=300X250/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="300" height="600" allowTransparency="true">
+</iframe>
+</noscript>
+</div>
+<!--====プロ野球　第１レクタングル AD300x600====-->
+</div>
+<!-- /+++++ AD 300x250 +++++ -->
+
+
+<!-- +++++ ニュースランキング +++++ -->
+<div id="sideRanking" class="sideBox">
+
+<h2 class="sideBoxHead"><a href="/ranking/top-ranking.html"><span>野球ランキング</span></a></h2>
+
+<ol class="newsList03">
+<!-- [2014-05-03 09:38:08] -->
+<li><span class="rank1">１</span>&nbsp;<a href="http://www.nikkansports.com/baseball/wbc/2013/news/f-bb-tp0-20130318-1099613.html">マエケン球審から数珠外せと注意／ＷＢＣ</a><!-- 9 --></li>
+<li><span class="rank2">２</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140322-1273824.html">オリ金子に審判団が助言　不正紛らわしい</a><!-- 0 --></li>
+<li><span class="rank3">３</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294818.html">原監督「阿部は小さなおむすび」</a><!-- 60 --></li>
+<li><span class="rank4">４</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/f-bb-tp0-20140502-1294773.html">オリ金子に不正投球疑惑　審判団が指摘</a><!-- 81 --></li>
+<li><span class="rank5">５</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140212-1256377.html">雄星に野茂氏が長袖着用助言「肘は大事」</a><!-- 72 --></li>
+<li><span class="rank6">６</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/p-bb-tp1-20140502-1294279.html">「警察呼んで調べてもらってもいい」／中畑監督</a><!-- 11 --></li>
+<li><span class="rank7">７</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294808.html">西武岸ノーヒットノーラン　１四球準完全</a><!-- 1 --></li>
+<li><span class="rank8">８</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/f-bb-tp0-20140502-1294741.html">西武岸がノーヒットノーラン！歴代一覧表</a><!-- 98 --></li>
+<li><span class="rank9">９</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/p-bb-tp0-20140503-1294810.html">ロッテに厄介な風、岸のホップ対応できず</a><!-- 1 --></li>
+<li><span class="rank10">10</span>&nbsp;<a href="http://www.nikkansports.com/baseball/news/f-bb-tp0-20140502-1294627.html">中日、西武武山獲得「１番の魅力は肩」</a><!-- 80 --></li>
+</ol>
+
+
+</div>
+<!-- /+++++ ニュースランキング +++++ -->
+
+
+<!-- +++++ AD 300x125 +++++ -->
+<div class="ad300x125">
+<!--====オールジャンルパネル AD300x125====-->
+<script type="text/javascript" language="JavaScript">
+<!--
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=OTHER/AREA=PANEL.ALL/AAMSZ=300X125/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<iframe src="'+impAserver+'/hserver/acc_random='+impArnd + impAtarget + '/pageid=' + impApid + '"');
+document.write(' noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="300" height="125" allowTransparency="true">');
+if (navigator.userAgent.indexOf("Gecko")==-1 && navigator.userAgent.indexOf("MSIE")==-1){
+document.write('<scr');
+document.write('ipt src="' + impAserver + '/jnserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+}
+document.write('</iframe>');
+//-->
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=OTHER/AREA=PANEL.ALL/AAMSZ=300X125/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="300" height="125" allowTransparency="true">
+</iframe>
+</noscript>
+<!--====オールジャンルパネル AD300x125====-->
+</div>
+<!-- /+++++ AD 300x125 +++++ -->
+
+
+<!-- +++++ スコアボード +++++ -->
+<div id="sideScoreBoard" class="sideBox">
+<dl>
+<dt class="skip">スコアボード</dt>
+<dd>
+
+<script type="text/javascript" src="http://cache1.nipc.jp/mod/js/nsTab2.js"></script>
+<script type="text/javascript">//<![CDATA[
+// タブ１段目の配列
+tab_arr_side = new Array("tabs-s1", "tabs-s2", "tabs-s3", "tabs-s4");
+li_arr_side = new Array("li-s1", "li-s2", "li-s3", "li-s4");
+//]]></script>
+
+<ol id="sideScoreTab">
+	<li id="li-s1" class="cr"><a href="javascript:void(0);" onclick="changeTab('tabs-s1', tab_arr_side, li_arr_side);return false;">プロ野球</a></li>
+	<li id="li-s2"><a href="javascript:void(0);" onclick="changeTab('tabs-s2', tab_arr_side, li_arr_side);return false;">ＭＬＢ</a></li>
+	<li id="li-s3"><a href="javascript:void(0);" onclick="changeTab('tabs-s3', tab_arr_side, li_arr_side);return false;">サッカー</a></li>
+	<li id="li-s4"><a href="javascript:void(0);" onclick="changeTab('tabs-s4', tab_arr_side, li_arr_side);return false;">海外サッカー</a></li>
+</ol>
+
+
+<div id="tabs-s1" class="dataPack">
+	<div class="dataContents">
+	
+<table border="1" summary="プロ野球の対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/professional/team/swallows/top-swallows.html">ヤクルト</a></td>
+<td class="line score"><a href="http://www.nikkansports.com">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/professional/team/tigers/top-tigers.html">阪神</a></td>
+<td class="num">18:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/professional/team/dragons/top-dragons.html">中日</a></td>
+<td class="line score"><a href="http://www.nikkansports.com">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/professional/team/giants/top-giants.html">巨人</a></td>
+<td class="num">14:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/professional/team/carp/top-carp.html">広島</a></td>
+<td class="line score"><a href="http://www.nikkansports.com">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/professional/team/baystars/top-baystars.html">ＤｅＮＡ</a></td>
+<td class="num">13:30</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/professional/team/fighters/top-fighters.html">日本ハム</a></td>
+<td class="line score"><a href="http://www.nikkansports.com">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/professional/team/buffaloes/top-buffaloes.html">オリック</a></td>
+<td class="num">15:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/professional/team/eagles/top-eagles.html">楽天</a></td>
+<td class="line score"><a href="http://www.nikkansports.com">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/professional/team/hawks/top-hawks.html">ソフトバ</a></td>
+<td class="num">14:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/professional/team/marines/top-marines.html">ロッテ</a></td>
+<td class="line score"><a href="http://www.nikkansports.com">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/professional/team/lions/top-lions.html">西武</a></td>
+<td class="num">14:00</td>
+</tr>
+
+</table>
+	</div>
+	<p class="linkText"><a href="/baseball/professional/score/pf-score.html">スコア速報</a></p>
+</div>
+
+
+
+<div id="tabs-s2" class="dataPack">
+	<div class="dataContents">
+	
+<table border="1" summary="ＭＬＢの対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-indians.html">インディ</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">8－4</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-whitesox.html">ホワイト</a></td>
+<td class="num">６回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-yankees.html">ヤンキー</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">2－4</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-rays.html">レイズ</a></td>
+<td class="num">６回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-redsox.html">レッドソ</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">2－1</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-athletics.html">アスレチ</a></td>
+<td class="num">６回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-twins.html">ツインズ</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">0－1</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-orioles.html">オリオー</a></td>
+<td class="num">４回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-royals.html">ロイヤル</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">1－2</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-tigers.html">タイガー</a></td>
+<td class="num">３回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-astros.html">アストロ</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">1－0</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-mariners.html">マリナー</a></td>
+<td class="num">３回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-angels.html">エンゼル</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-rangers.html">レンジャ</a></td>
+<td class="num">11:05</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-cubs.html">カブス</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">6－5</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-cardinals.html">カージナ</a></td>
+<td class="num">終了</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-pirates.html">パイレー</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">3－5</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-bluejays.html">ブルージ</a></td>
+<td class="num">６回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-phillies.html">フィリー</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">3－2</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-nationals.html">ナショナ</a></td>
+<td class="num">７回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-marlins.html">マーリン</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">2－0</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-dodgers.html">ドジャー</a></td>
+<td class="num">７回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-reds.html">レッズ</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">0－2</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-brewers.html">ブルワー</a></td>
+<td class="num">７回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-braves.html">ブレーブ</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">1－1</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-giants.html">ジャイア</a></td>
+<td class="num">６回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-rockies.html">ロッキー</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">4－1</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-mets.html">メッツ</a></td>
+<td class="num">２回</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/baseball/mlb/team/team-padres.html">パドレス</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/baseball/mlb/score/mb-score.html">－</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/baseball/mlb/team/team-diamondbacks.html">ダイヤモ</a></td>
+<td class="num">11:10</td>
+</tr>
+
+</table>
+	</div>
+	<p class="linkText"><a href="/baseball/mlb/score/mb-score.html">スコア速報</a></p>
+</div>
+
+
+
+<div id="tabs-s3" class="dataPack tabParent">
+
+<script type="text/javascript">//<![CDATA[
+// タブ２段目の配列（changeTab2）
+tab_arr_side2 = new Array("tabs-s3a", "tabs-s3b", "tabs-s3c", "tabs-s3d", "tabs-s3e");
+li_arr_side2 = new Array("li-s3a", "li-s3b", "li-s3c", "li-s3d", "li-s3e");
+//]]></script>
+
+	<ol class="sideScoreTabInner">
+		<li id="li-s3a" class="cr"><a href="javascript:void(0);" onclick="changeTab2('tabs-s3a', tab_arr_side2, li_arr_side2);return false;" class="pd_LR10">Ｊ１</a></li>
+		<li id="li-s3b"><a href="javascript:void(0);" onclick="changeTab2('tabs-s3b', tab_arr_side2, li_arr_side2);return false;" class="pd_LR10">Ｊ２</a></li>
+		<li id="li-s3c"><a href="javascript:void(0);" onclick="changeTab2('tabs-s3c', tab_arr_side2, li_arr_side2);return false;" class="pd_LR10">Ｊ３</a></li>
+		<li id="li-s3d"><a href="javascript:void(0);" onclick="changeTab2('tabs-s3d', tab_arr_side2, li_arr_side2);return false;">ナビスコ杯</a></li>
+		<li id="li-s3e"><a href="javascript:void(0);" onclick="changeTab2('tabs-s3e', tab_arr_side2, li_arr_side2);return false;">日本代表</a></li>
+
+<!--
+		<li id="li-s3e"><a href="javascript:void(0);" onclick="changeTab2('tabs-s3e', tab_arr_side2, li_arr_side2);return false;">天皇杯</a></li>
+		<li id="li-s3d"><a href="javascript:void(0);" onclick="changeTab2('tabs-s3d', tab_arr_side2, li_arr_side2);return false;">ＡＣＬ</a></li>
+-->
+	</ol>
+
+	<div id="tabs-s3a" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="Ｊ１公式戦">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/reysol/top-reysol.html">柏</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/antlers/top-antlers.html">鹿島</a></td>
+<td class="num">13:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/fmarinos/top-fmarinos.html">横浜</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/gamba/top-gamba.html">Ｇ大阪</a></td>
+<td class="num">14:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/vortis/top-vortis.html">徳島</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/vegalta/top-vegalta.html">仙台</a></td>
+<td class="num">14:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/frontale/top-frontale.html">川崎Ｆ</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/ventforet/top-ventforet.html">甲府</a></td>
+<td class="num">15:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/spulse/top-spulse.html">清水</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/sagan/top-sagan.html">鳥栖</a></td>
+<td class="num">15:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/vissel/top-vissel.html">神戸</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/sanfrecce/top-sanfrecce.html">広島</a></td>
+<td class="num">15:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/reds/top-reds.html">浦和</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/fctokyo/top-fctokyo.html">東京</a></td>
+<td class="num">16:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/ardija/top-ardija.html">大宮</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/albirex/top-albirex.html">新潟</a></td>
+<td class="num">17:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/grampus/top-grampus.html">名古屋</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/cerezo/top-cerezo.html">Ｃ大阪</a></td>
+<td class="num">19:00</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/jleague/j1/score/j1-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s3b" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="Ｊ２公式戦">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/tochigisc/top-tochigisc.html">栃木</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/consadole/top-consadole.html">札幌</a></td>
+<td class="num">13:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/yamaga/top-yamaga.html">松本</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/ehimefc/top-ehimefc.html">愛媛</a></td>
+<td class="num">13:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/avispa/top-avispa.html">福岡</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/trinita/top-trinita.html">大分</a></td>
+<td class="num">13:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/montedio/top-montedio.html">山形</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/kataller/top-kataller.html">富山</a></td>
+<td class="num">14:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/verdy/top-verdy.html">東京Ｖ</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/fcgifu/top-fcgifu.html">岐阜</a></td>
+<td class="num">14:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/giravanz/top-giravanz.html">北九州</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/yokohamafc/top-yokohamafc.html">横浜ＦＣ</a></td>
+<td class="num">14:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/hollyhock/top-hollyhock.html">水戸</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/bellmare/top-bellmare.html">湘南</a></td>
+<td class="num">16:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/jef/top-jef.html">千葉</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/thespa/top-thespa.html">群馬</a></td>
+<td class="num">16:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/jubilo/top-jubilo.html">磐田</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/vvaren/top-vvaren.html">長崎</a></td>
+<td class="num">16:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/roasso/top-roasso.html">熊本</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/fagiano/top-fagiano.html">岡山</a></td>
+<td class="num">18:00</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/sanga/top-sanga.html">京都</a></td>
+<td class="line score">－</td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/kamatamare/top-kamatamare.html">讃岐</a></td>
+<td class="num">17:00</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/jleague/j2/score/j2-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s3c" class="dataPack tabChild">
+		<div class="dataContents">
+		<script type="text/javascript" src="/mod/js/jl_score_lib.js"></script>
+<script>
+	$(document).ready(function(){
+		var targetLeague   = "J30";
+		var targetFileName = "BR"+targetLeague+".xml";
+		var targetXML      = "/soccer/jleague/j3/xml/"+targetFileName;
+		//console.log("targetXML："+targetXML);
+
+		$.ajax({
+			url      : targetXML,
+			dataType : "xml",
+			success  : function(data){
+				var TransmissionId = $("TransmissionId",data).text();
+				var HeadLine = $("HeadLine",data).text();
+				//試合で回す
+				$("Body",data).each(function(){
+					var GameID = $(this).attr("BlockId");
+					GameNam = parseInt(GameID.replace(/\D{3}(\d{3})?/, "$1"));
+					//console.log("+++++　"+GameNam+"試合目　+++++");
+					//試合情報
+					var Meta = $("Meta",this);
+					var CompetitionDay = $("CompetitionDay",Meta).text();
+					//console.log("節表記："+CompetitionDay);
+					var Stadium = $("Site",Meta);
+					var StadiumName = $("Writing",Stadium).text();
+					//console.log("スタジアム："+StadiumName);
+					var TermDetail = $("TermDetail",Meta);
+					var StartDate = $("TermStartDate",TermDetail).text();
+					var StartDate_YYYY = StartDate.substring(0, 4);
+					var StartDate_MM   = StartDate.substring(5, 7);
+					var StartDate_DD = StartDate.substring(8, 10);
+					if (StartDate_DD.match(/[０-９]{2}/)){ StartDate_DD = toHankaku(StartDate_DD); }
+					var targetGameYMD  = toHankaku(StartDate_YYYY+StartDate_MM+StartDate_DD);;
+					//console.log("試合日："+StartDate_DD+"日");
+					var StartTime = toHankaku($("Writing",TermDetail).text());
+					//console.log("試合時間："+StartTime);
+					var StartTime2 = toHankaku($("Hour",TermDetail).text())+":"+toHankaku($("Minute",TermDetail).text());
+					//console.log("試合時間2："+StartTime2);
+					var StartDateStr = StartDate_DD+"日"+StartTime;
+					//console.log("試合："+StartDateStr);
+					var State = $("State",Meta).text();
+					if(State == "試合開始前"){State = "開始前"}
+					//console.log("試合経過："+State);
+
+					//チーム情報
+					var Match = $("Match",this);
+					var HomeTeamArry , HomeTeamName , HomeTeamNameTag , HomeId , HomeTeamScore , HomeTeamWL;
+					var AwayTeamArry , AwayTeamName , AwayTeamNameTag , AwayId , AwayTeamScore , AwayTeamWL;
+					$("Team",Match).each(function(){
+						var Alignment = $(this).attr("Alignment");
+						//console.log("Home&Away："+Alignment);
+						var TeamId = $(this).attr("TeamId");
+						//console.log("Home&AwayID："+TeamId);
+						var TmpTeamName = $("Formal[Display='フル表記']",this).text();
+						//console.log("TmpTeamName："+TmpTeamName);
+						if(TeamId == 1){
+							HomeTeamArry = jleagueTeam_arry[TmpTeamName];
+							if(HomeTeamArry){
+								var TeamNameEng = HomeTeamArry.NSTeamEng;
+								HomeTeamName    = HomeTeamArry.NSTeamName;
+								HomeId          = HomeTeamArry.KyodoTeamID;
+								HomeTeamNameTag = "<a href=\"/soccer/jleague/team/"+TeamNameEng+"/top-"+TeamNameEng+".html\">"+HomeTeamName+"</a>";
+							}else{
+								HomeTeamNameTag = $("Writing",this).text();
+							}
+							//console.log("HomeTeamName："+HomeTeamName);
+						}
+						else if(TeamId == 2){
+							AwayTeamArry = jleagueTeam_arry[TmpTeamName];
+							if(AwayTeamArry){
+								var TeamNameEng = AwayTeamArry.NSTeamEng;
+								AwayTeamName    = AwayTeamArry.NSTeamName;
+								AwayId          = AwayTeamArry.KyodoTeamID;
+								AwayTeamNameTag = "<a href=\"/soccer/jleague/team/"+TeamNameEng+"/top-"+TeamNameEng+".html\">"+AwayTeamName+"</a>";
+							}else{
+								AwayTeamNameTag = $("Writing",this).text();
+							}
+							//console.log("AwayTeamName："+AwayTeamName);
+						}
+					});
+					$("MatchResult",Match).each(function(){
+						if( $(this).attr("ParticipantId") == 1){
+							HomeTeamScore = toHankaku( $("Score Writing",this).text() );
+							HomeTeamWL    = $("Outcome Formal",this).text();
+						}
+						else if( $(this).attr("ParticipantId") == 2){
+							AwayTeamScore = toHankaku( $("Score Writing",this).text() );
+							AwayTeamWL    = $("Outcome Formal",this).text();
+						}
+					});
+					var scoreStr = HomeTeamScore + "－" + AwayTeamScore;
+
+					//?date=20140316&l=J30&id=FMNP
+					//詳細リンク
+					var TargetID = HomeId+AwayId;
+					var linkParms = "?date="+targetGameYMD+"&l="+targetLeague+"&id="+TargetID;
+					var ScoreTag = "<a href=\"/soccer/jleague/j3/score/j3-score_detail.html"+linkParms+"\">"+scoreStr+"</a>";
+
+
+
+
+
+					//出力用タグ
+					var tagHTML = "<tr class=\""+GameID+"\">\n<td class=\"line home\">"+HomeTeamNameTag+"</td>\n<td class=\"line score\">"+ScoreTag+"</td>\n<td class=\"line away\">"+AwayTeamNameTag+"</td>\n</tr>\n";
+					$(".side_scoreborad_j3 tr.nowloadingWrap").hide();
+					$(".side_scoreborad_j3 tbody").append(tagHTML);
+
+				});
+			},
+			error : function(){
+				//console.log("試合予定データがありません");
+				$(".side_scoreborad_j3 .nowloadingWrap").hide();
+				$(".side_scoreborad_j3 .noDataWrap").show();
+			}
+		});
+	});
+
+</script>
+
+
+
+<style>
+#soccer .dataContents .side_scoreborad_j3 td.home,
+#soccer .dataContents .side_scoreborad_j3 td.away{ width: 35%; }
+</style>
+<table border="1" summary="Ｊ３公式戦" class="side_scoreborad_j3">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+</tr>
+
+<tr class="nowloadingWrap"><td colspan="3"><p class="nowloading"><img src="/mod/img/score_loading.gif" alt="読み込み中" /></p></td></tr>
+<tr class="noDataWrap hide"><td colspan="3"><p class="noData">試合データがありません</p></td></tr>
+
+
+
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/jleague/j3/score/j3-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s3d" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="Ｊカップ">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/vegalta/top-vegalta.html">仙台</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/jleague/nabisco/score/2014/2014041601.html">1－2</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/antlers/top-antlers.html">鹿島</a></td>
+<td class="num">終了</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/vissel/top-vissel.html">神戸</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/jleague/nabisco/score/2014/2014041602.html">0－3</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/fctokyo/top-fctokyo.html">東京</a></td>
+<td class="num">終了</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/sagan/top-sagan.html">鳥栖</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/jleague/nabisco/score/2014/2014041603.html">0－2</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/gamba/top-gamba.html">Ｇ大阪</a></td>
+<td class="num">終了</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/ardija/top-ardija.html">大宮</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/jleague/nabisco/score/2014/2014041604.html">1－1</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/reysol/top-reysol.html">柏</a></td>
+<td class="num">終了</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/albirex/top-albirex.html">新潟</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/jleague/nabisco/score/2014/2014041605.html">1－0</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/ventforet/top-ventforet.html">甲府</a></td>
+<td class="num">終了</td>
+</tr>
+
+<tr>
+<td class="line home"><a href="http://www.nikkansports.com/soccer/jleague/team/reds/top-reds.html">浦和</a></td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/jleague/nabisco/score/2014/2014041606.html">4－3</a></td>
+<td class="line away"><a href="http://www.nikkansports.com/soccer/jleague/team/vortis/top-vortis.html">徳島</a></td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/jleague/nabisco/score/nabisco-score.html">スコア速報</a></p>
+	</div>
+<style type="text/css">
+.dataContents p.subH{
+	padding: 2px 5px 2px;
+	margin-top: 10px;
+	margin-bottom: 3px;
+	border-bottom: 1px solid #9db3d4;
+	border-left: 3px solid #9db3d4;
+	font-size: 90%;
+}
+</style>
+	<div id="tabs-s3e" class="dataPack tabChild">
+		<div class="dataContents">
+		<p class="subH">Ａ代表</p>
+		
+<table border="1" summary="代表戦">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">日本</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/japan/score/2014/2014030501.html">4－2</a></td>
+<td class="line away">ニュージ</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		<p class="subH">女子代表</p>
+		
+<table border="1" summary="Ｌ代表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">韓国</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/japan/score/2013/2013072713.html">2－1</a></td>
+<td class="line away">日本</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/japan/score/jp-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s3f" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="天皇杯">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">横浜</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/jleague/j1/score/2014/2014010101.html">2－0</a></td>
+<td class="line away">広島</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/emperorscup/2013/top-emperorscup.html">天皇杯特集</a></p>
+	</div>
+
+
+<!--
+	<div id="tabs-s3d" class="dataPack tabChild">
+		<div class="dataContents">
+		#include virtual="/mod/ssi/side/scoreboard/acl_scoreboard.html"
+		</div>
+		<p class="linkText"><a href="/soccer/jleague/acl/2011/score/acl-score.html">スコア速報</a></p>
+	</div>
+ -->
+</div>
+
+
+
+<div id="tabs-s4" class="dataPack tabParent">
+
+<script type="text/javascript">//<![CDATA[
+// タブ２段目の配列（changeTab3）
+tab_arr_side3 = new Array("tabs-s4a", "tabs-s4b", "tabs-s4c", "tabs-s4d", "tabs-s4e");
+li_arr_side3 = new Array("li-s4a", "li-s4b", "li-s4c", "li-s4d", "li-s4e");
+//]]></script>
+
+	<ol class="sideScoreTabInner">
+		<li id="li-s4a" class="cr"><a href="javascript:void(0);" onclick="changeTab3('tabs-s4a', tab_arr_side3, li_arr_side3);return false;">プレミア</a></li>
+		<li id="li-s4b"><a href="javascript:void(0);" onclick="changeTab3('tabs-s4b', tab_arr_side3, li_arr_side3);return false;">スペイン</a></li>
+		<li id="li-s4c"><a href="javascript:void(0);" onclick="changeTab3('tabs-s4c', tab_arr_side3, li_arr_side3);return false;">ブンデス</a></li>
+		<li id="li-s4d"><a href="javascript:void(0);" onclick="changeTab3('tabs-s4d', tab_arr_side3, li_arr_side3);return false;">セリエＡ</a></li>
+		<li id="li-s4e"><a href="javascript:void(0);" onclick="changeTab3('tabs-s4e', tab_arr_side3, li_arr_side3);return false;">ＣＬ</a></li>
+	</ol>
+
+	<div id="tabs-s4a" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">アーセナ</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/world/score/2014/gbr/gbr-10437772.html">3－0</a></td>
+<td class="line away">ニューカ</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/world/premier/score/pr-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s4b" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">Ｒバリェ</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/world/score/2014/esp/esp-10444249.html">0－3</a></td>
+<td class="line away">ビルバオ</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/world/spain/score/sp-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s4c" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">アウクス</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/world/score/2014/ger/ger-10438527.html">3－1</a></td>
+<td class="line away">ハンブル</td>
+<td class="num">終了</td>
+</tr>
+
+<tr>
+<td class="line home">シャルケ</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/world/score/2014/ger/ger-10438521.html">0－1</a></td>
+<td class="line away">ボルシア</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/world/germany/score/ge-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s4d" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">サッスオ</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/world/score/2014/ita/ita-10445787.html">1－3</a></td>
+<td class="line away">ユベント</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/world/italy/score/it-score.html">スコア速報</a></p>
+	</div>
+
+	<div id="tabs-s4e" class="dataPack tabChild">
+		<div class="dataContents">
+		
+<table border="1" summary="対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">チェルシ</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/world/score/2014/chmp/chmp-10615853.html">1－3</a></td>
+<td class="line away">Ａマドリ</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+		</div>
+		<p class="linkText"><a href="/soccer/world/cl/score/cl-score.html">スコア速報</a></p>
+	</div>
+
+</div>
+
+
+
+<div id="tabs-s5" class="dataPack">
+	<div class="dataContents">
+	
+<table border="1" summary="対戦表">
+<tr>
+<th colspan="3" class="bg">対戦</th>
+<th>開始</th>
+</tr>
+
+<tr>
+<td class="line home">スペイン</td>
+<td class="line score"><a href="http://www.nikkansports.com/soccer/world/score/2012/euro/euro-10015299.html">4－0</a></td>
+<td class="line away">イタリア</td>
+<td class="num">終了</td>
+</tr>
+
+</table>
+	</div>
+	<p class="linkText"><a href="/soccer/world/euro/2012/score/euro-score.html">スコア速報</a></p>
+</div>
+
+
+</dd>
+</dl>
+</div>
+<!-- /+++++ スコアボード +++++ -->
+
+
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!-- +++++ クローズアップ情報 +++++ -->
+<div id="sideRecommend" class="sideBox">
+
+<div class="tableTitle tableTitleB">
+<h3>クローズアップ情報</h3>
+</div>
+<!-- 
+<div class="sRecoPack">
+<a class="sideIcon" href="http://www.nikkansports.com/advertising/side/side-thaigolf-140421.html"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_thaigolf140421.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://www.nikkansports.com/advertising/side/side-thaigolf-140421.html">ゴルファーズ・パラダイス
+</a></dt>
+<dd class="sRecoTxt"><a href="http://www.nikkansports.com/advertising/side/side-thaigolf-140421.html">タイ全土に250以上あるゴルフ場はまさに天国。名門コースをお得ラウンド</a></dd>
+</dl>
+</div>
+-->
+<div class="sRecoPack">
+<a class="sideIcon" href="http://www.nikkansports.com/sports/info/info-sports_140422.html"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_ggtokyo140422.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://www.nikkansports.com/sports/info/info-sports_140422.html">ＧＧＰ陸上2014東京</a></dt>
+<dd class="sRecoTxt"><a href="http://www.nikkansports.com/sports/info/info-sports_140422.html">桐生、ディーン、村上が世界のトップアスリートと競う！</a></dd>
+</dl>
+</div>
+
+<div class="sRecoPack">
+<a class="sideIcon" href="http://www.nikkansports.com/advertising/side/side-sky-140320.html"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_sky140428.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://www.nikkansports.com/advertising/side/side-sky-140320.html">注目のセ、混戦のパ</a></dt>
+<dd class="sRecoTxt"><a href="http://www.nikkansports.com/advertising/side/side-sky-140320.html">やっぱりプロ野球は面白い！　力と技の名勝負、その瞬間を見逃すな！</a></dd>
+</dl>
+</div>
+
+
+<div class="sRecoPack">
+<a class="sideIcon" href="http://travel.nikkansports.com/"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_travel140210.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://travel.nikkansports.com/">『ふたり旅行』しませんか？</a></dt>
+<dd class="sRecoTxt"><a href="http://travel.nikkansports.com/">距離をグッと縮める『ふたり旅行』で、ふたりだけの思い出作り！</a></dd>
+</dl>
+</div>
+
+<div class="sRecoPack">
+<a class="sideIcon" href="http://www.nikkansports.com/advertising/side/side-cashing-140203.html"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_cashing140203.gif" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://www.nikkansports.com/advertising/side/side-cashing-140203.html">「カードローン、借りたい！」</a></dt>
+<dd class="sRecoTxt"><a href="http://www.nikkansports.com/advertising/side/side-cashing-140203.html">人気のカードローンを徹底比較！初心者、お急ぎ方にも⇒</a></dd>
+</dl>
+</div>
+
+<!-- 
+<div class="sRecoPack">
+<a class="sideIcon" href="http://www.nikkansports.com/advertising/side/side-yokohama-140120.html"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_yokohama140120.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://www.nikkansports.com/advertising/side/side-yokohama-140120.html">「フォト・ヨコハマ２０１４」特集</a></dt>
+<dd class="sRecoTxt"><a href="http://www.nikkansports.com/advertising/side/side-yokohama-140120.html">横浜をもっと楽しむ写真の国際イベント</a></dd>
+</dl>
+</div>
+-->
+
+<div class="sRecoPack">
+<a class="sideIcon" href="http://pachinko-scoop.jp/"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_scoop.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://pachinko-scoop.jp/">パチ・スロ　スクープ！？</a></dt>
+<dd class="sRecoTxt"><a href="http://pachinko-scoop.jp/">スポーツ６紙のアイドルユニット・スクープ！？が新台情報をお届け☆</a></dd>
+</dl>
+</div>
+
+<div class="sRecoPack">
+<a class="sideIcon" href="http://www.nikkansports.com/advertising/side/side-healthcare-131120.html"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_healthcare131120.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://www.nikkansports.com/advertising/side/side-healthcare-131120.html">「ヘルスケア」ページ更新中</a></dt>
+<dd class="sRecoTxt"><a href="http://www.nikkansports.com/advertising/side/side-healthcare-131120.html">ＥＸＩＬＥエクササイズ、中島史恵ヨガで健康管理</a></dd>
+</dl>
+</div>
+
+<div class="sRecoPack">
+<a class="sideIcon" href="http://type.jp/nikkansports/"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_type110725.gif" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://type.jp/nikkansports/"> 希望の求人がすぐに見つかる！</a></dt>
+<dd class="sRecoTxt"><a href="http://type.jp/nikkansports/">火・金更新！正社員の転職情報。あなたの希望にマッチした求人は？</a></dd>
+</dl>
+</div>
+
+<!-- 
+<div class="sRecoPack">
+<a class="sideIcon" href="http://housing.nikkansports.com/"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_housing110713.jpg" /></a>
+<dl>
+<dt class="sRecoTitle"><a href="http://housing.nikkansports.com/">理想の暮らししませんか？</a></dt>
+<dd class="sRecoTxt"><a href="http://housing.nikkansports.com/">家探しのオススメ情報が満載。住まいの気になる！をカンタン解決</a></dd>
+</dl>
+</div>
+ -->
+
+<div class="sRecoPack"><a class="sideIcon" href="http://item.rakuten.co.jp/nikkansports-shopping/c/0000000215/"><img src="http://cache2.nipc.jp/mod/img/side/icon-side_shopping2.gif" /></a>
+  <dl>
+<dt class="sRecoTitle"><a href="http://item.rakuten.co.jp/nikkansports-shopping/c/0000000215/">激レアMLBサイングッズ！</a></dt>
+<dd class="sRecoTxt"><a href="http://item.rakuten.co.jp/nikkansports-shopping/c/0000000215/">イチロー・松井・ダルビッシュなどの直筆サイングッズ販売中！</a></dd>
+</dl>
+</div>
+
+</div>
+<!-- /+++++ クローズアップ情報 +++++ -->
+
+
+
+<div id="sideRakuten" class="sideBox">
+<!-- saved from url=(0022)http://internet.e-mail -->
+<!--====rakuten====-->
+
+<!-- Rakuten Widget FROM HERE --><script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="1008318a.89a6dd64.1008318b.4702ce8f";rakuten_items="ranking";rakuten_genreId="206878";rakuten_size="300x250";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="on";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_pointbackId="_RTmtlk20011309";</script><script type="text/javascript" src="http://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script><!-- Rakuten Widget TO HERE -->
+
+<!--====rakuten====-->
+</div>
+
+
+<!-- +++++ 新着コラム +++++ -->
+<div id="sideColumn" class="sideBox">
+<h2 class="sideBoxHead"><a href="http://www5.nikkansports.com/">新着コラム</a></h2>
+
+<div class="sClmPack">
+<a class="sideIcon" href="http://www5.nikkansports.com/general/column/hitokoto/top-hitokoto.html"><img src="http://www5.nikkansports.com/general/column/hitokoto/img/icon.jpg" alt="今日の一言" width="45" height="45" /></a>
+
+<dl>
+<dt class="sClmName">今日の一言</dt>
+<dd class="sClmTitle"><a href="http://www5.nikkansports.com/general/column/hitokoto/archives/43957.html">「まさか...まさかです」</a><br />
+<span class="sClmTime">[5月2日]</span></dd>
+</dl>
+</div>
+
+<div class="sClmPack">
+<a class="sideIcon" href="http://www.nikkansports.com/amusement/pachinko/column/yuugi/"><img src="http://www.nikkansports.com/amusement/pachinko/column/yuugi/img/icon.jpg" alt="回転遊戯" width="45" height="45" /></a>
+
+<dl>
+<dt class="sClmName">回転遊戯</dt>
+<dd class="sClmTitle"><a href="http://www.nikkansports.com/amusement/pachinko/column/yuugi/news/f-pp-tp0-20140502-1294739.html">【コラム】１８３回転目「新台ペース」</a><br />
+<span class="sClmTime">[5月2日]</span></dd>
+</dl>
+</div>
+
+<div class="sClmPack">
+<a class="sideIcon" href="http://www.nikkansports.com/amusement/mahjong/column/doradora/"><img src="http://www.nikkansports.com/amusement/mahjong/column/doradora/img/icon.jpg" alt="dora☆dora" width="45" height="45" /></a>
+
+<dl>
+<dt class="sClmName">dora☆dora</dt>
+<dd class="sClmTitle"><a href="http://www.nikkansports.com/amusement/mahjong/column/doradora/news/f-mj-tp0-20140425-1290902.html">はじめまして！ｄｏｒａ☆ｄｏｒａです「あなたのハートを一発ツモ！」</a><br />
+<span class="sClmTime">[5月2日]</span></dd>
+</dl>
+</div>
+
+<div class="sClmPack">
+<a class="sideIcon" href="http://www.nikkansports.com/amusement/casino/column/kajino/"><img src="http://www.nikkansports.com/amusement/casino/column/kajino/img/icon.jpg" alt="鍛野美々" width="45" height="45" /></a>
+
+<dl>
+<dt class="sClmName">鍛野美々</dt>
+<dd class="sClmTitle"><a href="http://www.nikkansports.com/amusement/casino/column/kajino/news/f-cs-tp0-20140430-1290879.html">ブラックジャックをご紹介♪「カジノ超ミクロばなし」</a><br />
+<span class="sClmTime">[5月2日]</span></dd>
+</dl>
+</div>
+
+
+</div>
+<!-- /+++++ 新着コラム +++++ -->
+
+
+<!-- +++++ AD 300x250 +++++ -->
+<div class="ad300x250">
+<!--====第２レクタングル（adcom用） AD300x250====-->
+<script type="text/javascript" language="JavaScript">
+<!--
+var impAserver = "http://as.ik.impact-ad.jp";
+var impAtarget = "/SITE=OTHER/AREA=RECTANGLE02/AAMSZ=300X250/OENCJP=UTF8";
+
+impArnd = Math.round(Math.random() * 100000000);
+if (!impApid) var impApid = Math.round(Math.random() * 100000000);
+
+document.write('<iframe src="'+impAserver+'/hserver/acc_random='+impArnd + impAtarget + '/pageid=' + impApid + '"');
+document.write(' noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="300" height="250" allowTransparency="true">');
+if (navigator.userAgent.indexOf("Gecko")==-1 && navigator.userAgent.indexOf("MSIE")==-1){
+document.write('<scr');
+document.write('ipt src="' + impAserver + '/jnserver/acc_random=' + impArnd + impAtarget + '/pageid=' + impApid + '">');
+document.write('</scr');
+document.write('ipt>');
+}
+document.write('</iframe>');
+//-->
+</script>
+<noscript>
+<iframe src="http://as.ik.impact-ad.jp/hserver/SITE=OTHER/AREA=RECTANGLE02/AAMSZ=300X250/OENCJP=UTF8" noresize scrolling="no" hspace="0" vspace="0" frameborder="0" marginheight="0" marginwidth="0" width="300" height="250" allowTransparency="true">
+</iframe>
+</noscript>
+
+<!--====第２レクタングル（adcom用） AD300x250====-->
+</div>
+<!-- /+++++ AD 300x250 +++++ -->
+
+
+<!-- +++++ 築地ランチ日記 +++++ -->
+<div id="sideLunchBanner" class="sideBox">
+<a href="http://enjoy.nikkansports.com/blog/top-blog.html"><img src="/mod/img/banner_lunch.jpg" width="300" height="100" alt="築地ランチ日記" /></a>
+</div>
+<!-- /+++++ 築地ランチ日記 +++++ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<!-- /+++++ #side サイドエリア +++++ -->
+
+</div>
+<!-- /+++++ #contents コンテンツエリア +++++ -->
+
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++ フッター +++++ -->
+<div id="footer">
+
+<!-- +++++ フッターナビ +++++ -->
+<div id="footerNavi">
+
+
+
+<!-- +++++ フッターパンくずナビ +++++ -->
+<div id="footerRouteNaviWrap">
+<ol id="footerRouteNavi">
+<li><a id="footerRouteNaviHome" href="/" title="ニッカンスポーツ・コムホームへ">ホーム</a></li>
+<li><a href="/baseball/top-baseball.html">野球</a></li>
+<li><a href="/baseball/professional/top-professional.html">プロ野球</a></li>
+<li><a href="/baseball/professional/score/pf-score.html"><strong>スコア速報</strong></a></li>
+</ol>
+</div>
+<!-- /+++++ フッターパンくずナビ +++++ -->
+
+
+
+<!-- +++++ フッターリンクリスト +++++ -->
+<div id="footerLinkListWrap">
+<h2 class="skip">ニッカンスポーツ・コムのコンテンツリンク一覧</h2>
+<table border="1" summary="フッターリンクリスト" id="footerLinkList">
+<tr>
+<td>
+
+<h3 class="fllGenre"><a href="/baseball/top-baseball.html" title="野球トップ">野球&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/baseball/news/backnumber-baseball.html" title="野球ニュース一覧">ニュース</a></li>
+<li><a href="/baseball/news/top-photo.html" title="野球写真ニュース">写真ニュース</a></li>
+<li><a href="/baseball/professional/top-professional.html" title="プロ野球ニュース">プロ野球</a></li>
+<li><a href="/baseball/professional/score/pf-score.html" title="プロ野球スコア速報">スコア速報</a></li>
+<li><a href="/baseball/professional/schedule/top-schedule.html" title="プロ野球日程＆結果">日程＆結果</a></li>
+<li><a href="/baseball/professional/data/pf-standings.html" title="順位表">順位表</a></li>
+<li><a href="/baseball/professional/data/pf-scoreline.html" title="対戦表">対戦表</a></li>
+<li><a href="/baseball/professional/data/person/cl-pitcher.html" title="プロ野球選手個人成績">個人成績</a></li>
+<li><a href="/baseball/professional/player/top-player.html" title="プロ野球選手名鑑">選手名鑑</a></li>
+<li><a href="/baseball/professional/team/top-team.html" title="プロ野球チーム情報">チーム情報</a></li>
+<li><a href="/baseball/professional/farm/top-farm.html" title="プロ野球ファーム情報">ファーム</a></li>
+<li><a href="/baseball/highschool/top-highschool.html" title="高校野球ニュース">高校野球</a></li>
+<li><a href="/baseball/amateur/top-amateur.html" title="大学・社会人・アマチュア野球ニュース">アマ野球</a></li>
+
+</ul>
+
+
+<h3 class="fllGenre"><a href="/baseball/mlb/top-mlb.html" title="ＭＬＢトップ">ＭＬＢ&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/baseball/mlb/news/backnumber-mlb.html" title="ＭＬＢニュース一覧">ニュース</a></li>
+<li><a href="/baseball/mlb/news/top-photo.html" title="ＭＬＢ写真ニュース">写真ニュース</a></li>
+<li><a href="/baseball/mlb/score/mb-score.html" title="ＭＬＢスコア速報">スコア速報</a></li>
+<li><a href="/baseball/mlb/japanese/top-japanese.html" title="ＭＬＢの日本人選手">日本人選手</a></li>
+<li><a href="/baseball/mlb/schedule/top-schedule.html" title="ＭＬＢ日程＆結果">日程＆結果</a></li>
+<li><a href="/baseball/mlb/data/mb-standings.html" title="ＭＬＢ順位表">順位表</a></li>
+<li><a href="/baseball/mlb/data/mb-person.html" title="ＭＬＢ個人成績">個人成績</a></li>
+<li><a href="/baseball/mlb/team/top-team.html" title="ＭＬＢチーム紹介">チーム紹介</a></li>
+</ul>
+
+
+</td>
+<td>
+
+
+<h3 class="fllGenre"><a href="/soccer/top-soccer.html" title="サッカートップ">サッカー&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/soccer/news/backnumber-soccer.html" title="サッカーニュース一覧">ニュース</a></li>
+<li><a href="/soccer/news/top-photo.html" title="サッカーニュース一覧">写真ニュース</a></li>
+<li><a href="/soccer/japan/top-japan.html" title="サッカー日本代表">日本代表</a></li>
+<li><a href="/soccer/jleague/acl/top-acl.html" title="アジアチャンピオンズリーグ">ＡＣＬ</a></li>
+<li><a href="/soccer/jleague/j1/top-j1.html" title="サッカーＪ１">Ｊ１</a></li>
+<li><a href="/soccer/jleague/j2/top-j2.html" title="サッカーＪ２">Ｊ２</a></li>
+<li><a href="/soccer/jleague/j3/top-j3.html" title="サッカーＪ３">Ｊ３</a></li>
+<li><a href="/soccer/jleague/nabisco/top-nabisco.html" title="Ｊリーグナビスコ杯">ナビスコ杯</a></li>
+<li><a href="/soccer/jleague/team/top-team.html" title="Ｊリーグチーム情報">チーム情報</a></li>
+</ul>
+
+
+<h3 class="fllGenre"><a href="/soccer/world/top-world.html" title="海外サッカートップ">海外サッカー&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/soccer/world/news/backnumber-world.html" title="海外サッカーニュース一覧">ニュース</a></li>
+<li><a href="/soccer/world/news/top-photo.html" title="海外サッカー写真ニュース">写真ニュース</a></li>
+<li><a href="/soccer/world/japanese/top-japanese.html" title="海外サッカーの日本人選手">日本人選手</a></li>
+<li><a href="/soccer/world/italy/top-italy.html" title="セリエＡ">セリエＡ</a></li>
+<li><a href="/soccer/world/premier/top-premier.html" title="プレミア">プレミア</a></li>
+<li><a href="/soccer/world/spain/top-spain.html" title="スペイン">スペイン</a></li>
+<li><a href="/soccer/world/germany/top-germany.html" title="ブンデス">ブンデス</a></li>
+<li><a href="/soccer/world/france/top-france.html" title="フランス">フランス</a></li>
+<li><a href="/soccer/world/netherlands/top-netherlands.html" title="オランダ">オランダ</a></li>
+<li><a href="/soccer/world/russia/top-russia.html" title="ロシア">ロシア</a></li>
+<li><a href="/soccer/world/cl/top-cl.html" title="欧州ＣＬ">欧州ＣＬ</a></li>
+<li><a href="/soccer/world/uefa/top-uefa.html" title="欧州リーグ">欧州Ｌ</a></li>
+</ul>
+
+
+</td>
+<td>
+
+
+<h3 class="fllGenre"><a href="/sports/top-sports.html" title="スポーツトップ">スポーツ&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/sports/news/backnumber-sports.html" title="スポーツニュース一覧">ニュース</a></li>
+<li><a href="/sports/news/top-photo.html" title="スポーツ写真ニュース">写真ニュース</a></li>
+<li><a href="/sports/sumo/top-sumo.html" title="大相撲">大相撲</a></li>
+<li><a href="/sports/figure/top-figure.html" title="フィギュアスケート">フィギュアスケート</a></li>
+<li><a href="/sports/rugby/top-rugby.html" title="ラグビー">ラグビー</a></li>
+<li><a href="/sports/athletics/top-athletics.html" title="陸上">陸上</a></li>
+<li><a href="/sports/swimming/top-swimming.html" title="水泳">水泳</a></li>
+<li><a href="/sports/volley/top-volley.html" title="バレーボール">バレーボール</a></li>
+<li><a href="/sports/tennis/top-tennis.html" title="テニス">テニス</a></li>
+<li><a href="/sports/motor/top-motor.html" title="モータースポーツ">モータースポーツ</a></li>
+<li><a href="/sports/nba/top-nba.html" title="ＮＢＡ">ＮＢＡ</a></li>
+<li><a href="/sports/nfl/top-nfl.html" title="ＮＦＬ">ＮＦＬ</a></li>
+<li><a href="/sports/nhl/top-nhl.html" title="ＮＨＬ">ＮＨＬ</a></li>
+<li><a href="/sports/judo/top-judo.html" title="柔道">柔道</a></li>
+<li><a href="/sports/tabletennis/top-tabletennis.html" title="卓球">卓球</a></li>
+<li><a href="/sports/cycling/top-cycling.html" title="自転車">自転車</a></li>
+</ul>
+
+
+<h3 class="fllGenre"><a href="/sports/golf/top-golf.html" title="ゴルフトップ">ゴルフ&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/sports/golf/news/backnumber-golf.html" title="ゴルフニュース一覧">ニュース</a></li>
+<li><a href="/sports/golf/news/top-photo.html" title="ゴルフ写真ニュース">写真ニュース</a></li>
+<li><a href="/sports/golf/schedule/jpmen/jpmen-schedule.html" title="国内男子日程">国内男子</a></li>
+<li><a href="/sports/golf/schedule/jpwomen/jpwomen-schedule.html" title="国内女子日程">国内女子</a></li>
+<li><a href="/sports/golf/schedule/usmen/usmen-schedule.html" title="米国男子日程">米国男子</a></li>
+<li><a href="/sports/golf/schedule/uswomen/uswomen-schedule.html" title="米国女子日程">米国女子</a></li>
+<li><a href="/sports/golf/schedule/jpsenior/jpsenior-schedule.html" title="国内シニア日程">国内シニア</a></li>
+</ul>
+
+
+</td>
+<td>
+
+
+<h3 class="fllGenre"><a href="/battle/top-battle.html" title="格闘技トップ">格闘技&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/battle/news/backnumber-battle.html" title="格闘技ニュース一覧">ニュース</a></li>
+<li><a href="/battle/news/top-photo.html" title="格闘技写真ニュース">写真ニュース</a></li>
+<li><a href="/battle/data/bt-schedule.html" title="興行日程">興行日程</a></li>
+<li><a href="/battle/data/bt-result.html" title="結果">結果</a></li>
+<li><a href="/battle/prowrestling/top-prowrestling.html" title="プロレス">プロレス</a></li>
+<li><a href="/battle/boxing/top-boxing.html" title="ボクシング">ボクシング</a></li>
+<li><a href="/battle/sogo/top-sogo.html" title="総合格闘技">総合格闘技</a></li>
+<li><a href="/battle/data/bt-address.html" title="団体ホームページ">団体ホームページ</a></li>
+
+</ul>
+
+
+<h3 class="fllGenre"><a href="/race/top-race.html" title="競馬トップ">競馬&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/race/news/backnumber-race.html" title="競馬ニュース一覧">ニュース</a></li>
+<li><a href="/race/news/top-photo.html" title="競馬写真ニュース">写真ニュース</a></li>
+<li><a href="http://keiba.nikkansports.com/memberSite/" title="競馬コンピ（有料）別ウィンドウが開きます。" target="_blank">競馬コンピ（有料）</a></li>
+<li><a href="http://compi-db.nikkansports.com/" title="コンピ探知機（有料）別ウィンドウが開きます。" target="_blank">コンピ探知機（有料）</a></li>
+<li><a href="/race/horseracing/data/hr-schedule.html" title="重賞日程">重賞日程</a></li>
+<li><a href="/race/hr-result.html" title="レース成績">レース成績</a></li>
+<li><a href="/race/hr-syutsuba.html" title="出馬表">出馬表</a></li>
+<li><a href="/race/hr-touroku.html" title="登録馬">登録馬</a></li>
+</ul>
+
+
+<h3 class="fllGenre"><a href="/race/public_race/top-public_race.html" title="ボート競輪オートトップ">ボート競輪オート&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/race/public_race/news/backnumber-public_race.html" title="ボート競輪オートニュース一覧">ニュース</a></li>
+<li><a href="/race/public_race/news/top-photo.html" title="ボート競輪オート写真ニュース">写真ニュース</a></li>
+<li><a href="/race/public_race/boat/top-boat.html" title="ボート">ボート</a></li>
+<li><a href="/race/public_race/keirin/top-keirin.html" title="競輪">競輪</a></li>
+<li><a href="/race/public_race/auto/top-auto.html" title="オート">オート</a></li>
+</ul>
+
+
+</td>
+<td>
+
+
+<h3 class="fllGenre"><a href="/entertainment/top-entertainment.html" title="芸能トップ">芸能&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/entertainment/news/backnumber-entertainment.html" title="芸能ニュース一覧">ニュース</a></li>
+<li><a href="/entertainment/news/top-photo.html" title="芸能写真ニュース">写真ニュース</a></li>
+<li><a href="/entertainment/akb48/top-akb48.html" title="ＡＫＢ４８">ＡＫＢ４８</a></li>
+<li><a href="/entertainment/cinema/top-cinema.html" title="シネマ">シネマ</a></li>
+<li><a href="/entertainment/korea/top-korea.html" title="韓国エンタメ">韓国エンタメ</a></li>
+<li><a href="/entertainment/music/top-music.html" title="音楽">音楽</a></li>
+<li><a href="/entertainment/comedy/top-comedy.html" title="お笑い">お笑い</a></li>
+<li><a href="/entertainment/fortune/et-fortune.html" title="占い－０学占星術">占い－０学占星術</a></li>
+<li><a href="/entertainment/award/ns-cinema/top-ns-cinema.html" title="映画大賞">映画大賞</a></li>
+<li><a href="/entertainment/award/ns-dramagp/top-ns-dramagp.html"title="ドラマＧＰ">ドラマＧＰ</a></li>
+
+</ul>
+
+
+<h3 class="fllGenre"><a href="/general/top-general.html" title="社会トップ">社会&nbsp;&raquo;</a></h3>
+<ul>
+<li><a href="/general/news/backnumber-general.html" title="社会ニュース一覧">ニュース</a></li>
+<li><a href="/general/news/top-photo.html" title="社会写真ニュース">写真ニュース</a></li>
+<li><a href="/general/society/top-society.html" title="社会">社会</a></li>
+<li><a href="/general/politics/top-politics.html" title="政治">政治</a></li>
+<li><a href="/general/economy/top-economy.html" title="経済">経済</a></li>
+<li><a href="/general/international/top-international.html" title="国際">国際</a></li>
+
+</ul>
+
+
+</td>
+<td>
+
+
+<h3 class="fllGenre">ピックアップ</h3>
+<ul>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://douga.nikkansports.com/">動画</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://photos.nikkansports.com/">フォト</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://ical.nikkansports.com/">天気＆カレンダー</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://www.nikkansports.com/tool/pay/top-pay.html">有料サイト一覧</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://enjoy.nikkansports.com/blog/top-blog.html">築地ランチ日記</a></li>
+<li><a href="/fishing/top-fishing.html">釣り情報</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://enjoy.nikkansports.com/">エンジョイ・ニッカン</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://event.nikkansports.com/">イベント情報</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://univ.nikkansports.com/ ">大学スポーツニュース</a></li>
+<li><a target="_blank" title="別ウィンドウで開きます" href="http://www.rakuten.ne.jp/gold/nikkansports-shopping/">ショッピング</a></li>
+<!-- <li><a target="_blank" title="別ウィンドウで開きます" href="http://housing.nikkansports.com/">住まい</a></li> -->
+<li><a target="_blank" title="別ウィンドウで開きます" href="/amusement/pachinko/">パチンコ・パチスロ</a></li>
+
+</ul>
+</td>
+</tr>
+</table>
+</div>
+<!-- /+++++ フッターリンクリスト +++++ -->
+
+
+<!-- +++++ データ提供 +++++ -->
+<div id="otherCopyrightWrap">
+<h3 id="otherCopylightHeading">データ提供</h3>
+
+<div id="otherCopyrightList">
+
+<dl class="otherCopyright">
+<dt class="copyHd">日本プロ野球（ＮＰＢ）：</dt>
+<dd class="copyBdy">NPB・BIS／日刊編集センター（編集）</dd>
+</dl>
+
+<dl class="otherCopyright">
+<dt class="copyHd">国内サッカー：</dt>
+<dd class="copyBdy">（株）日刊編集センター</dd>
+</dl>
+
+<dl class="otherCopyright">
+<dt class="copyHd">欧州サッカー：</dt>
+<dd class="copyBdy">（株）日刊編集センター／Datawiresport</dd>
+</dl>
+
+<dl class="otherCopyright">
+<dt class="copyHd">ＭＬＢ：</dt>
+<dd class="copyBdy">（株）日刊編集センター／STATS LLC／STATS ＪＡＰＡＮ</dd>
+</dl>
+
+</div>
+</div>
+<!-- /+++++ データ提供 +++++ -->
+
+
+</div>
+<!-- /+++++ フッターナビ +++++ -->
+
+
+
+<hr class="hide" />
+
+
+
+<!-- +++++ ヘルプメニュー +++++ -->
+<div class="helpNavi">
+<p><a id="footernavi" name="footernavi">ここからフッターナビゲーションです</a></p>
+<ul>
+<li><a href="#pagetop">このページの先頭へ戻る</a></li>
+<li><a href="#globalnavi">このサイトのナビゲーションへ戻る</a></li>
+<li><a href="#submenu">このページのサブメニューへ戻る</a></li>
+<li><a href="#maincontents">このページの本文へ戻る</a></li>
+<li><a href="#topicsnavi">トピックスナビゲーションへ戻る</a></li>
+</ul>
+</div>
+<!-- /+++++ ヘルプメニュー +++++ -->
+
+
+
+<div id="companyNaviWrap">
+<address>
+nikkansports.comに掲載の記事・写真・カット等の転載を禁じます。<br />
+すべての<a href="/policy/copyright.html" title="著作権について">著作権</a>は日刊スポーツ新聞社に帰属します。<br />
+(C)2014,Nikkan Sports News.<br />
+</address>
+
+<ul id="footerCompanyNavi">
+<li class="firstChild"><a href="/company/top-company.html">会社案内</a></li>
+<li><a href="http://saiyo.nikkansports.com/">採用情報</a></li>
+<li><a href="/advertising/top-advertising.html">広告ガイド</a></li>
+<li><a href="http://enjoy.nikkansports.com/koudoku/top-koudoku.html">新聞購読</a></li>
+<li><a href="/policy/sitepolicy.html">このサイトについて</a></li>
+<li><a href="/policy/privacypolicy.html">個人情報の取り扱い</a></li>
+<li><a href="/contact/contact.html">お問い合わせ</a></li>
+</ul>
+</div>
+
+
+
+</div>
+<!-- /+++++ フッター +++++ -->
+
+
+</div>
+<!-- /+++++ wrapper +++++ -->
+
+<script src="http://cache1.nipc.jp/js/beacon.js" type="text/javascript"></script>
+<script type="text/javascript">
+nsTracker();
+</script>
+
+<!-- 旧Google Amalyticsタグ削除済み -->
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+{lang: 'ja'}
+</script>
+
+
+
+</body>
+</html>
