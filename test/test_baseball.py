@@ -37,7 +37,7 @@ def test_create_dict_01():
     assert_equal(4, actual['match'])
     assert_equal(datetime.date(2014, 4, 29), actual['date'])
     assert_equal('西武ドーム', actual['stadium'])
-    assert_equal([[0, 0], [0, 0], [0, 1], [0, 0], [0, 2], [0, 0], [1, 0], [0, 1], [0, 'x']], actual['score'])
+    assert_equal([[0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 1, 0, 2, 0, 0, 1, 'x']], actual['score'])
     assert_equal([1, 4], actual['total_score'])
     assert_equal(['牧田', 2, 1, 0], actual['win'])
     assert_equal(['高橋', 0, 1, 3], actual['save'])
