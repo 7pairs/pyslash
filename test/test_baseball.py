@@ -7,6 +7,7 @@ from nose.tools import *
 from nikkansports import baseball
 from nikkansports.exception import ParseError
 
+
 def test_get_html_01():
     """
     引数に有効なURLを指定したとき、そのURLのHTMLの内容を文字列として返すことを確認する。
@@ -15,12 +16,14 @@ def test_get_html_01():
     actual = ('<title>プロ野球スコア速報 ロッテ対西武 : nikkansports.com</title>' in html)
     assert_equal(True, actual)
 
+
 def test_get_html_02():
     """
     引数に無効なURLを指定したとき、空文字列を返すことを確認する。
     """
     html = baseball.get_html('エラーアルよー')
     assert_equal('', html)
+
 
 def test_create_dict_01():
     """
@@ -33,13 +36,14 @@ def test_create_dict_01():
     assert_equal('西武', actual['field_first'])
     assert_equal(4, actual['match'])
     assert_equal(datetime.date(2014, 4, 29), actual['date'])
-    assert_equal('西武ドーム', actual['studium'])
+    assert_equal('西武ドーム', actual['stadium'])
     assert_equal([[0, 0], [0, 0], [0, 1], [0, 0], [0, 2], [0, 0], [1, 0], [0, 1], [0, 'x']], actual['score'])
     assert_equal([1, 4], actual['total_score'])
     assert_equal(['牧田', 2, 1, 0], actual['win'])
     assert_equal(['高橋', 0, 1, 3], actual['save'])
     assert_equal(['メンドーサ', 1, 4, 0], actual['lose'])
     assert_equal([['7回表', '佐藤賢', 3, 'ソロ', '牧田']], actual['homerun'])
+
 
 @raises(ParseError)
 def test_create_dict_02():
