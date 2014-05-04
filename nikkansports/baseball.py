@@ -105,16 +105,12 @@ def create_dict(html):
         for row in rows[1:]:
             cols = row.find_all('td')
             status = cols[0].string
-            # TODO: テスト通過後にリファクタリング
             if status == '○':
-                m = re.search(r'([^\s]+)\s（[^）]+）', cols[1].string)
-                retval['win'] = [m.group(1), int(cols[2].string), int(cols[3].string), int(cols[4].string)]
+                retval['win'] = parse_pitcher(cols)
             elif status == 'Ｓ':
-                m = re.search(r'([^\s]+)\s（[^）]+）', cols[1].string)
-                retval['save'] = [m.group(1), int(cols[2].string), int(cols[3].string), int(cols[4].string)]
+                retval['save'] = parse_pitcher(cols)
             elif status == '●':
-                m = re.search(r'([^\s]+)\s（[^）]+）', cols[1].string)
-                retval['lose'] = [m.group(1), int(cols[2].string), int(cols[3].string), int(cols[4].string)]
+                retval['lose'] = parse_pitcher(cols)
 
     # 本塁打
     retval['homerun'] = []
@@ -152,4 +148,22 @@ def create_dict(html):
 
     # 構築した辞書を返す
     return retval
+
+
+def parse_pitcher(cols):
+    """
+    投手成績を解析する。
+
+    @param cols: 投手成績のHTMLノード
+    @type cols: bs4.element.ResultSet
+    @return: 解析結果
+    @rtype: list
+    """
+    # 投手の名前を切り出す
+    m = re.search(r'([^\s]+)\s（[^）]+）', cols[1].string)
+    if not m:
+        raise ParseError()
+
+    # 解析結果を返す
+    return [m.group(1), int(cols[2].string), int(cols[3].string), int(cols[4].string)]
 
