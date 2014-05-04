@@ -132,6 +132,33 @@ def create_dict(html):
     return retval
 
 
+# チーム名変換テーブル
+FULL_TEAM_NAME = {
+    '西武': '埼玉西武',
+    '楽天': '東北楽天',
+    'ロッテ': '千葉ロッテ',
+    'ソフトバンク': '福岡ソフトバンク',
+    '日本ハム': '北海道日本ハム',
+    '巨人': '読売',
+    '広島': '広島東洋',
+    'ＤｅＮＡ': '横浜ＤｅＮＡ',
+    'ヤクルト': '東京ヤクルト',        
+}
+
+
+def get_full_team_name(team_name):
+    """
+    指定されたチーム名を正式名称に変換する。
+
+    @param team_name: チーム名
+    @type team_name: str
+    @return: 変換後のチーム名
+    @rtype: str
+    """
+    # 変換テーブルを探索
+    return FULL_TEAM_NAME.get(team_name, team_name)
+
+
 def find_or_error(bs, *args):
     """
     BeautifulSoupのfindメソッドを呼び出し、その結果を返す。
