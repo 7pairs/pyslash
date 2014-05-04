@@ -50,9 +50,7 @@ def create_dict(html):
     soup = BeautifulSoup(html)
 
     # 先攻チーム/後攻チーム
-    card = soup.find('h4', {'id': 'cardTitle'})
-    if not card:
-        raise ParseError()
+    card = find_or_error(soup, 'h4', {'id': 'cardTitle'})
     m = re.search(r'([^\s]+)\s対\s([^\s]+)', card.string)
     if not m:
         raise ParseError()
@@ -60,27 +58,21 @@ def create_dict(html):
     retval['field_first'] = m.group(1)
 
     # 回戦
-    match = soup.find('p', {'id': 'time'})
-    if not match:
-        raise ParseError()
+    match = find_or_error(soup, 'p', {'id': 'time'})
     m = re.search(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
     if not m:
         raise ParseError()
     retval['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
 
     # 試合日
-    date = soup.find('p', {'id': 'upDate'})
-    if not date:
-        raise ParseError()
+    date = find_or_error(soup, 'p', {'id': 'upDate'})
     m = re.search(r'(\d+)年(\d+)月(\d+)日', date.span.string)
     if not m:
         raise ParseError()
     retval['date'] = datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
     # 球場
-    stadium = soup.find('p', {'class': 'data'})
-    if not stadium:
-        raise ParseError()
+    stadium = find_or_error(soup, 'p', {'class': 'data'})
     m = re.search(r'◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
     if not m:
         raise ParseError()
@@ -89,9 +81,7 @@ def create_dict(html):
     # スコア
     retval['score'] = []
     retval['total_score'] = []
-    score = soup.find('table', {'class': 'scoreTable'})
-    if not score:
-        raise ParseError()
+    score = find_or_error(soup, 'table', {'class': 'scoreTable'})
     rows = score.find_all('tr')
     for row in rows[1:]:
         cols = row.find_all('td')
@@ -149,6 +139,26 @@ def create_dict(html):
     # 構築した辞書を返す
     return retval
 
+
+def find_or_error(bs, *args):
+    """
+    BeautifulSoupのfindメソッドを呼び出し、その結果を返す。
+    findの結果がNoneだった場合はParseErrorを送出する。
+
+    @param bs: findメソッドを呼び出すオブジェクト
+    @type bs: bs4.BeautifulSoup
+    @param args: findメソッドに渡す引数
+    @type args: list
+    @return: findの結果
+    @rtype: bs4.element.Tag
+    """
+    # findメソッドを呼び出して結果を返す
+    result = bs.find(*args)
+    if result:
+        return result
+    else:
+        raise ParseError()
+ 
 
 def parse_pitcher(cols):
     """
