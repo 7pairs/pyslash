@@ -51,31 +51,23 @@ def create_dict(html):
 
     # 先攻チーム/後攻チーム
     card = find_or_error(soup, 'h4', {'id': 'cardTitle'})
-    m = re.search(r'([^\s]+)\s対\s([^\s]+)', card.string)
-    if not m:
-        raise ParseError()
+    m = search_or_error(r'([^\s]+)\s対\s([^\s]+)', card.string)
     retval['bat_first'] = m.group(2)
     retval['field_first'] = m.group(1)
 
     # 回戦
     match = find_or_error(soup, 'p', {'id': 'time'})
-    m = re.search(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
-    if not m:
-        raise ParseError()
+    m = search_or_error(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
     retval['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
 
     # 試合日
     date = find_or_error(soup, 'p', {'id': 'upDate'})
-    m = re.search(r'(\d+)年(\d+)月(\d+)日', date.span.string)
-    if not m:
-        raise ParseError()
+    m = search_or_error(r'(\d+)年(\d+)月(\d+)日', date.span.string)
     retval['date'] = datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
     # 球場
     stadium = find_or_error(soup, 'p', {'class': 'data'})
-    m = re.search(r'◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
-    if not m:
-        raise ParseError()
+    m = search_or_error(r'◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
     retval['stadium'] = m.group(1)
 
     # スコア
@@ -118,13 +110,13 @@ def create_dict(html):
                         for j, col in enumerate(cols[8:]):
                             m = re.search(r'.本', col.string)
                             if m:
-                                m = re.search(r'([^（]+)（[^）]+）', cols[1].string)
+                                m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
                                 innings[m.group(1)].append(str(j + 1) + '回' + ['表', '裏'][i])
 
                 # 末尾の本塁打欄を解析
                 lines = footnote.find_all('dd')
                 for line in lines:
-                    m = re.search(r'([^\d]+)(\d+)号（([^\d]+)\d+m=([^）]+)）', line.string)
+                    m = search_or_error(r'([^\d]+)(\d+)号（([^\d]+)\d+m=([^）]+)）', line.string)
                     retval['homerun'].append([
                         innings[m.group(1)].pop(0),
                         m.group(1),
@@ -158,7 +150,24 @@ def find_or_error(bs, *args):
         return result
     else:
         raise ParseError()
- 
+
+
+def search_or_error(pattern, string):
+    """
+    @param pattern: 正規表現
+    @type pattern: str
+    @param string: 走査対象
+    @type string: str
+    @return: マッチング結果
+    @rtype: re.MatchObject
+    """
+    # searchメソッドを実行して結果を返す
+    m = re.search(pattern, string)
+    if m:
+        return m
+    else:
+        raise ParseError()
+
 
 def parse_pitcher(cols):
     """
