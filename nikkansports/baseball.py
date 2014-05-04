@@ -181,6 +181,9 @@ def find_or_error(bs, *args):
 
 def search_or_error(pattern, string):
     """
+    re.search関数を呼び出し、その結果を返す。
+    searchの結果がNoneだった場合はParseErrorを送出する。
+
     @param pattern: 正規表現
     @type pattern: str
     @param string: 走査対象
