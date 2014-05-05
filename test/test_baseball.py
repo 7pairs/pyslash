@@ -150,3 +150,99 @@ def test_get_full_team_name_12():
     actual = baseball.get_full_team_name('ヤクルト')
     assert_equal('東京ヤクルト', actual)
 
+
+def test_get_full_stadium_name_01():
+    """
+    引数に'西武ドーム'を指定したとき、'西武ドーム'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('西武ドーム')
+    assert_equal('西武ドーム', actual)
+
+
+def test_get_full_stadium_name_02():
+    """
+    引数に'コボスタ宮城'を指定したとき、'楽天Koboスタジアム宮城'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('コボスタ宮城')
+    assert_equal('楽天Koboスタジアム宮城', actual)
+
+
+def test_get_full_stadium_name_03():
+    """
+    引数に'ＱＶＣマリン'を指定したとき、'QVCマリンフィールド'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('ＱＶＣマリン')
+    assert_equal('QVCマリンフィールド', actual)
+
+
+def test_get_full_stadium_name_04():
+    """
+    引数に'ヤフオクドーム'を指定したとき、'福岡 ヤフオク!ドーム'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('ヤフオクドーム')
+    assert_equal('福岡 ヤフオク!ドーム', actual)
+
+
+def test_get_full_stadium_name_05():
+    """
+    引数に'京セラドーム大阪'を指定したとき、'京セラドーム大阪'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('京セラドーム大阪')
+    assert_equal('京セラドーム大阪', actual)
+
+
+def test_get_full_stadium_name_06():
+    """
+    引数に'札幌ドーム'を指定したとき、'札幌ドーム'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('札幌ドーム')
+    assert_equal('札幌ドーム', actual)
+
+
+def test_get_full_stadium_name_07():
+    """
+    引数に'東京ドーム'を指定したとき、'東京ドーム'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('東京ドーム')
+    assert_equal('東京ドーム', actual)
+
+
+def test_get_full_stadium_name_08():
+    """
+    引数に'甲子園'を指定したとき、'阪神甲子園球場'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('甲子園')
+    assert_equal('阪神甲子園球場', actual)
+
+
+def test_get_full_stadium_name_09():
+    """
+    引数に'マツダスタジアム'を指定したとき、'Mazda Zoom-Zoomスタジアム広島'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('マツダスタジアム')
+    assert_equal('Mazda Zoom-Zoomスタジアム広島', actual)
+
+
+def test_get_full_stadium_name_10():
+    """
+    引数に'ナゴヤドーム'を指定したとき、'ナゴヤドーム'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('ナゴヤドーム')
+    assert_equal('ナゴヤドーム', actual)
+
+
+def test_get_full_stadium_name_11():
+    """
+    引数に'横浜'を指定したとき、'横浜スタジアム'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('横浜')
+    assert_equal('横浜スタジアム', actual)
+
+
+def test_get_full_stadium_name_12():
+    """
+    引数に'神宮'を指定したとき、'明治神宮野球場'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('神宮')
+    assert_equal('明治神宮野球場', actual)
+

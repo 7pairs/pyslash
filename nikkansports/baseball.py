@@ -159,6 +159,31 @@ def get_full_team_name(team_name):
     return FULL_TEAM_NAME.get(team_name, team_name)
 
 
+# 球場名変換テーブル
+FULL_STADIUM_NAME = {
+    'コボスタ宮城': '楽天Koboスタジアム宮城',
+    'ＱＶＣマリン': 'QVCマリンフィールド',
+    'ヤフオクドーム': '福岡 ヤフオク!ドーム',
+    '甲子園': '阪神甲子園球場',
+    'マツダスタジアム': 'Mazda Zoom-Zoomスタジアム広島',
+    '横浜': '横浜スタジアム',
+    '神宮': '明治神宮野球場',
+}
+
+
+def get_full_stadium_name(stadium_name):
+    """
+    指定された球場名を正式名称に変換する。
+
+    @param team_name: 球場名
+    @type team_name: str
+    @return: 変換後の球場名
+    @rtype: str
+    """
+    # 変換テーブルを探索
+    return FULL_STADIUM_NAME.get(stadium_name, stadium_name)
+
+
 def find_or_error(bs, *args):
     """
     BeautifulSoupのfindメソッドを呼び出し、その結果を返す。
