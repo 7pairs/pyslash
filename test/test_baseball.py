@@ -285,7 +285,7 @@ def test_create_score_table():
     assert_equal(expected, actual)
 
 
-def test_main():
+def test_get_score_table():
     """
     引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
     """
