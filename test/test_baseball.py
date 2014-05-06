@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import textwrap
 
 from nose.tools import *
 
@@ -245,4 +246,41 @@ def test_get_full_stadium_name_12():
     """
     actual = baseball.get_full_stadium_name('神宮')
     assert_equal('明治神宮野球場', actual)
+
+
+def test_create_score_table():
+    """
+    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    """
+    data = {
+        'bat_first': '北海道日本ハム',
+        'field_first': '埼玉西武',
+        'match': 4,
+        'date': datetime.date(2014, 4, 29),
+        'stadium': '西武ドーム',
+        'score': [[0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 1, 0, 2, 0, 0, 1, 'x']],
+        'total_score': [1, 4],
+        'win': ['牧田', 2, 1, 0],
+        'save': ['高橋', 0, 1, 3],
+        'lose': ['メンドーサ', 1, 4, 0],
+        'homerun': [['7回表', '佐藤賢', 3, 'ソロ', '牧田']],
+    }
+
+    expected = textwrap.dedent("""\
+        【埼玉西武 vs 北海道日本ハム 第4回戦】
+        （2014年4月29日：西武ドーム）
+        
+        北海道日本ハム  0 0 0  0 0 0  1 0 0  1
+        埼玉西武　　　  0 0 1  0 2 0  0 1 x  4
+        
+        [勝] 牧田　　　 2勝1敗0Ｓ
+        [Ｓ] 高橋　　　 0勝1敗3Ｓ
+        [敗] メンドーサ 1勝4敗0Ｓ
+        
+        [本塁打]
+          7回表 佐藤賢  3号 ソロ （牧田）
+    """)
+
+    actual = baseball.create_score_table(data)
+    assert_equal(expected, actual)
 
