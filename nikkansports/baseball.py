@@ -199,24 +199,18 @@ def create_score_table(data):
     retval += '\n'
 
     # スコア
-    bat_first = data['bat_first']
-    field_first = data['field_first']
-
-    bat_first += '　' * (max(len(bat_first), len(field_first)) - len(bat_first))
-    field_first += '　' * (max(len(bat_first), len(field_first)) - len(field_first))
+    bat_first, field_first = add_space(data['bat_first'], data['field_first'])
 
     retval += '%s  %s  %d\n' % (bat_first, create_score_line(data['score'][0]), data['total_score'][0])
     retval += '%s  %s  %d\n' % (field_first, create_score_line(data['score'][1]), data['total_score'][1])
     retval += '\n'
 
     # 投手成績
-    win_pitcher = data.get('win', [''])[0]
-    save_pitcher = data.get('save', [''])[0]
-    lose_pitcher = data.get('lose', [''])[0]
-
-    win_pitcher += '　' * (max(len(win_pitcher), len(save_pitcher), len(lose_pitcher)) - len(win_pitcher))
-    save_pitcher += '　' * (max(len(win_pitcher), len(save_pitcher), len(lose_pitcher)) - len(save_pitcher))
-    lose_pitcher += '　' * (max(len(win_pitcher), len(save_pitcher), len(lose_pitcher)) - len(lose_pitcher))
+    win_pitcher, save_pitcher, lose_pitcher = add_space(
+        data.get('win', [''])[0],
+        data.get('save', [''])[0],
+        data.get('lose', [''])[0]
+    )
 
     if 'win' in data:
         retval += '[勝] %s %d勝%d敗%dＳ\n' % tuple([win_pitcher] + data['win'][1:])
@@ -315,4 +309,21 @@ def create_score_line(score):
 
     # 構築したスコア行を返す
     return retval
+
+
+def add_space(*args):
+    """
+    指定された文字列のうち、最大長に満たなかった文字列の末尾にスペースを付与する。
+
+    @param args: 対象文字列
+    @type args: list
+    @return: 編集後の文字列
+    @rtype: tuple
+    """
+    # スペースを付与
+    max_len = max(map(len, args))
+    retval = map(lambda x: x + '　' * (max_len - len(x)), args)
+
+    # 編集結果を返す
+    return tuple(retval)
 
