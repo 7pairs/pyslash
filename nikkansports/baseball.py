@@ -10,6 +10,24 @@ from bs4 import BeautifulSoup
 from nikkansports.exception import ParseError
 
 
+def get_score_table(url):
+    """
+    指定されたURLからスコアテーブルを取得して文字列として返す。
+
+    @param url: URL
+    @type url: str
+    @return: スコアテーブル
+    @rtype: str
+    """
+    # スコアテーブルを構築
+    html = get_html(url)
+    data = create_dict(html)
+    retval = create_score_table(data)
+
+    # 構築したスコアテーブルを返す
+    return retval
+
+
 def get_html(url):
     """
     指定されたURLからHTMLを取得して文字列として返す。
@@ -194,12 +212,19 @@ def create_score_table(data):
     @rtype: str
     """
     # ヘッダ
-    retval = '【%s vs %s 第%d回戦】\n' % (data['field_first'], data['bat_first'], data['match'])
-    retval += '（%d年%d月%d日：%s）\n' % (data['date'].year, data['date'].month, data['date'].day, data['stadium'])
+    field_first = get_full_team_name(data['field_first'])
+    bat_first = get_full_team_name(data['bat_first'])
+    retval = '【%s vs %s 第%d回戦】\n' % (field_first, bat_first, data['match'])
+    retval += '（%d年%d月%d日：%s）\n' % (
+        data['date'].year,
+        data['date'].month,
+        data['date'].day,
+        get_full_stadium_name(data['stadium'])
+    )
     retval += '\n'
 
     # スコア
-    bat_first, field_first = add_space(data['bat_first'], data['field_first'])
+    bat_first, field_first = add_space(bat_first, field_first)
 
     retval += '%s  %s  %d\n' % (bat_first, create_score_line(data['score'][0]), data['total_score'][0])
     retval += '%s  %s  %d\n' % (field_first, create_score_line(data['score'][1]), data['total_score'][1])
@@ -218,10 +243,10 @@ def create_score_table(data):
         retval += '[Ｓ] %s %d勝%d敗%dＳ\n' % tuple([save_pitcher] + data['save'][1:])
     if 'lose' in data:
         retval += '[敗] %s %d勝%d敗%dＳ\n' % tuple([lose_pitcher] + data['lose'][1:])
-    retval += '\n'
 
     # 本塁打
-    if 'homerun' in data:
+    if data.get('homerun'):
+        retval += '\n'
         retval += '[本塁打]\n'
         for line in data['homerun']:
             retval += '  %s %s %2d号 %s （%s）\n' % tuple(line)

@@ -284,3 +284,22 @@ def test_create_score_table():
     actual = baseball.create_score_table(data)
     assert_equal(expected, actual)
 
+
+def test_get_score_table():
+    """
+    引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
+    """
+    expected = textwrap.dedent("""\
+        【千葉ロッテ vs 埼玉西武 第6回戦】
+        （2014年5月2日：QVCマリンフィールド）
+        
+        埼玉西武　  0 2 0  0 0 0  0 0 0  2
+        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
+        
+        [勝] 岸　 3勝2敗0Ｓ
+        [敗] 成瀬 3勝2敗0Ｓ
+    """)
+
+    actual = baseball.get_score_table('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+    assert_equal(expected, actual)
+
