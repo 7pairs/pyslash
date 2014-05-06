@@ -185,6 +185,14 @@ def get_full_stadium_name(stadium_name):
 
 
 def create_score_table(data):
+    """
+    スコア情報の格納された辞書をもとにスコアテーブルを構築する。
+
+    @param data: スコア情報
+    @type data: dict
+    @return: スコアテーブル
+    @rtype: str
+    """
     # ヘッダ
     retval = '【%s vs %s 第%d回戦】\n' % (data['field_first'], data['bat_first'], data['match'])
     retval += '（%d年%d月%d日：%s）\n' % (data['date'].year, data['date'].month, data['date'].day, data['stadium'])
@@ -197,26 +205,8 @@ def create_score_table(data):
     bat_first += '　' * (max(len(bat_first), len(field_first)) - len(bat_first))
     field_first += '　' * (max(len(bat_first), len(field_first)) - len(field_first))
 
-    top_score = ''
-    for i, run in enumerate(data['score'][0]):
-        if i != 0:
-            if i % 3 == 0:
-                top_score += '  '
-            else:
-                top_score += ' '
-        top_score += str(run)
-
-    bottom_score = ''
-    for i, run in enumerate(data['score'][1]):
-        if i != 0:
-            if i % 3 == 0:
-                bottom_score += '  '
-            else:
-                bottom_score += ' '
-        bottom_score += str(run)
-
-    retval += '%s  %s  %d\n' % (bat_first, top_score, data['total_score'][0])
-    retval += '%s  %s  %d\n' % (field_first, bottom_score, data['total_score'][1])
+    retval += '%s  %s  %d\n' % (bat_first, create_score_line(data['score'][0]), data['total_score'][0])
+    retval += '%s  %s  %d\n' % (field_first, create_score_line(data['score'][1]), data['total_score'][1])
     retval += '\n'
 
     # 投手成績
@@ -242,6 +232,7 @@ def create_score_table(data):
         for line in data['homerun']:
             retval += '  %s %s %2d号 %s （%s）\n' % tuple(line)
 
+    # 構築したスコアを返す
     return retval
 
 def find_or_error(bs, *args):
@@ -300,4 +291,28 @@ def parse_pitcher(cols):
 
     # 解析結果を返す
     return [m.group(1), int(cols[2].string), int(cols[3].string), int(cols[4].string)]
+
+
+def create_score_line(score):
+    """
+    スコア行(先攻のみ、もしくは後攻のみ)を構築する。
+
+    @param score: 各イニングのスコア
+    @type score: list
+    @return: スコア行
+    @rtype: str
+    """
+    # イニングスコアを連結
+    retval = ''
+    for i, run in enumerate(score):
+        if i != 0:
+            # 3イニングごとに広めに区切る
+            if i % 3 == 0:
+                retval += '  '
+            else:
+                retval += ' '
+        retval += str(run)
+
+    # 構築したスコア行を返す
+    return retval
 
