@@ -184,6 +184,66 @@ def get_full_stadium_name(stadium_name):
     return FULL_STADIUM_NAME.get(stadium_name, stadium_name)
 
 
+def create_score_table(data):
+    # ヘッダ
+    retval = '【%s vs %s 第%d回戦】\n' % (data['field_first'], data['bat_first'], data['match'])
+    retval += '（%d年%d月%d日：%s）\n' % (data['date'].year, data['date'].month, data['date'].day, data['stadium'])
+    retval += '\n'
+
+    # スコア
+    bat_first = data['bat_first']
+    field_first = data['field_first']
+
+    bat_first += '　' * (max(len(bat_first), len(field_first)) - len(bat_first))
+    field_first += '　' * (max(len(bat_first), len(field_first)) - len(field_first))
+
+    top_score = ''
+    for i, run in enumerate(data['score'][0]):
+        if i != 0:
+            if i % 3 == 0:
+                top_score += '  '
+            else:
+                top_score += ' '
+        top_score += str(run)
+
+    bottom_score = ''
+    for i, run in enumerate(data['score'][1]):
+        if i != 0:
+            if i % 3 == 0:
+                bottom_score += '  '
+            else:
+                bottom_score += ' '
+        bottom_score += str(run)
+
+    retval += '%s  %s  %d\n' % (bat_first, top_score, data['total_score'][0])
+    retval += '%s  %s  %d\n' % (field_first, bottom_score, data['total_score'][1])
+    retval += '\n'
+
+    # 投手成績
+    win_pitcher = data.get('win', [''])[0]
+    save_pitcher = data.get('save', [''])[0]
+    lose_pitcher = data.get('lose', [''])[0]
+
+    win_pitcher += '　' * (max(len(win_pitcher), len(save_pitcher), len(lose_pitcher)) - len(win_pitcher))
+    save_pitcher += '　' * (max(len(win_pitcher), len(save_pitcher), len(lose_pitcher)) - len(save_pitcher))
+    lose_pitcher += '　' * (max(len(win_pitcher), len(save_pitcher), len(lose_pitcher)) - len(lose_pitcher))
+
+    if 'win' in data:
+        retval += '[勝] %s %d勝%d敗%dＳ\n' % tuple([win_pitcher] + data['win'][1:])
+    if 'save' in data:
+        retval += '[Ｓ] %s %d勝%d敗%dＳ\n' % tuple([save_pitcher] + data['save'][1:])
+    if 'lose' in data:
+        retval += '[敗] %s %d勝%d敗%dＳ\n' % tuple([lose_pitcher] + data['lose'][1:])
+    retval += '\n'
+
+    # 本塁打
+    if 'homerun' in data:
+        retval += '[本塁打]\n'
+        for line in data['homerun']:
+            retval += '  %s %s %2d号 %s （%s）\n' % tuple(line)
+
+    return retval
+
 def find_or_error(bs, *args):
     """
     BeautifulSoupのfindメソッドを呼び出し、その結果を返す。
