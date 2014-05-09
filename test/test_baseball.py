@@ -30,7 +30,7 @@ def test_create_dict_01():
     """
     引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
     """
-    with open('./test/test_create_dict.html') as test_file:
+    with open('./test/test_create_dict_01.html') as test_file:
         html = test_file.read()
     actual = baseball.create_dict(html)
     assert_equal('日本ハム', actual['bat_first'])
@@ -46,8 +46,29 @@ def test_create_dict_01():
     assert_equal([['7回表', '佐藤賢', 3, 'ソロ', '牧田']], actual['homerun'])
 
 
-@raises(ParseError)
 def test_create_dict_02():
+    """
+    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （2ラン、3ランの解析時不具合対応 #13）
+    """
+    with open('./test/test_create_dict_02.html') as test_file:
+        html = test_file.read()
+    actual = baseball.create_dict(html)
+    assert_equal('西武', actual['bat_first'])
+    assert_equal('ソフトバンク', actual['field_first'])
+    assert_equal(7, actual['match'])
+    assert_equal(datetime.date(2014, 5, 9), actual['date'])
+    assert_equal('北九州', actual['stadium'])
+    assert_equal([[0, 1, 0, 3, 0, 0, 0, 0, 2], [1, 1, 0, 0, 0, 0, 2, 0, 0]], actual['score'])
+    assert_equal([6, 4], actual['total_score'])
+    assert_equal(['ウィリアムス', 1, 0, 0], actual['win'])
+    assert_equal(['高橋', 0, 1, 6], actual['save'])
+    assert_equal(['千賀', 0, 1, 0], actual['lose'])
+    assert_equal([['1回裏', '内川', 8, 'ソロ', '岸'], ['7回裏', '柳田', 5, '２ラン', '岸']], actual['homerun'])
+
+
+@raises(ParseError)
+def test_create_dict_03():
     """
     引数に無効なHTML文字列を指定したとき、ParseErrorが発生することを確認する。
     """
