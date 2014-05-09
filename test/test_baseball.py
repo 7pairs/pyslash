@@ -64,7 +64,7 @@ def test_create_dict_02():
     assert_equal(['ウィリアムス', 1, 0, 0], actual['win'])
     assert_equal(['高橋', 0, 1, 6], actual['save'])
     assert_equal(['千賀', 0, 1, 0], actual['lose'])
-    assert_equal([['1回裏', '内川', 8, 'ソロ', '岸'], ['7回裏', '柳田', 5, '２ラン', '岸'], actual['homerun'])
+    assert_equal([['1回裏', '内川', 8, 'ソロ', '岸'], ['7回裏', '柳田', 5, '２ラン', '岸']], actual['homerun'])
 
 
 @raises(ParseError)
