@@ -138,7 +138,7 @@ def create_dict(html):
                 # 末尾の本塁打欄を解析
                 lines = footnote.find_all('dd')
                 for line in lines:
-                    m = search_or_error(r'([^\d]+)(\d+)号（([^\d]+)\d+m=([^）]+)）', line.string)
+                    m = search_or_error(r'([^\d]+)(\d+)号（(ソロ|２ラン|３ラン|満塁)\d+m=([^）]+)）', line.string)
                     retval['homerun'].append([
                         innings[m.group(1)].pop(0),
                         m.group(1),
