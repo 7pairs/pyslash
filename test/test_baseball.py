@@ -67,8 +67,28 @@ def test_create_dict_02():
     assert_equal([['1回裏', '内川', 8, 'ソロ', '岸'], ['7回裏', '柳田', 5, '２ラン', '岸']], actual['homerun'])
 
 
-@raises(ParseError)
 def test_create_dict_03():
+    """
+    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （サヨナラゲームの解析時不具合対応 #11）
+    """
+    with open('./test/test_create_dict_03.html') as test_file:
+        html = test_file.read()
+    actual = baseball.create_dict(html)
+    assert_equal('オリックス', actual['bat_first'])
+    assert_equal('日本ハム', actual['field_first'])
+    assert_equal(1, actual['match'])
+    assert_equal(datetime.date(2014, 3, 28), actual['date'])
+    assert_equal('札幌ドーム', actual['stadium'])
+    assert_equal([[2, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0], [0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, '1x']], actual['score'])
+    assert_equal([5, 6], actual['total_score'])
+    assert_equal(['増井', 1, 0, 0], actual['win'])
+    assert_equal(['海田', 0, 1, 0], actual['lose'])
+    assert_equal([['9回表', 'ペーニャ', 1, 'ソロ', '宮西']], actual['homerun'])
+
+
+@raises(ParseError)
+def test_create_dict_04():
     """
     引数に無効なHTML文字列を指定したとき、ParseErrorが発生することを確認する。
     """
@@ -337,6 +357,42 @@ def test_create_score_table_02():
         [本塁打]
           8回表 ランサム  1号 ソロ　 （吉原）
           9回表 浅村　　  2号 ２ラン （吉原）
+    """)
+
+    actual = baseball.create_score_table(data)
+    assert_equal(expected, actual)
+
+
+def test_create_score_table_03():
+    """
+    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （サヨナラゲームの解析時不具合対応 #11）
+    """
+    data = {
+        'bat_first': 'オリックス',
+        'field_first': '北海道日本ハム',
+        'match': 1,
+        'date': datetime.date(2014, 3, 28),
+        'stadium': '札幌ドーム',
+        'score': [[2, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0], [0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, '1x']],
+        'total_score': [5, 6],
+        'win': ['増井', 1, 0, 0],
+        'lose': ['海田', 0, 1, 0],
+        'homerun': [['9回表', 'ペーニャ', 1, 'ソロ', '宮西']]
+    }
+
+    expected = textwrap.dedent("""\
+        【北海道日本ハム vs オリックス 第1回戦】
+        （2014年3月28日：札幌ドーム）
+        
+        オリックス　　  2 1 0  0 0 0  0 0 1  1 0 0   5
+        北海道日本ハム  0 1 0  0 1 0  1 1 0  1 0 1x  6
+        
+        [勝] 増井 1勝0敗0Ｓ
+        [敗] 海田 0勝1敗0Ｓ
+        
+        [本塁打]
+          9回表 ペーニャ  1号 ソロ （宮西）
     """)
 
     actual = baseball.create_score_table(data)
