@@ -252,7 +252,16 @@ def create_score_table(data):
     if data.get('homerun'):
         retval += '\n'
         retval += '[本塁打]\n'
+
+        player_max_len = 0
+        type_max_len = 0
         for line in data['homerun']:
+            player_max_len = max(player_max_len, len(line[1]))
+            type_max_len = max(type_max_len, len(line[3]))
+
+        for line in data['homerun']:
+            line[1] += '　' * (player_max_len - len(line[1]))
+            line[3] += '　' * (type_max_len - len(line[3]))
             retval += '  %s %s %2d号 %s （%s）\n' % tuple(line)
 
     # 構築したスコアを返す

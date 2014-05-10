@@ -269,7 +269,7 @@ def test_get_full_stadium_name_12():
     assert_equal('明治神宮野球場', actual)
 
 
-def test_create_score_table():
+def test_create_score_table_01():
     """
     引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
     """
@@ -300,6 +300,43 @@ def test_create_score_table():
         
         [本塁打]
           7回表 佐藤賢  3号 ソロ （牧田）
+    """)
+
+    actual = baseball.create_score_table(data)
+    assert_equal(expected, actual)
+
+
+def test_create_score_table_02():
+    """
+    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （本塁打欄の整列不具合対応 #14）
+    """
+    data = {
+        'bat_first': '埼玉西武',
+        'field_first': '千葉ロッテ',
+        'match': 1,
+        'date': datetime.date(2014, 4, 1),
+        'stadium': 'QVCマリンフィールド',
+        'score': [[0, 0, 2, 0, 0, 1, 0, 1, 2], [1, 0, 0, 0, 0, 0, 0, 1, 0]],
+        'total_score': [6, 2],
+        'win': ['牧田', 1, 0, 0],
+        'lose': ['涌井', 0, 1, 0],
+        'homerun': [['8回表', 'ランサム', 1, 'ソロ', '吉原'], ['9回表', '浅村', 2, '２ラン', '吉原']],
+    }
+
+    expected = textwrap.dedent("""\
+        【千葉ロッテ vs 埼玉西武 第1回戦】
+        （2014年4月1日：QVCマリンフィールド）
+        
+        埼玉西武　  0 0 2  0 0 1  0 1 2  6
+        千葉ロッテ  1 0 0  0 0 0  0 1 0  2
+        
+        [勝] 牧田 1勝0敗0Ｓ
+        [敗] 涌井 0勝1敗0Ｓ
+        
+        [本塁打]
+          8回表 ランサム  1号 ソロ　 （吉原）
+          9回表 浅村　　  2号 ２ラン （吉原）
     """)
 
     actual = baseball.create_score_table(data)
