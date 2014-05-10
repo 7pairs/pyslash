@@ -99,7 +99,7 @@ def create_dict(html):
     rows = score.find_all('tr')
     for row in rows[1:]:
         cols = row.find_all('td')
-        retval['score'].append([int(x.string) if x.string.isdigit() else 'x' for x in cols[1:-1]])
+        retval['score'].append([int(x.string) if x.string.isdigit() else x.string.lower() for x in cols[1:-1]])
         retval['total_score'].append(int(cols[-1].string))
 
     # 勝利投手/セーブ投手/敗戦投手
@@ -228,14 +228,15 @@ def create_score_table(data):
     retval += '\n'
 
     # スコア
-    bat_first, field_first = add_space(bat_first, field_first)
+    bat_first, field_first = add_zenkaku_space(bat_first, field_first)
+    top_score, bottom_score = add_space(create_score_line(data['score'][0]), create_score_line(data['score'][1]))
 
-    retval += '%s  %s  %d\n' % (bat_first, create_score_line(data['score'][0]), data['total_score'][0])
-    retval += '%s  %s  %d\n' % (field_first, create_score_line(data['score'][1]), data['total_score'][1])
+    retval += '%s  %s  %d\n' % (bat_first, top_score, data['total_score'][0])
+    retval += '%s  %s  %d\n' % (field_first, bottom_score, data['total_score'][1])
     retval += '\n'
 
     # 投手成績
-    win_pitcher, save_pitcher, lose_pitcher = add_space(
+    win_pitcher, save_pitcher, lose_pitcher = add_zenkaku_space(
         data.get('win', [''])[0],
         data.get('save', [''])[0],
         data.get('lose', [''])[0]
@@ -351,7 +352,24 @@ def create_score_line(score):
 
 def add_space(*args):
     """
-    指定された文字列のうち、最大長に満たなかった文字列の末尾にスペースを付与する。
+    指定された文字列のうち、最大長に満たなかった文字列の末尾に半角スペースを付与する。
+
+    @param args: 対象文字列
+    @type args: list
+    @return: 編集後の文字列
+    @rtype: tuple
+    """
+    # スペースを付与
+    max_len = max(map(len, args))
+    retval = map(lambda x: x + ' ' * (max_len - len(x)), args)
+
+    # 編集結果を返す
+    return tuple(retval)
+
+
+def add_zenkaku_space(*args):
+    """
+    指定された文字列のうち、最大長に満たなかった文字列の末尾に全角スペースを付与する。
 
     @param args: 対象文字列
     @type args: list
