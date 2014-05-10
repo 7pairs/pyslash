@@ -84,7 +84,7 @@ def test_create_dict_03():
     assert_equal([5, 6], actual['total_score'])
     assert_equal(['増井', 1, 0, 0], actual['win'])
     assert_equal(['海田', 0, 1, 0], actual['lose'])
-    assert_equal([['9回表', 'ペーニャ', 1, 'ソロ', '宮西']], actual['homerun'])
+    assert_equal([['10回表', 'ペーニャ', 1, 'ソロ', '宮西']], actual['homerun'])
 
 
 @raises(ParseError)
@@ -378,7 +378,7 @@ def test_create_score_table_03():
         'total_score': [5, 6],
         'win': ['増井', 1, 0, 0],
         'lose': ['海田', 0, 1, 0],
-        'homerun': [['9回表', 'ペーニャ', 1, 'ソロ', '宮西']]
+        'homerun': [['10回表', 'ペーニャ', 1, 'ソロ', '宮西']]
     }
 
     expected = textwrap.dedent("""\
@@ -392,7 +392,7 @@ def test_create_score_table_03():
         [敗] 海田 0勝1敗0Ｓ
         
         [本塁打]
-          9回表 ペーニャ  1号 ソロ （宮西）
+          10回表 ペーニャ  1号 ソロ （宮西）
     """)
 
     actual = baseball.create_score_table(data)
