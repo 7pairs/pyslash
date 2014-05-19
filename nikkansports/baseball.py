@@ -230,9 +230,10 @@ def create_score_table(data):
     # スコア
     bat_first, field_first = add_zenkaku_space(bat_first, field_first)
     top_score, bottom_score = add_space(create_score_line(data['score'][0]), create_score_line(data['score'][1]))
+    top_total_score, bottom_total_score = space_padding(str(data['total_score'][0]), str(data['total_score'][1]))
 
-    retval += '%s  %s  %d\n' % (bat_first, top_score, data['total_score'][0])
-    retval += '%s  %s  %d\n' % (field_first, bottom_score, data['total_score'][1])
+    retval += '%s  %s  %s\n' % (bat_first, top_score, top_total_score)
+    retval += '%s  %s  %s\n' % (field_first, bottom_score, bottom_total_score)
     retval += '\n'
 
     # 投手成績
