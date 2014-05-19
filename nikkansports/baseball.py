@@ -384,6 +384,23 @@ def add_zenkaku_space(*args):
     return tuple(retval)
 
 
+def space_padding(*args):
+    """
+    指定された文字列のうち、最大長に満たなかった文字列の先頭に半角スペースを付与する。
+
+    @param args: 対象文字列
+    @type args: list
+    @return: 編集後の文字列
+    @rtype: tuple
+    """
+    # スペースを付与
+    max_len = max(map(len, args))
+    retval = map(lambda x: ' ' * (max_len - len(x)) + x, args)
+
+    # 編集結果を返す
+    return tuple(retval)
+
+
 if __name__ == '__main__':
     # 引数をチェック
     if len(sys.argv) != 2:
