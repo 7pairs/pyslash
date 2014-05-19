@@ -399,6 +399,48 @@ def test_create_score_table_03():
     assert_equal(expected, actual)
 
 
+def test_create_score_table_04():
+    """
+    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （2桁得点時不具合対応 #15）
+    """
+    data = {
+        'bat_first': '埼玉西武',
+        'field_first': '東北楽天',
+        'match': 10,
+        'date': datetime.date(2014, 5, 18),
+        'stadium': '岩手県営野球場',
+        'score': [[1, 4, 1, 2, 0, 1, 0, 3, 0], [1, 0, 0, 0, 0, 0, 1, 0, 0]],
+        'total_score': [12, 2],
+        'win': ['十亀', 2, 2, 3],
+        'lose': ['塩見', 2, 4, 0],
+        'homerun': [
+            ['2回表', '浅村', 6, '２ラン', '塩見'],
+            ['3回表', '浅村', 7, 'ソロ', '塩見'],
+            ['4回表', '山崎', 1, '２ラン', '塩見'],
+        ],
+    }
+
+    expected = textwrap.dedent("""\
+        【東北楽天 vs 埼玉西武 第10回戦】
+        （2014年5月18日：岩手県営野球場）
+        
+        埼玉西武  1 4 1  2 0 1  0 3 0  12
+        東北楽天  1 0 0  0 0 0  1 0 0   2
+        
+        [勝] 十亀 2勝2敗3Ｓ
+        [敗] 塩見 2勝4敗0Ｓ
+        
+        [本塁打]
+          2回表 浅村  6号 ２ラン （塩見）
+          3回表 浅村  7号 ソロ　 （塩見）
+          4回表 山崎  1号 ２ラン （塩見）
+    """)
+
+    actual = baseball.create_score_table(data)
+    assert_equal(expected, actual)
+
+
 def test_get_score_table():
     """
     引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。

@@ -230,9 +230,10 @@ def create_score_table(data):
     # スコア
     bat_first, field_first = add_zenkaku_space(bat_first, field_first)
     top_score, bottom_score = add_space(create_score_line(data['score'][0]), create_score_line(data['score'][1]))
+    top_total_score, bottom_total_score = space_padding(str(data['total_score'][0]), str(data['total_score'][1]))
 
-    retval += '%s  %s  %d\n' % (bat_first, top_score, data['total_score'][0])
-    retval += '%s  %s  %d\n' % (field_first, bottom_score, data['total_score'][1])
+    retval += '%s  %s  %s\n' % (bat_first, top_score, top_total_score)
+    retval += '%s  %s  %s\n' % (field_first, bottom_score, bottom_total_score)
     retval += '\n'
 
     # 投手成績
@@ -379,6 +380,23 @@ def add_zenkaku_space(*args):
     # スペースを付与
     max_len = max(map(len, args))
     retval = map(lambda x: x + '　' * (max_len - len(x)), args)
+
+    # 編集結果を返す
+    return tuple(retval)
+
+
+def space_padding(*args):
+    """
+    指定された文字列のうち、最大長に満たなかった文字列の先頭に半角スペースを付与する。
+
+    @param args: 対象文字列
+    @type args: list
+    @return: 編集後の文字列
+    @rtype: tuple
+    """
+    # スペースを付与
+    max_len = max(map(len, args))
+    retval = map(lambda x: ' ' * (max_len - len(x)) + x, args)
 
     # 編集結果を返す
     return tuple(retval)
