@@ -99,7 +99,7 @@ def create_dict(html):
     rows = score.find_all('tr')
     for row in rows[1:]:
         cols = row.find_all('td')
-        retval['score'].append([int(x.string) if x.string.isdigit() else x.string.lower() for x in cols[1:-1]])
+        retval['score'].append([x.string.lower() for x in cols[1:-1]])
         retval['total_score'].append(int(cols[-1].string))
 
     # 勝利投手/セーブ投手/敗戦投手
@@ -345,7 +345,7 @@ def create_score_line(score):
                 retval += '  '
             else:
                 retval += ' '
-        retval += str(run)
+        retval += run
 
     # 構築したスコア行を返す
     return retval
