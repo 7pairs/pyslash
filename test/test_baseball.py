@@ -38,7 +38,10 @@ def test_create_dict_01():
     assert_equal(4, actual['match'])
     assert_equal(datetime.date(2014, 4, 29), actual['date'])
     assert_equal('西武ドーム', actual['stadium'])
-    assert_equal([[0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 1, 0, 2, 0, 0, 1, 'x']], actual['score'])
+    assert_equal([
+        ['0', '0', '0', '0', '0', '0', '1', '0', '0'],
+        ['0', '0', '1', '0', '2', '0', '0', '1', 'x'],
+    ], actual['score'])
     assert_equal([1, 4], actual['total_score'])
     assert_equal(['牧田', 2, 1, 0], actual['win'])
     assert_equal(['高橋', 0, 1, 3], actual['save'])
@@ -59,7 +62,10 @@ def test_create_dict_02():
     assert_equal(7, actual['match'])
     assert_equal(datetime.date(2014, 5, 9), actual['date'])
     assert_equal('北九州', actual['stadium'])
-    assert_equal([[0, 1, 0, 3, 0, 0, 0, 0, 2], [1, 1, 0, 0, 0, 0, 2, 0, 0]], actual['score'])
+    assert_equal([
+        ['0', '1', '0', '3', '0', '0', '0', '0', '2'],
+        ['1', '1', '0', '0', '0', '0', '2', '0', '0'],
+    ], actual['score'])
     assert_equal([6, 4], actual['total_score'])
     assert_equal(['ウィリアムス', 1, 0, 0], actual['win'])
     assert_equal(['高橋', 0, 1, 6], actual['save'])
@@ -80,7 +86,10 @@ def test_create_dict_03():
     assert_equal(1, actual['match'])
     assert_equal(datetime.date(2014, 3, 28), actual['date'])
     assert_equal('札幌ドーム', actual['stadium'])
-    assert_equal([[2, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0], [0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, '1x']], actual['score'])
+    assert_equal([
+        ['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'],
+        ['0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '0', '1x'],
+    ], actual['score'])
     assert_equal([5, 6], actual['total_score'])
     assert_equal(['増井', 1, 0, 0], actual['win'])
     assert_equal(['海田', 0, 1, 0], actual['lose'])
@@ -299,7 +308,10 @@ def test_create_score_table_01():
         'match': 4,
         'date': datetime.date(2014, 4, 29),
         'stadium': '西武ドーム',
-        'score': [[0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 1, 0, 2, 0, 0, 1, 'x']],
+        'score': [
+            ['0', '0', '0', '0', '0', '0', '1', '0', '0'],
+            ['0', '0', '1', '0', '2', '0', '0', '1', 'x'],
+        ],
         'total_score': [1, 4],
         'win': ['牧田', 2, 1, 0],
         'save': ['高橋', 0, 1, 3],
@@ -337,7 +349,10 @@ def test_create_score_table_02():
         'match': 1,
         'date': datetime.date(2014, 4, 1),
         'stadium': 'QVCマリンフィールド',
-        'score': [[0, 0, 2, 0, 0, 1, 0, 1, 2], [1, 0, 0, 0, 0, 0, 0, 1, 0]],
+        'score': [
+            ['0', '0', '2', '0', '0', '1', '0', '1', '2'],
+            ['1', '0', '0', '0', '0', '0', '0', '1', '0'],
+        ],
         'total_score': [6, 2],
         'win': ['牧田', 1, 0, 0],
         'lose': ['涌井', 0, 1, 0],
@@ -374,7 +389,10 @@ def test_create_score_table_03():
         'match': 1,
         'date': datetime.date(2014, 3, 28),
         'stadium': '札幌ドーム',
-        'score': [[2, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0], [0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, '1x']],
+        'score': [
+            ['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'],
+            ['0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '0', '1x'],
+        ],
         'total_score': [5, 6],
         'win': ['増井', 1, 0, 0],
         'lose': ['海田', 0, 1, 0],
@@ -410,7 +428,10 @@ def test_create_score_table_04():
         'match': 10,
         'date': datetime.date(2014, 5, 18),
         'stadium': '岩手県営野球場',
-        'score': [[1, 4, 1, 2, 0, 1, 0, 3, 0], [1, 0, 0, 0, 0, 0, 1, 0, 0]],
+        'score': [
+            ['1', '4', '1', '2', '0', '1', '0', '3', '0'],
+            ['1', '0', '0', '0', '0', '0', '1', '0', '0'],
+        ],
         'total_score': [12, 2],
         'win': ['十亀', 2, 2, 3],
         'lose': ['塩見', 2, 4, 0],
