@@ -30,8 +30,7 @@ def test_create_dict_01():
     """
     引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
     """
-    with open('./test/test_create_dict_01.html') as test_file:
-        html = test_file.read()
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html')
     actual = baseball.create_dict(html)
     assert_equal('日本ハム', actual['bat_first'])
     assert_equal('西武', actual['field_first'])
@@ -54,8 +53,7 @@ def test_create_dict_02():
     引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
     （2ラン、3ランの解析時不具合対応 #13）
     """
-    with open('./test/test_create_dict_02.html') as test_file:
-        html = test_file.read()
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050906.html')
     actual = baseball.create_dict(html)
     assert_equal('西武', actual['bat_first'])
     assert_equal('ソフトバンク', actual['field_first'])
@@ -78,8 +76,7 @@ def test_create_dict_03():
     引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
     （サヨナラゲームの解析時不具合対応 #11）
     """
-    with open('./test/test_create_dict_03.html') as test_file:
-        html = test_file.read()
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014032804.html')
     actual = baseball.create_dict(html)
     assert_equal('オリックス', actual['bat_first'])
     assert_equal('日本ハム', actual['field_first'])
