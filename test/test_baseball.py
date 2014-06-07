@@ -6,7 +6,37 @@ import textwrap
 from nose.tools import *
 
 from nikkansports import baseball
-from nikkansports.exception import ParseError
+from nikkansports.exception import InvalidTeamError, ParseError, ResultNotFoundError
+
+
+def test_get_url_01():
+    """
+    引数に有効なチーム名を指定したとき、スコアテーブルのURLを返すことを確認する。
+    """
+    actual = baseball.get_url('c')
+    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014060706.html', actual)
+
+
+def test_get_url_02():
+    """
+    引数に指定されたチームがまだ試合を行っていないとき、ResultNotFoundErrorがraiseされることを確認する。
+    """
+    try:
+        actual = baseball.get_url('l')
+        fail()
+    except ResultNotFoundError:
+        pass
+
+
+def test_get_url_03():
+    """
+    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
+    """
+    try:
+        actual = baseball.get_url('q')
+        fail()
+    except ResultNotFoundError:
+        pass
 
 
 def test_get_html_01():
