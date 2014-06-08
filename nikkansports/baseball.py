@@ -9,10 +9,56 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 try:
-    from nikkansports.exception import ParseError
+    from nikkansports.exception import InvalidTeamError, ParseError
 except ImportError:
-    from exception import ParseError
+    from exception import InvalidTeamError, ParseError
 
+
+# チーム短縮名変換テーブル
+SHORT_TEAM_NAMES = {
+    'l': '西武',
+    'e': '楽天',
+    'm': 'ロッテ',
+    'h': 'ソフトバ',
+    'bs': 'オリック',
+    'f': '日本ハム',
+    'g': '巨人',
+    't': '阪神',
+    'c': '広島',
+    'd': '中日',
+    'db': 'ＤｅＮＡ',
+    's': 'ヤクルト',
+}
+
+
+def get_url(team):
+    """
+    指定されたチームの試合結果のURLを文字列として返す。
+
+    @param team: チーム名
+    @type team: str
+    @return: URL
+    @rtype: str
+    """
+    # チーム短縮名を取得
+    try:
+        short_name = SHORT_TEAM_NAMES[team]
+    except KeyError:
+        raise InvalidTeamError()
+
+    # 試合結果のURLを取得
+    html = get_html('http://www.nikkansports.com/')
+    soup = BeautifulSoup(html)
+    table = find_or_error(soup, 'table', {'summary': 'プロ野球の対戦表'})
+    cards = table.find_all('tr')
+    for card in cards:
+        links = card.find_all('a')
+        for link in links:
+            m = re.search(short_name, link.string)
+            if m:
+                score = card.find('td', {'class': 'score'})
+                return score.a.get('href')
+    
 
 def get_score_table(url):
     """
