@@ -17,26 +17,20 @@ def test_get_url_01():
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014060706.html', actual)
 
 
+@raises(ResultNotFoundError)
 def test_get_url_02():
     """
     引数に指定されたチームがまだ試合を行っていないとき、ResultNotFoundErrorがraiseされることを確認する。
     """
-    try:
-        actual = baseball.get_url('l')
-        fail()
-    except ResultNotFoundError:
-        pass
+    actual = baseball.get_url('l')
 
 
+@raises(InvalidTeamError)
 def test_get_url_03():
     """
     引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
     """
-    try:
-        actual = baseball.get_url('q')
-        fail()
-    except ResultNotFoundError:
-        pass
+    actual = baseball.get_url('q')
 
 
 def test_get_html_01():
