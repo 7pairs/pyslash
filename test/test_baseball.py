@@ -3,16 +3,105 @@
 import datetime
 import textwrap
 
+from mock import Mock
+from mock import patch
+
 from nose.tools import *
 
 from nikkansports import baseball
 from nikkansports.exception import InvalidTeamError, ParseError, ResultNotFoundError
 
 
-def test_get_url_01():
+RETURN_VALUE_FOR_GET_URL = """\
+<div class="dataContents">
+    <table border="1" summary="プロ野球の対戦表">
+        <tr>
+            <th colspan="3" class="bg">対戦</th>
+            <th>開始</th>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/giants/top-giants.html">巨人</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060801.html">8－1</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/marines/top-marines.html">ロッテ</a>
+            </td>
+            <td class="num">終了</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/swallows/top-swallows.html">ヤクルト</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060802.html">9－5</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/lions/top-lions.html">西武</a>
+            </td>
+            <td class="num">終了</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/baystars/top-baystars.html">ＤｅＮＡ</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060803.html">5－1</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/eagles/top-eagles.html">楽天</a>
+            </td>
+            <td class="num">終了</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/dragons/top-dragons.html">中日</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060804.html">0－6</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/fighters/top-fighters.html">日本ハム</a>
+            </td>
+            <td class="num">終了</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/tigers/top-tigers.html">阪神</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060805.html">14－8</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/hawks/top-hawks.html">ソフトバ</a>
+            </td>
+            <td class="num">終了</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/carp/top-carp.html">広島</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060806.html">1－8</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/buffaloes/top-buffaloes.html">オリック</a>
+            </td>
+            <td class="num">終了</td>
+        </tr>
+    </table>
+</div>
+"""
+
+
+@patch('nikkansports.baseball.get_html')
+def test_get_url_01(get_html):
     """
     引数に有効なチーム名を指定したとき、スコアテーブルのURLを返すことを確認する。
     """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
     actual = baseball.get_url('l')
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014060802.html', actual)
 
