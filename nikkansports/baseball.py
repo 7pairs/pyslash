@@ -9,9 +9,9 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 try:
-    from nikkansports.exception import InvalidTeamError, ParseError
+    from nikkansports.exception import InvalidTeamError, ParseError, ResultNotFoundError
 except ImportError:
-    from exception import InvalidTeamError, ParseError
+    from exception import InvalidTeamError, ParseError, ResultNotFoundError
 
 
 # チーム短縮名変換テーブル
@@ -56,6 +56,9 @@ def get_url(team):
         for link in links:
             m = re.search(short_name, link.string)
             if m:
+                num = card.find('td', {'class': 'num'})
+                if num.string != '終了':
+                    raise ResultNotFoundError()
                 score = card.find('td', {'class': 'score'})
                 return score.a.get('href')
     
