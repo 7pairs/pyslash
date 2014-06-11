@@ -84,12 +84,12 @@ RETURN_VALUE_FOR_GET_URL = """\
                 <a href="http://www.nikkansports.com/baseball/professional/team/carp/top-carp.html">広島</a>
             </td>
             <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060806.html">1－8</a>
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060806.html">0－0</a>
             </td>
             <td class="line away">
                 <a href="http://www.nikkansports.com/baseball/professional/team/buffaloes/top-buffaloes.html">オリック</a>
             </td>
-            <td class="num">終了</td>
+            <td class="num">中止</td>
         </tr>
     </table>
 </div>
@@ -106,12 +106,14 @@ def test_get_url_01(get_html):
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014060802.html', actual)
 
 
-#@raises(ResultNotFoundError)
-#def test_get_url_02():
-#    """
-#    引数に指定されたチームがまだ試合を行っていないとき、ResultNotFoundErrorがraiseされることを確認する。
-#    """
-#    actual = baseball.get_url('l')
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_02(get_html):
+    """
+    引数に指定されたチームがまだ試合を行っていないとき、ResultNotFoundErrorがraiseされることを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('c')
 
 
 @raises(InvalidTeamError)
