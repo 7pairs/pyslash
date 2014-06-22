@@ -304,13 +304,16 @@ def create_score_table(data):
         retval += '\n'
         retval += '[本塁打]\n'
 
+        inning_max_len = 0
         player_max_len = 0
         type_max_len = 0
         for line in data['homerun']:
+            inning_max_len = max(inning_max_len, len(line[0]))
             player_max_len = max(player_max_len, len(line[1]))
             type_max_len = max(type_max_len, len(line[3]))
 
         for line in data['homerun']:
+            line[0] = ' ' * (inning_max_len - len(line[0])) + line[0]
             line[1] += '　' * (player_max_len - len(line[1]))
             line[3] += '　' * (type_max_len - len(line[3]))
             retval += '  %s %s %2d号 %s （%s）\n' % tuple(line)
