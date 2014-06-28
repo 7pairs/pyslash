@@ -21,75 +21,75 @@ RETURN_VALUE_FOR_GET_URL = """\
         </tr>
         <tr>
             <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/giants/top-giants.html">巨人</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060801.html">8－1</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/marines/top-marines.html">ロッテ</a>
-            </td>
-            <td class="num">終了</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/swallows/top-swallows.html">ヤクルト</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060802.html">9－5</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/lions/top-lions.html">西武</a>
-            </td>
-            <td class="num">終了</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/baystars/top-baystars.html">ＤｅＮＡ</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060803.html">5－1</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/eagles/top-eagles.html">楽天</a>
-            </td>
-            <td class="num">終了</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/dragons/top-dragons.html">中日</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060804.html">0－6</a>
-            </td>
-            <td class="line away">
                 <a href="http://www.nikkansports.com/baseball/professional/team/fighters/top-fighters.html">日本ハム</a>
             </td>
-            <td class="num">終了</td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com">－</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/swallows/top-swallows.html">ヤクルト</a>
+            </td>
+            <td class="num">18:00</td>
         </tr>
         <tr>
             <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/eagles/top-eagles.html">楽天</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061402.html">0－3</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/giants/top-giants.html">巨人</a>
+            </td>
+            <td class="num">8回裏</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/lions/top-lions.html">西武</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html">3－2</a>
+            </td>
+            <td class="line away">
                 <a href="http://www.nikkansports.com/baseball/professional/team/tigers/top-tigers.html">阪神</a>
             </td>
+            <td class="num">終了</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/marines/top-marines.html">ロッテ</a>
+            </td>
             <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060805.html">14－8</a>
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061404.html">6－4</a>
             </td>
             <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/hawks/top-hawks.html">ソフトバ</a>
+                <a href="http://www.nikkansports.com/baseball/professional/team/carp/top-carp.html">広島</a>
+            </td>
+            <td class="num">8回裏</td>
+        </tr>
+        <tr>
+            <td class="line home">
+                <a href="http://www.nikkansports.com/baseball/professional/team/buffaloes/top-buffaloes.html">オリック</a>
+            </td>
+            <td class="line score">
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html">7－4</a>
+            </td>
+            <td class="line away">
+                <a href="http://www.nikkansports.com/baseball/professional/team/dragons/top-dragons.html">中日</a>
             </td>
             <td class="num">終了</td>
         </tr>
         <tr>
             <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/carp/top-carp.html">広島</a>
+                <a href="http://www.nikkansports.com/baseball/professional/team/hawks/top-hawks.html">ソフトバ</a>
             </td>
             <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014060806.html">0－0</a>
+                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061406.html">4－2</a>
             </td>
             <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/buffaloes/top-buffaloes.html">オリック</a>
+                <a href="http://www.nikkansports.com/baseball/professional/team/baystars/top-baystars.html">ＤｅＮＡ</a>
             </td>
-            <td class="num">中止</td>
+            <td class="num">8回裏</td>
         </tr>
     </table>
 </div>
@@ -103,7 +103,7 @@ def test_get_url_01(get_html):
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
     actual = baseball.get_url('l')
-    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014060802.html', actual)
+    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
 
 
 @patch('nikkansports.baseball.get_html')
