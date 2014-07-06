@@ -410,6 +410,14 @@ def test_get_full_stadium_name_12():
     assert_equal('明治神宮野球場', actual)
 
 
+def test_get_full_team_name_13():
+    """
+    引数に'ほっともっと神戸'を指定したとき、'ほっともっとフィールド神戸'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('ほっともっと神戸')
+    assert_equal('ほっともっとフィールド神戸', actual)
+
+
 def test_create_score_table_01():
     """
     引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
