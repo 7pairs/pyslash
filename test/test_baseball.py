@@ -99,7 +99,7 @@ RETURN_VALUE_FOR_GET_URL = """\
 @patch('nikkansports.baseball.get_html')
 def test_get_url_01(get_html):
     """
-    引数に有効なチーム名を指定したとき、スコアテーブルのURLを返すことを確認する。
+    引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
     actual = baseball.get_url('l')
@@ -110,14 +110,122 @@ def test_get_url_01(get_html):
 @raises(ResultNotFoundError)
 def test_get_url_02(get_html):
     """
-    引数に指定されたチームがまだ試合を行っていないとき、ResultNotFoundErrorがraiseされることを確認する。
+    引数に'e'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (東北楽天が試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('e')
+
+
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_03(get_html):
+    """
+    引数に'm'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (千葉ロッテが試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('m')
+
+
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_04(get_html):
+    """
+    引数に'h'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (福岡ソフトバンクが試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('h')
+
+
+@patch('nikkansports.baseball.get_html')
+def test_get_url_05(get_html):
+    """
+    引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('bu')
+    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
+
+
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_06(get_html):
+    """
+    引数に'f'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (北海道日本ハムが試合開始前のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('f')
+
+
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_07(get_html):
+    """
+    引数に'g'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (読売が試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('g')
+
+
+@patch('nikkansports.baseball.get_html')
+def test_get_url_08(get_html):
+    """
+    引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('t')
+    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
+
+
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_09(get_html):
+    """
+    引数に'c'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (広島東洋が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
     actual = baseball.get_url('c')
 
 
+@patch('nikkansports.baseball.get_html')
+def test_get_url_10(get_html):
+    """
+    引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('d')
+    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
+
+
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_11(get_html):
+    """
+    引数に'bs'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (横浜ＤｅＮＡが試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('bs')
+
+
+@patch('nikkansports.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_url_12(get_html):
+    """
+    引数に's'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    (東京ヤクルトが試合開始前のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_URL
+    actual = baseball.get_url('s')
+
+
 @raises(InvalidTeamError)
-def test_get_url_03():
+def test_get_url_13():
     """
     引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
     """
