@@ -232,6 +232,42 @@ def test_get_url_13():
     actual = baseball.get_url('q')
 
 
+def test_parse_date_01():
+    """
+    引数に何も指定しなかったとき、システム日付の年、月を返すことを確認する。
+    """
+    year, month = baseball.parse_date()
+    assert_equal('2014', year)
+    assert_equal('07', month)
+
+
+def test_parse_date_02():
+    """
+    引数に2桁の文字列を指定したとき、システム日付の年、指定された月を返すことを確認する。
+    """
+    year, month = baseball.parse_date('08')
+    assert_equal('2014', year)
+    assert_equal('08', month)
+
+
+def test_parse_date_03():
+    """
+    引数に4桁の文字列を指定したとき、指定された年、指定された月を返すことを確認する。
+    """
+    year, month = baseball.parse_date('1306')
+    assert_equal('2013', year)
+    assert_equal('06', month)
+
+
+def test_parse_date_04():
+    """
+    引数に6桁の文字列を指定したとき、指定された年、指定された月を返すことを確認する。
+    """
+    year, month = baseball.parse_date('201510')
+    assert_equal('2015', year)
+    assert_equal('10', month)
+
+
 def test_get_html_01():
     """
     引数に有効なURLを指定したとき、そのURLのHTMLの内容を文字列として返すことを確認する。

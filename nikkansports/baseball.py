@@ -31,6 +31,29 @@ SHORT_TEAM_NAMES = {
 }
 
 
+def parse_date(target=''):
+    """
+    指定された文字列を年と月に分割して返す。
+
+    @param target: 年月
+    @type target: str
+    @return: 年、月
+    @rtype: tupple
+    """
+    # システム日付を取得
+    today = datetime.datetime.today()
+
+    # 年と月を分割
+    if len(target) == 6:
+        return (target[:4], target[4:])
+    elif len(target) == 4:
+        return ('20' + target[:2], target[2:])
+    elif len(target) == 2:
+        return (str(today.year), target)
+    elif len(target) == 0:
+        return (str(today.year), '%02d' % today.month)
+
+
 def get_url(team):
     """
     指定されたチームの試合結果のURLを文字列として返す。
