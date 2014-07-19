@@ -250,7 +250,15 @@ def test_parse_date_02():
     assert_equal('08', month)
 
 
-def test_parse_date_03():
+@raises(InvalidDateError)
+def test_parse_date_03(get_html):
+    """
+    引数に無効な2桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
+    """
+    year, month = baseball.parse_date('13')
+
+
+def test_parse_date_04():
     """
     引数に4桁の文字列を指定したとき、指定された年、指定された月を返すことを確認する。
     """
@@ -259,13 +267,29 @@ def test_parse_date_03():
     assert_equal('06', month)
 
 
-def test_parse_date_04():
+@raises(InvalidDateError)
+def test_parse_date_05():
+    """
+    引数に無効な4桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
+    """
+    year, month = baseball.parse_date('1313')
+
+
+def test_parse_date_06():
     """
     引数に6桁の文字列を指定したとき、指定された年、指定された月を返すことを確認する。
     """
     year, month = baseball.parse_date('201510')
     assert_equal('2015', year)
     assert_equal('10', month)
+
+
+@raises(InvalidDateError)
+def test_parse_date_07():
+    """
+    引数に無効な6桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
+    """
+    year, month = baseball.parse_date('201313')
 
 
 def test_get_html_01():
