@@ -9,9 +9,9 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 try:
-    from nikkansports.exception import InvalidTeamError, ParseError, ResultNotFoundError
+    from nikkansports.exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 except ImportError:
-    from exception import InvalidTeamError, ParseError, ResultNotFoundError
+    from exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 
 
 # チーム短縮名変換テーブル
@@ -45,11 +45,30 @@ def parse_date(target=''):
 
     # 年と月を分割
     if len(target) == 6:
-        return (target[:4], target[4:])
+        year = target[:4]
+        month = target[4:]
+        try:
+            if 1 <= int(month) <= 12:
+                return (year, month)
+        except:
+            pass
+        raise InvalidDateError()
     elif len(target) == 4:
-        return ('20' + target[:2], target[2:])
+        year = '20' + target[:2]
+        month = target[2:]
+        try:
+            if 1 <= int(month) <= 12:
+                return (year, month)
+        except:
+            pass
+        raise InvalidDateError()
     elif len(target) == 2:
-        return (str(today.year), target)
+        try:
+            if 1 <= int(target) <= 12:
+                return (str(today.year), target)
+        except:
+            pass
+        raise InvalidDateError()
     elif len(target) == 0:
         return (str(today.year), '%02d' % today.month)
 
