@@ -9,7 +9,7 @@ from mock import patch
 from nose.tools import *
 
 from nikkansports import baseball
-from nikkansports.exception import InvalidTeamError, ParseError, ResultNotFoundError
+from nikkansports.exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 
 
 RETURN_VALUE_FOR_GET_URL = """\
@@ -251,7 +251,7 @@ def test_parse_date_02():
 
 
 @raises(InvalidDateError)
-def test_parse_date_03(get_html):
+def test_parse_date_03():
     """
     引数に無効な2桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
