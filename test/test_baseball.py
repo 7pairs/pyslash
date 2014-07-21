@@ -316,6 +316,30 @@ def test_parse_date_10():
     year, month = baseball.parse_date('Python')
 
 
+def test_get_calendar_url_01():
+    """
+    引数に正しいチーム名を指定したとき、カレンダーのURLを返すことを確認する。
+    """
+    actual = baseball.get_calendar_url('l', '201404')
+    assert_equal('http://www.nikkansports.com/baseball/professional/schedule/2014/l201404.html', actual)
+
+
+@raises(InvalidTeamError)
+def test_get_calender_url_02():
+    """
+    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
+    """
+    baseball.get_calendar_url('q', '201404')
+
+
+@raises(InvalidDateError)
+def test_get_calendar_url_03():
+    """
+    引数に無効な6桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
+    """
+    baseball.get_calendar_url('l', 'YYYYmm')
+
+
 def test_get_html_01():
     """
     引数に有効なURLを指定したとき、そのURLのHTMLの内容を文字列として返すことを確認する。

@@ -31,6 +31,36 @@ SHORT_TEAM_NAMES = {
 }
 
 
+def get_calendar_url(team, date=''):
+    """
+    指定されたチーム、年月のカレンダーのURLを返す。
+
+    @param team: チーム
+    @type team: str
+    @param date: 年月
+    @type date: str
+    @return: カレンダーのURL
+    @rtype: str
+    """
+    # チーム名をチェック
+    if team not in SHORT_TEAM_NAMES:
+        raise InvalidTeamError()
+
+    # 日付を年と月に分割
+    year, month = parse_date(date)
+
+    # URLを構築
+    url = 'http://www.nikkansports.com/baseball/professional/schedule/%s/%s%s%s.html' % (
+        year,
+        team,
+        year,
+        month
+    )
+
+    # 構築したURLを返す
+    return url
+
+
 def parse_date(target=''):
     """
     指定された文字列を年と月に分割して返す。
