@@ -238,7 +238,7 @@ def test_parse_date_01():
     """
     year, month = baseball.parse_date()
     assert_equal('2014', year)
-    assert_equal('07', month)
+    assert_equal('%02d' % datetime.datetime.today().month, month)
 
 
 def test_parse_date_02():
@@ -866,4 +866,3 @@ def test_get_score_table():
 
     actual = baseball.get_score_table('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
     assert_equal(expected, actual)
-
