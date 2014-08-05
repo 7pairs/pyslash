@@ -626,7 +626,7 @@ def test_get_full_stadium_name_12():
     assert_equal('明治神宮野球場', actual)
 
 
-def test_get_full_team_name_13():
+def test_get_full_stadium_name_13():
     """
     引数に'ほっともっと神戸'を指定したとき、'ほっともっとフィールド神戸'を返すことを確認する。
     """
@@ -634,7 +634,7 @@ def test_get_full_team_name_13():
     assert_equal('ほっともっとフィールド神戸', actual)
 
 
-def test_get_full_team_name_14():
+def test_get_full_stadium_name_14():
     """
     引数に'大宮'を指定したとき、'埼玉県営大宮公園野球場'を返すことを確認する。
     """
@@ -642,7 +642,7 @@ def test_get_full_team_name_14():
     assert_equal('埼玉県営大宮公園野球場', actual)
 
 
-def test_get_full_team_name_15():
+def test_get_full_stadium_name_15():
     """
     引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
     """
@@ -650,7 +650,7 @@ def test_get_full_team_name_15():
     assert_equal('静岡県草薙総合運動場硬式野球場', actual)
 
 
-def test_get_full_team_name_16():
+def test_get_full_stadium_name_16():
     """
     引数に'サンマリン宮崎'を指定したとき、'サンマリンスタジアム宮崎'を返すことを確認する。
     """
@@ -658,7 +658,7 @@ def test_get_full_team_name_16():
     assert_equal('サンマリンスタジアム宮崎', actual)
 
 
-def test_get_full_team_name_17():
+def test_get_full_stadium_name_17():
     """
     引数に'鹿児島'を指定したとき、'鹿児島県立鴨池野球場'を返すことを確認する。
     """
@@ -666,7 +666,7 @@ def test_get_full_team_name_17():
     assert_equal('鹿児島県立鴨池野球場', actual)
 
 
-def test_get_full_team_name_18():
+def test_get_full_stadium_name_18():
     """
     引数に'北九州'を指定したとき、'北九州市民球場'を返すことを確認する。
     """
@@ -674,7 +674,7 @@ def test_get_full_team_name_18():
     assert_equal('北九州市民球場', actual)
     
 
-def test_get_full_team_name_19():
+def test_get_full_stadium_name_19():
     """
     引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
     """
@@ -682,7 +682,7 @@ def test_get_full_team_name_19():
     assert_equal('オーシャンスタジアム', actual)
 
 
-def test_get_full_team_name_20():
+def test_get_full_stadium_name_20():
     """
     引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
     """
@@ -690,7 +690,7 @@ def test_get_full_team_name_20():
     assert_equal('オーシャンスタジアム', actual)
 
 
-def test_get_full_team_name_21():
+def test_get_full_stadium_name_21():
     """
     引数に'いわき'を指定したとき、'いわきグリーンスタジアム'を返すことを確認する。
     """
@@ -698,7 +698,7 @@ def test_get_full_team_name_21():
     assert_equal('いわきグリーンスタジアム', actual)
 
 
-def test_get_full_team_name_22():
+def test_get_full_stadium_name_22():
     """
     引数に'どらドラパーク米子'を指定したとき、'どらドラパーク米子市民球場'を返すことを確認する。
     """
@@ -706,7 +706,7 @@ def test_get_full_team_name_22():
     assert_equal('どらドラパーク米子市民球場', actual)
 
 
-def test_get_full_team_name_23():
+def test_get_full_stadium_name_23():
     """
     引数に'バッティングパレス相石ひらつか'を指定したとき、'バッティングパレス相石スタジアムひらつか'を返すことを確認する。
     """
@@ -714,7 +714,7 @@ def test_get_full_team_name_23():
     assert_equal('バッティングパレス相石スタジアムひらつか', actual)
 
 
-def test_get_full_team_name_24():
+def test_get_full_stadium_name_24():
     """
     引数に'ひたちなか'を指定したとき、'ひたちなか市民球場'を返すことを確認する。
     """
@@ -722,7 +722,7 @@ def test_get_full_team_name_24():
     assert_equal('ひたちなか市民球場', actual)
 
 
-def test_get_full_team_name_25():
+def test_get_full_stadium_name_25():
     """
     引数に'秋田'を指定したとき、'こまちスタジアム'を返すことを確認する。
     """
@@ -730,7 +730,7 @@ def test_get_full_team_name_25():
     assert_equal('こまちスタジアム', actual)
 
 	
-def test_get_full_team_name_26():
+def test_get_full_stadium_name_26():
     """
     引数に'盛岡'を指定したとき、'岩手県営野球場'を返すことを確認する。
     """
@@ -738,7 +738,7 @@ def test_get_full_team_name_26():
     assert_equal('岩手県営野球場', actual)
 	
 
-def test_get_full_team_name_27():
+def test_get_full_stadium_name_27():
     """
     引数に'三次'を指定したとき、'三次きんさいスタジアム'を返すことを確認する。
     """
@@ -746,7 +746,7 @@ def test_get_full_team_name_27():
     assert_equal('三次きんさいスタジアム', actual)
 
 
-def test_get_full_team_name_28():
+def test_get_full_stadium_name_28():
     """
     引数に'呉'を指定したとき、'呉市二河野球場'を返すことを確認する。
     """
@@ -754,7 +754,7 @@ def test_get_full_team_name_28():
     assert_equal('呉市二河野球場', actual)
 
 	
-def test_get_full_team_name_29():
+def test_get_full_stadium_name_29():
     """
     引数に'郡山'を指定したとき、'郡山総合運動場開成山野球場'を返すことを確認する。
     """
@@ -762,7 +762,7 @@ def test_get_full_team_name_29():
     assert_equal('郡山総合運動場開成山野球場', actual)
 	
 	
-def test_get_full_team_name_30():
+def test_get_full_stadium_name_30():
     """
     引数に'浜松'を指定したとき、'浜松球場'を返すことを確認する。
     """
@@ -770,7 +770,7 @@ def test_get_full_team_name_30():
     assert_equal('浜松球場', actual)
 	
 	
-def test_get_full_team_name_31():
+def test_get_full_stadium_name_31():
     """
     引数に'倉敷'を指定したとき、'マスカットスタジアム'を返すことを確認する。
     """
@@ -778,7 +778,7 @@ def test_get_full_team_name_31():
     assert_equal('マスカットスタジアム', actual)
 	
 
-def test_get_full_team_name_32():
+def test_get_full_stadium_name_32():
     """
     引数に'金沢'を指定したとき、'石川県立野球場'を返すことを確認する。
     """
@@ -786,7 +786,7 @@ def test_get_full_team_name_32():
     assert_equal('石川県立野球場', actual)
 
 	
-def test_get_full_team_name_33():
+def test_get_full_stadium_name_33():
     """
     引数に'富山'を指定したとき、'富山市民球場アルペンスタジアム'を返すことを確認する。
     """
@@ -794,7 +794,7 @@ def test_get_full_team_name_33():
     assert_equal('富山市民球場アルペンスタジアム', actual)
 	
 
-def test_get_full_team_name_34():
+def test_get_full_stadium_name_34():
     """
     引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
     """
@@ -802,7 +802,7 @@ def test_get_full_team_name_34():
     assert_equal('静岡県草薙総合運動場硬式野球場', actual)
 	
 	
-def test_get_full_team_name_35():
+def test_get_full_stadium_name_35():
     """
     引数に'沖縄セルラー那覇'を指定したとき、'沖縄セルラースタジアム那覇'を返すことを確認する。
     """
@@ -810,12 +810,20 @@ def test_get_full_team_name_35():
     assert_equal('沖縄セルラースタジアム那覇', actual)
 	
 	
-def test_get_full_team_name_35():
+def test_get_full_stadium_name_36():
     """
     引数に'旭川'を指定したとき、'スタルヒン球場'を返すことを確認する。
     """
     actual = baseball.get_full_stadium_name('旭川')
     assert_equal('スタルヒン球場', actual)
+
+
+def test_get_full_stadium_name_37():
+    """
+    引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('荘内銀行・日新製薬スタジアム')
+    assert_equal('荘内銀行・日新製薬スタジアムやまがた', actual)
 
 
 def test_create_score_table_01():
