@@ -818,6 +818,14 @@ def test_get_full_team_name_35():
     assert_equal('スタルヒン球場', actual)
 
 
+def test_get_full_team_name_36():
+    """
+    引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('荘内銀行・日新製薬スタジアム')
+    assert_equal('荘内銀行・日新製薬スタジアムやまがた', actual)
+
+
 def test_create_score_table_01():
     """
     引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
