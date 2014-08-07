@@ -834,6 +834,14 @@ def test_get_full_stadium_name_38():
     assert_equal('帯広の森野球場', actual)
 
 
+def test_get_full_stadium_name_39():
+    """
+    引数に'豊橋'を指定したとき、'豊橋市民球場'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('豊橋')
+    assert_equal('豊橋市民球場', actual)
+
+
 def test_create_score_table_01():
     """
     引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
