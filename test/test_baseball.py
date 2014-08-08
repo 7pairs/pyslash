@@ -842,6 +842,14 @@ def test_get_full_stadium_name_39():
     assert_equal('豊橋市民球場', actual)
 
 
+def test_get_full_stadium_name_40():
+    """
+    引数に'ハードオフ新潟'を指定したとき、'HARD OFF ECOスタジアム新潟'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('ハードオフ新潟')
+    assert_equal('HARD OFF ECOスタジアム新潟', actual)
+
+
 def test_create_score_table_01():
     """
     引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
