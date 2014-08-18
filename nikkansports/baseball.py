@@ -384,7 +384,6 @@ def create_score_table(data):
 
     retval += '%s  %s  %s\n' % (bat_first, top_score, top_total_score)
     retval += '%s  %s  %s\n' % (field_first, bottom_score, bottom_total_score)
-    retval += '\n'
 
     # 投手成績
     win_pitcher, save_pitcher, lose_pitcher = add_zenkaku_space(
@@ -392,6 +391,9 @@ def create_score_table(data):
         data.get('save', [''])[0],
         data.get('lose', [''])[0]
     )
+
+    if 'win' in data or 'save' in data or 'lose' in data:
+        retval += '\n'
 
     if 'win' in data:
         retval += '[勝] %s %d勝%d敗%dＳ\n' % tuple([win_pitcher] + data['win'][1:])
@@ -421,6 +423,7 @@ def create_score_table(data):
 
     # 構築したスコアを返す
     return retval
+
 
 def find_or_error(bs, *args):
     """
