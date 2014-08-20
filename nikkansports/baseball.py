@@ -248,13 +248,25 @@ def create_dict(html):
                 tables = soup.find_all('table', {'class', 'batter'})
                 for i, table in enumerate(tables):
                     rows = table.find_all('tr')
+
+                    # イニングを収集
+                    inning_table = []
+                    cols = rows[0].find_all('th')
+                    for col in cols[8:]:
+                        inning = col.string.strip()
+                        if inning:
+                            inning_table.append(int(inning))
+                        else:
+                            inning_table.append(inning_table[-1])
+
+                    # 本塁打を収集
                     for row in rows[1:]:
                         cols = row.find_all('td')
                         for j, col in enumerate(cols[8:]):
                             m = re.search(r'.本', col.string)
                             if m:
                                 m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
-                                innings[m.group(1)].append(str(j + 1) + '回' + ['表', '裏'][i])
+                                innings[m.group(1)].append(str(inning_table[j]) + '回' + ['表', '裏'][i])
 
                 # 末尾の本塁打欄を解析
                 lines = footnote.find_all('dd')

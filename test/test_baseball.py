@@ -424,8 +424,32 @@ def test_create_dict_03():
     assert_equal([['10回表', 'ペーニャ', 1, 'ソロ', '宮西']], actual['homerun'])
 
 
-@raises(ParseError)
 def test_create_dict_04():
+    """
+    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （打者一巡時の本塁打欄不具合対応 #45）
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014081605.html')
+    actual = baseball.create_dict(html)
+    assert_equal('日本ハム', actual['bat_first'])
+    assert_equal('西武', actual['field_first'])
+    assert_equal(15, actual['match'])
+    assert_equal(datetime.date(2014, 8, 16), actual['date'])
+    assert_equal('西武ドーム', actual['stadium'])
+    assert_equal([
+        ['0', '0', '0', '0', '1', '4', '0', '1', '1', '1', '0', '0'],
+        ['0', '0', '0', '0', '6', '0', '0', '1', '0', '1', '0', '0'],
+    ], actual['score'])
+    assert_equal([8, 8], actual['total_score'])
+    assert_equal([
+        ['5回裏', '中村', 21, '２ラン', '吉川'],
+        ['10回表', '陽', 16, 'ソロ', '中郷'],
+        ['10回裏', '森', 3, 'ソロ', '増井'],
+    ], actual['homerun'])
+
+
+@raises(ParseError)
+def test_create_dict_05():
     """
     引数に無効なHTML文字列を指定したとき、ParseErrorが発生することを確認する。
     """
