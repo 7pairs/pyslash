@@ -103,6 +103,24 @@ def parse_date(target=''):
         return (str(today.year), '%02d' % today.month)
 
 
+def get_date(url):
+    """
+    指定されたURLを解析し、試合日を返す
+
+    @param url: URL
+    @type url: str
+    @return 試合日
+    @rtype datetime.date
+    """
+    # URLから試合日を抽出
+    m = re.search(r'http://www\.nikkansports\.com/baseball/professional/score/\d{4}/\D+(\d{4})(\d{2})(\d{2})\d+\.html', url)
+    if not m:
+        raise InvalidDateError()
+
+    # 抽出した日付を変換
+    return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+
+
 def get_url(team):
     """
     指定されたチームの試合結果のURLを文字列として返す。
