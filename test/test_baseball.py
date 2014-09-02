@@ -382,7 +382,6 @@ def test_create_dict_01():
     assert_equal('日本ハム', actual['bat_first'])
     assert_equal('西武', actual['field_first'])
     assert_equal(4, actual['match'])
-    assert_equal(datetime.date(2014, 4, 29), actual['date'])
     assert_equal('西武ドーム', actual['stadium'])
     assert_equal([
         ['0', '0', '0', '0', '0', '0', '1', '0', '0'],
@@ -405,7 +404,6 @@ def test_create_dict_02():
     assert_equal('西武', actual['bat_first'])
     assert_equal('ソフトバンク', actual['field_first'])
     assert_equal(7, actual['match'])
-    assert_equal(datetime.date(2014, 5, 9), actual['date'])
     assert_equal('北九州', actual['stadium'])
     assert_equal([
         ['0', '1', '0', '3', '0', '0', '0', '0', '2'],
@@ -428,7 +426,6 @@ def test_create_dict_03():
     assert_equal('オリックス', actual['bat_first'])
     assert_equal('日本ハム', actual['field_first'])
     assert_equal(1, actual['match'])
-    assert_equal(datetime.date(2014, 3, 28), actual['date'])
     assert_equal('札幌ドーム', actual['stadium'])
     assert_equal([
         ['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'],
@@ -450,7 +447,6 @@ def test_create_dict_04():
     assert_equal('日本ハム', actual['bat_first'])
     assert_equal('西武', actual['field_first'])
     assert_equal(15, actual['match'])
-    assert_equal(datetime.date(2014, 8, 16), actual['date'])
     assert_equal('西武ドーム', actual['stadium'])
     assert_equal([
         ['0', '0', '0', '0', '1', '4', '0', '1', '1', '1', '0', '0'],
