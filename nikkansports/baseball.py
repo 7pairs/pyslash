@@ -165,6 +165,7 @@ def get_score_table(url):
     # スコアテーブルを構築
     html = get_html(url)
     data = create_dict(html)
+    data['date'] = get_date(url)
     retval = create_score_table(data)
 
     # 構築したスコアテーブルを返す
@@ -220,11 +221,6 @@ def create_dict(html):
     match = find_or_error(soup, 'p', {'id': 'time'})
     m = search_or_error(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
     retval['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
-
-    # 試合日
-    date = find_or_error(soup, 'p', {'id': 'upDate'})
-    m = search_or_error(r'(\d+)年(\d+)月(\d+)日', date.span.string)
-    retval['date'] = datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
     # 球場
     stadium = find_or_error(soup, 'p', {'class': 'data'})
