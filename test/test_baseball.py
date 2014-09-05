@@ -918,6 +918,14 @@ def test_get_full_stadium_name_44():
     assert_equal('長野オリンピックスタジアム', actual)
 
 
+def test_get_full_stadium_name_45():
+    """
+    引数に'上毛敷島'を指定したとき、'上毛新聞敷島球場'を返すことを確認する。
+    """
+    actual = baseball.get_full_stadium_name('上毛敷島')
+    assert_equal('上毛新聞敷島球場', actual)
+
+
 def test_create_score_table_01():
     """
     引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
