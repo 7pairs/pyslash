@@ -460,8 +460,29 @@ def test_create_dict_04():
     ], actual['homerun'])
 
 
-@raises(ParseError)
 def test_create_dict_05():
+    """
+    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （コールド時のスコア不具合対応 #50）
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014090802.html')
+    actual = baseball.create_dict(html)
+    assert_equal('西武', actual['bat_first'])
+    assert_equal('ロッテ', actual['field_first'])
+    assert_equal(21, actual['match'])
+    assert_equal('ＱＶＣマリン', actual['stadium'])
+    assert_equal([
+        ['3', '0', '0', '1', '2', '1', '0x'],
+        ['0', '0', '0', '0', '0', '0', ''],
+    ], actual['score'])
+    assert_equal([7, 0], actual['total_score'])
+    assert_equal([
+        ['1回表', '中村', 30, 'ソロ', '藤岡'],
+    ], actual['homerun'])
+
+
+@raises(ParseError)
+def test_create_dict_06():
     """
     引数に無効なHTML文字列を指定したとき、ParseErrorが発生することを確認する。
     """
