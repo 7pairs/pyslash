@@ -151,7 +151,7 @@ def get_url(team):
                     raise ResultNotFoundError()
                 score = card.find('td', {'class': 'score'})
                 return score.a.get('href')
-    
+
 
 def get_score_table(url):
     """
@@ -234,8 +234,12 @@ def create_dict(html):
     rows = score.find_all('tr')
     for row in rows[1:]:
         cols = row.find_all('td')
-        retval['score'].append([x.string.lower() for x in cols[1:-1]])
+        retval['score'].append([x.string.strip().lower() for x in cols[1:-1]])
         retval['total_score'].append(int(cols[-1].string))
+    for i, (top, bottom) in enumerate(zip(retval['score'][0], retval['score'][1])):
+        if top == '' and bottom == '':
+            retval['score'][0] = retval['score'][0][:i]
+            retval['score'][1] = retval['score'][1][:i]
 
     # 勝利投手/セーブ投手/敗戦投手
     pitcher = soup.find('table', {'class': 'pitcher'})
