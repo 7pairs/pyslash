@@ -356,6 +356,22 @@ def test_get_calendar_url_03():
     baseball.get_calendar_url('l', 'YYYYmm')
 
 
+def test_get_game_url_01():
+    """
+    引数に有効なチーム名、日付を指定したとき、スコアテーブルのURLを返すことを確認する。
+    """
+    actual = baseball.get_game_url('l', datetime.date(2014, 5, 2))
+    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', actual)
+
+
+@raises(InvalidTeamError)
+def test_get_game_url_02():
+    """
+    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
+    """
+    baseball.get_calendar_url('q', datetime.date(2014, 5, 2))
+
+
 def test_get_html_01():
     """
     引数に有効なURLを指定したとき、そのURLのHTMLの内容を文字列として返すことを確認する。
