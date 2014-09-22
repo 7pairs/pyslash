@@ -61,6 +61,34 @@ def get_calendar_url(team, date=''):
     return url
 
 
+def get_game_url(team, date):
+    """
+    指定されたチーム、試合日のスコアのURLを返す。
+
+    :param team: チーム
+    :type team: str
+    :param date: 試合日
+    :type date: datetime.date
+    :return: URL
+    :rtype: str
+    """
+    # カレンダーのHTLを取得
+    url = get_calendar_url(team, '%04d%02d' % (date.year, date.month))
+    html = get_html(url)
+
+    # 試合のURLを取得
+    pattern = r'/baseball/professional/score/%04d/\D+%04d%02d%02d\d+\.html' % (
+        date.year,
+        date.year,
+        date.month,
+        date.day
+    )
+    m = re.search(pattern, html)
+
+    # 取得したURLを返す
+    return 'http://www.nikkansports.com' + m.group(0)
+
+
 def parse_date(target=''):
     """
     指定された文字列を年と月に分割して返す。
