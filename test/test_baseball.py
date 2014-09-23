@@ -3,7 +3,6 @@
 import datetime
 import textwrap
 
-from mock import Mock
 from mock import patch
 
 from nose.tools import *
@@ -114,7 +113,7 @@ def test_get_url_02(get_html):
     (東北楽天が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('e')
+    baseball.get_url('e')
 
 
 @patch('nikkansports.baseball.get_html')
@@ -125,7 +124,7 @@ def test_get_url_03(get_html):
     (千葉ロッテが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('m')
+    baseball.get_url('m')
 
 
 @patch('nikkansports.baseball.get_html')
@@ -136,7 +135,7 @@ def test_get_url_04(get_html):
     (福岡ソフトバンクが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('h')
+    baseball.get_url('h')
 
 
 @patch('nikkansports.baseball.get_html')
@@ -157,7 +156,7 @@ def test_get_url_06(get_html):
     (北海道日本ハムが試合開始前のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('f')
+    baseball.get_url('f')
 
 
 @patch('nikkansports.baseball.get_html')
@@ -168,7 +167,7 @@ def test_get_url_07(get_html):
     (読売が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('g')
+    baseball.get_url('g')
 
 
 @patch('nikkansports.baseball.get_html')
@@ -189,7 +188,7 @@ def test_get_url_09(get_html):
     (広島東洋が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('c')
+    baseball.get_url('c')
 
 
 @patch('nikkansports.baseball.get_html')
@@ -210,7 +209,7 @@ def test_get_url_11(get_html):
     (横浜ＤｅＮＡが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('bs')
+    baseball.get_url('bs')
 
 
 @patch('nikkansports.baseball.get_html')
@@ -221,7 +220,7 @@ def test_get_url_12(get_html):
     (東京ヤクルトが試合開始前のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('s')
+    baseball.get_url('s')
 
 
 @raises(InvalidTeamError)
@@ -229,7 +228,7 @@ def test_get_url_13():
     """
     引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
     """
-    actual = baseball.get_url('q')
+    baseball.get_url('q')
 
 
 def test_parse_date_01():
@@ -255,7 +254,7 @@ def test_parse_date_03():
     """
     引数に無効な2桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    year, month = baseball.parse_date('13')
+    baseball.parse_date('13')
 
 
 @raises(InvalidDateError)
@@ -263,7 +262,7 @@ def test_parse_date_04():
     """
     引数に無効な2桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    year, month = baseball.parse_date('LL')
+    baseball.parse_date('LL')
 
 
 def test_parse_date_05():
@@ -280,7 +279,7 @@ def test_parse_date_06():
     """
     引数に無効な4桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    year, month = baseball.parse_date('1313')
+    baseball.parse_date('1313')
 
 
 @raises(InvalidDateError)
@@ -288,7 +287,7 @@ def test_parse_date_07():
     """
     引数に無効な4桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    year, month = baseball.parse_date('Lism')
+    baseball.parse_date('Lism')
 
 
 def test_parse_date_08():
@@ -305,7 +304,7 @@ def test_parse_date_09():
     """
     引数に無効な6桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    year, month = baseball.parse_date('201313')
+    baseball.parse_date('201313')
 
 
 @raises(InvalidDateError)
@@ -313,7 +312,7 @@ def test_parse_date_10():
     """
     引数に無効な6桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    year, month = baseball.parse_date('Python')
+    baseball.parse_date('Python')
 
 
 def test_get_date_01():
@@ -329,7 +328,7 @@ def test_get_date_02():
     """
     引数に無効なURLを指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    actual = baseball.get_date('http://www.konami.jp/am/qma/character_s/')
+    baseball.get_date('http://www.konami.jp/am/qma/character_s/')
 
 
 def test_get_calendar_url_01():
@@ -504,7 +503,7 @@ def test_create_dict_06():
     """
     with open('./test/test_create_dict_error.html') as test_file:
         html = test_file.read()
-    actual = baseball.create_dict(html)
+    baseball.create_dict(html)
 
 
 def test_get_full_team_name_01():
@@ -802,14 +801,14 @@ def test_get_full_stadium_name_25():
     actual = baseball.get_full_stadium_name('秋田')
     assert_equal('こまちスタジアム', actual)
 
-	
+
 def test_get_full_stadium_name_26():
     """
     引数に'盛岡'を指定したとき、'岩手県営野球場'を返すことを確認する。
     """
     actual = baseball.get_full_stadium_name('盛岡')
     assert_equal('岩手県営野球場', actual)
-	
+
 
 def test_get_full_stadium_name_27():
     """
@@ -826,30 +825,30 @@ def test_get_full_stadium_name_28():
     actual = baseball.get_full_stadium_name('呉')
     assert_equal('呉市二河野球場', actual)
 
-	
+
 def test_get_full_stadium_name_29():
     """
     引数に'郡山'を指定したとき、'郡山総合運動場開成山野球場'を返すことを確認する。
     """
     actual = baseball.get_full_stadium_name('郡山')
     assert_equal('郡山総合運動場開成山野球場', actual)
-	
-	
+
+
 def test_get_full_stadium_name_30():
     """
     引数に'浜松'を指定したとき、'浜松球場'を返すことを確認する。
     """
     actual = baseball.get_full_stadium_name('浜松')
     assert_equal('浜松球場', actual)
-	
-	
+
+
 def test_get_full_stadium_name_31():
     """
     引数に'倉敷'を指定したとき、'マスカットスタジアム'を返すことを確認する。
     """
     actual = baseball.get_full_stadium_name('倉敷')
     assert_equal('マスカットスタジアム', actual)
-	
+
 
 def test_get_full_stadium_name_32():
     """
@@ -858,32 +857,24 @@ def test_get_full_stadium_name_32():
     actual = baseball.get_full_stadium_name('金沢')
     assert_equal('石川県立野球場', actual)
 
-	
+
 def test_get_full_stadium_name_33():
     """
     引数に'富山'を指定したとき、'富山市民球場アルペンスタジアム'を返すことを確認する。
     """
     actual = baseball.get_full_stadium_name('富山')
     assert_equal('富山市民球場アルペンスタジアム', actual)
-	
+
 
 def test_get_full_stadium_name_34():
-    """
-    引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
-    """
-    actual = baseball.get_full_stadium_name('静岡')
-    assert_equal('静岡県草薙総合運動場硬式野球場', actual)
-	
-	
-def test_get_full_stadium_name_35():
     """
     引数に'沖縄セルラー那覇'を指定したとき、'沖縄セルラースタジアム那覇'を返すことを確認する。
     """
     actual = baseball.get_full_stadium_name('沖縄セルラー那覇')
     assert_equal('沖縄セルラースタジアム那覇', actual)
-	
-	
-def test_get_full_stadium_name_36():
+
+
+def test_get_full_stadium_name_35():
     """
     引数に'旭川'を指定したとき、'スタルヒン球場'を返すことを確認する。
     """
@@ -891,7 +882,7 @@ def test_get_full_stadium_name_36():
     assert_equal('スタルヒン球場', actual)
 
 
-def test_get_full_stadium_name_37():
+def test_get_full_stadium_name_36():
     """
     引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
     """
@@ -899,7 +890,7 @@ def test_get_full_stadium_name_37():
     assert_equal('荘内銀行・日新製薬スタジアムやまがた', actual)
 
 
-def test_get_full_stadium_name_38():
+def test_get_full_stadium_name_37():
     """
     引数に'帯広'を指定したとき、'帯広の森野球場'を返すことを確認する。
     """
@@ -907,7 +898,7 @@ def test_get_full_stadium_name_38():
     assert_equal('帯広の森野球場', actual)
 
 
-def test_get_full_stadium_name_39():
+def test_get_full_stadium_name_38():
     """
     引数に'豊橋'を指定したとき、'豊橋市民球場'を返すことを確認する。
     """
@@ -915,7 +906,7 @@ def test_get_full_stadium_name_39():
     assert_equal('豊橋市民球場', actual)
 
 
-def test_get_full_stadium_name_40():
+def test_get_full_stadium_name_39():
     """
     引数に'ハードオフ新潟'を指定したとき、'HARD OFF ECOスタジアム新潟'を返すことを確認する。
     """
@@ -923,7 +914,7 @@ def test_get_full_stadium_name_40():
     assert_equal('HARD OFF ECOスタジアム新潟', actual)
 
 
-def test_get_full_stadium_name_41():
+def test_get_full_stadium_name_40():
     """
     引数に'熊本'を指定したとき、'藤崎台県営野球場'を返すことを確認する。
     """
@@ -931,7 +922,7 @@ def test_get_full_stadium_name_41():
     assert_equal('藤崎台県営野球場', actual)
 
 
-def test_get_full_stadium_name_42():
+def test_get_full_stadium_name_41():
     """
     引数に'岐阜'を指定したとき、'長良川球場'を返すことを確認する。
     """
@@ -939,7 +930,7 @@ def test_get_full_stadium_name_42():
     assert_equal('長良川球場', actual)
 
 
-def test_get_full_stadium_name_43():
+def test_get_full_stadium_name_42():
     """
     引数に'松山'を指定したとき、'坊っちゃんスタジアム'を返すことを確認する。
     """
@@ -947,7 +938,7 @@ def test_get_full_stadium_name_43():
     assert_equal('坊っちゃんスタジアム', actual)
 
 
-def test_get_full_stadium_name_44():
+def test_get_full_stadium_name_43():
     """
     引数に'長野'を指定したとき、'長野オリンピックスタジアム'を返すことを確認する。
     """
@@ -955,7 +946,7 @@ def test_get_full_stadium_name_44():
     assert_equal('長野オリンピックスタジアム', actual)
 
 
-def test_get_full_stadium_name_45():
+def test_get_full_stadium_name_44():
     """
     引数に'上毛敷島'を指定したとき、'上毛新聞敷島球場'を返すことを確認する。
     """
@@ -963,7 +954,7 @@ def test_get_full_stadium_name_45():
     assert_equal('上毛新聞敷島球場', actual)
 
 
-def test_get_full_stadium_name_46():
+def test_get_full_stadium_name_45():
     """
     引数に'宇都宮'を指定したとき、'宇都宮清原球場'を返すことを確認する。
     """
