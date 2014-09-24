@@ -3,15 +3,11 @@
 from collections import defaultdict
 import datetime
 import re
-import sys
 import urllib.request
 
 from bs4 import BeautifulSoup
 
-try:
-    from nikkansports.exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
-except ImportError:
-    from exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
+from .exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 
 
 # チーム短縮名変換テーブル
@@ -96,7 +92,7 @@ def parse_date(target=''):
     @param target: 年月
     @type target: str
     @return: 年、月
-    @rtype: tupple
+    @rtype: tuple
     """
     # システム日付を取得
     today = datetime.datetime.today()
@@ -107,8 +103,8 @@ def parse_date(target=''):
         month = target[4:]
         try:
             if 1 <= int(month) <= 12:
-                return (year, month)
-        except:
+                return year, month
+        except ValueError:
             pass
         raise InvalidDateError()
     elif len(target) == 4:
@@ -116,19 +112,19 @@ def parse_date(target=''):
         month = target[2:]
         try:
             if 1 <= int(month) <= 12:
-                return (year, month)
-        except:
+                return year, month
+        except ValueError:
             pass
         raise InvalidDateError()
     elif len(target) == 2:
         try:
             if 1 <= int(target) <= 12:
-                return (str(today.year), target)
-        except:
+                return str(today.year), target
+        except ValueError:
             pass
         raise InvalidDateError()
     elif len(target) == 0:
-        return (str(today.year), '%02d' % today.month)
+        return str(today.year), '%02d' % today.month
 
 
 def get_date(url):
@@ -141,7 +137,8 @@ def get_date(url):
     @rtype datetime.date
     """
     # URLから試合日を抽出
-    m = re.search(r'http://www\.nikkansports\.com/baseball/professional/score/\d{4}/\D+(\d{4})(\d{2})(\d{2})\d+\.html', url)
+    pattern = r'http://www\.nikkansports\.com/baseball/professional/score/\d{4}/\D+(\d{4})(\d{2})(\d{2})\d+\.html'
+    m = re.search(pattern, url)
     if not m:
         raise InvalidDateError()
 
@@ -217,7 +214,7 @@ def get_html(url):
             if not encoding:
                 encoding = 'utf-8'
             html = response.read().decode(encoding)
-    except Exception as e:
+    except Exception:
         pass
 
     # HTMLを文字列として返す
@@ -230,7 +227,7 @@ def create_dict(html):
 
     @param html: HTML文字列
     @type html: str
-    @retrun: スコア情報
+    @return: スコア情報
     @rtype: dict
     """
     # 戻り値用辞書
@@ -389,7 +386,6 @@ FULL_STADIUM_NAME = {
     '倉敷': 'マスカットスタジアム',
     '金沢': '石川県立野球場',
     '富山': '富山市民球場アルペンスタジアム',
-    '静岡': '静岡県草薙総合運動場硬式野球場',
     '沖縄セルラー那覇': '沖縄セルラースタジアム那覇',
     '旭川': 'スタルヒン球場',
     '荘内銀行・日新製薬スタジアム': '荘内銀行・日新製薬スタジアムやまがた',
@@ -409,8 +405,8 @@ def get_full_stadium_name(stadium_name):
     """
     指定された球場名を正式名称に変換する。
 
-    @param team_name: 球場名
-    @type team_name: str
+    @param stadium_name: 球場名
+    @type stadium_name: str
     @return: 変換後の球場名
     @rtype: str
     """
@@ -618,14 +614,3 @@ def space_padding(*args):
 
     # 編集結果を返す
     return tuple(retval)
-
-
-if __name__ == '__main__':
-    # 引数をチェック
-    if len(sys.argv) != 2:
-        print('Usage: python %s url' % sys.argv[0])
-        quit()
-
-    # スコアテーブルを出力
-    score_table = get_score_table(sys.argv[1])
-    print(score_table)
