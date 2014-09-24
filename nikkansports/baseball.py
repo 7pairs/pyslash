@@ -3,7 +3,6 @@
 from collections import defaultdict
 import datetime
 import re
-import sys
 import urllib.request
 
 from bs4 import BeautifulSoup
@@ -615,14 +614,3 @@ def space_padding(*args):
 
     # 編集結果を返す
     return tuple(retval)
-
-
-if __name__ == '__main__':
-    # 引数をチェック
-    if len(sys.argv) != 2:
-        print('Usage: python %s url' % sys.argv[0])
-        quit()
-
-    # スコアテーブルを出力
-    score_table = get_score_table(sys.argv[1])
-    print(score_table)
