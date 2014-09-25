@@ -231,90 +231,6 @@ def test_get_url_13():
     baseball.get_url('q')
 
 
-def test_parse_date_01():
-    """
-    引数に何も指定しなかったとき、システム日付の年、月を返すことを確認する。
-    """
-    year, month = baseball.parse_date()
-    assert_equal('2014', year)
-    assert_equal('%02d' % datetime.datetime.today().month, month)
-
-
-def test_parse_date_02():
-    """
-    引数に2桁の文字列を指定したとき、システム日付の年、指定された月を返すことを確認する。
-    """
-    year, month = baseball.parse_date('08')
-    assert_equal('2014', year)
-    assert_equal('08', month)
-
-
-@raises(InvalidDateError)
-def test_parse_date_03():
-    """
-    引数に無効な2桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
-    """
-    baseball.parse_date('13')
-
-
-@raises(InvalidDateError)
-def test_parse_date_04():
-    """
-    引数に無効な2桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
-    """
-    baseball.parse_date('LL')
-
-
-def test_parse_date_05():
-    """
-    引数に4桁の文字列を指定したとき、指定された年、指定された月を返すことを確認する。
-    """
-    year, month = baseball.parse_date('1306')
-    assert_equal('2013', year)
-    assert_equal('06', month)
-
-
-@raises(InvalidDateError)
-def test_parse_date_06():
-    """
-    引数に無効な4桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
-    """
-    baseball.parse_date('1313')
-
-
-@raises(InvalidDateError)
-def test_parse_date_07():
-    """
-    引数に無効な4桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
-    """
-    baseball.parse_date('Lism')
-
-
-def test_parse_date_08():
-    """
-    引数に6桁の文字列を指定したとき、指定された年、指定された月を返すことを確認する。
-    """
-    year, month = baseball.parse_date('201510')
-    assert_equal('2015', year)
-    assert_equal('10', month)
-
-
-@raises(InvalidDateError)
-def test_parse_date_09():
-    """
-    引数に無効な6桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
-    """
-    baseball.parse_date('201313')
-
-
-@raises(InvalidDateError)
-def test_parse_date_10():
-    """
-    引数に無効な6桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
-    """
-    baseball.parse_date('Python')
-
-
 def test_get_date_01():
     """
     引数にスコアテーブルのURLを指定したとき、試合日を返すことを確認する。
@@ -335,7 +251,7 @@ def test_get_calendar_url_01():
     """
     引数に正しいチーム名を指定したとき、カレンダーのURLを返すことを確認する。
     """
-    actual = baseball.get_calendar_url('l', '201404')
+    actual = baseball.get_calendar_url('l', '20140401')
     assert_equal('http://www.nikkansports.com/baseball/professional/schedule/2014/l201404.html', actual)
 
 
@@ -344,15 +260,7 @@ def test_get_calender_url_02():
     """
     引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
     """
-    baseball.get_calendar_url('q', '201404')
-
-
-@raises(InvalidDateError)
-def test_get_calendar_url_03():
-    """
-    引数に無効な6桁の文字列を指定したとき、InvalidDateErrorがraiseされることを確認する。
-    """
-    baseball.get_calendar_url('l', 'YYYYmm')
+    baseball.get_calendar_url('q', '20140401')
 
 
 def test_get_game_url_01():
@@ -1233,4 +1141,23 @@ def test_get_score_table():
     """)
 
     actual = baseball.get_score_table('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+    assert_equal(expected, actual)
+
+
+def test_get_score_table_by_param():
+    """
+    引数に有効なチーム、日付を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    """
+    expected = textwrap.dedent("""\
+        【千葉ロッテ vs 埼玉西武 第6回戦】
+        （2014年5月2日：QVCマリンフィールド）
+
+        埼玉西武　  0 2 0  0 0 0  0 0 0  2
+        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
+
+        [勝] 岸　 3勝2敗0Ｓ
+        [敗] 成瀬 3勝2敗0Ｓ
+    """)
+
+    actual = baseball.get_score_table_by_param('l', '20140502')
     assert_equal(expected, actual)

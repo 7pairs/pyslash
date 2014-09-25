@@ -43,14 +43,17 @@ def get_calendar_url(team, date=''):
         raise InvalidTeamError()
 
     # 日付を年と月に分割
-    year, month = parse_date(date)
+    if date:
+        target_date = datetime.datetime.strptime(date, '%Y%m%d')
+    else:
+        target_date = datetime.datetime.today()
 
     # URLを構築
-    url = 'http://www.nikkansports.com/baseball/professional/schedule/%s/%s%s%s.html' % (
-        year,
+    url = 'http://www.nikkansports.com/baseball/professional/schedule/%04d/%s%04d%02d.html' % (
+        target_date.year,
         team,
-        year,
-        month
+        target_date.year,
+        target_date.month
     )
 
     # 構築したURLを返す
@@ -69,7 +72,7 @@ def get_game_url(team, date):
     :rtype: str
     """
     # カレンダーのHTLを取得
-    url = get_calendar_url(team, '%04d%02d' % (date.year, date.month))
+    url = get_calendar_url(team, '%04d%02d%02d' % (date.year, date.month, date.day))
     html = get_html(url)
 
     # 試合のURLを取得
@@ -83,48 +86,6 @@ def get_game_url(team, date):
 
     # 取得したURLを返す
     return 'http://www.nikkansports.com' + m.group(0)
-
-
-def parse_date(target=''):
-    """
-    指定された文字列を年と月に分割して返す。
-
-    @param target: 年月
-    @type target: str
-    @return: 年、月
-    @rtype: tuple
-    """
-    # システム日付を取得
-    today = datetime.datetime.today()
-
-    # 年と月を分割
-    if len(target) == 6:
-        year = target[:4]
-        month = target[4:]
-        try:
-            if 1 <= int(month) <= 12:
-                return year, month
-        except ValueError:
-            pass
-        raise InvalidDateError()
-    elif len(target) == 4:
-        year = '20' + target[:2]
-        month = target[2:]
-        try:
-            if 1 <= int(month) <= 12:
-                return year, month
-        except ValueError:
-            pass
-        raise InvalidDateError()
-    elif len(target) == 2:
-        try:
-            if 1 <= int(target) <= 12:
-                return str(today.year), target
-        except ValueError:
-            pass
-        raise InvalidDateError()
-    elif len(target) == 0:
-        return str(today.year), '%02d' % today.month
 
 
 def get_date(url):
@@ -188,6 +149,34 @@ def get_score_table(url):
     @rtype: str
     """
     # スコアテーブルを構築
+    html = get_html(url)
+    data = create_dict(html)
+    data['date'] = get_date(url)
+    retval = create_score_table(data)
+
+    # 構築したスコアテーブルを返す
+    return retval
+
+
+def get_score_table_by_param(team, date):
+    """
+    指定されたチーム、日付からスコアテーブルを取得して文字列として返す。
+
+    :param team: チーム
+    :type team: str
+    :param date: 試合日
+    :type date: str
+    :return: スコアテーブル
+    :rtype: str
+    """
+    # 対象日をdateオブジェクトに変換
+    if date:
+        target_date = datetime.datetime.strptime(date, '%Y%m%d')
+    else:
+        target_date = datetime.datetime.today()
+
+    # スコアテーブルを構築
+    url = get_game_url(team, target_date)
     html = get_html(url)
     data = create_dict(html)
     data['date'] = get_date(url)
