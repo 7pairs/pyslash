@@ -160,13 +160,30 @@ def get_score_table(url):
 
 def get_score_table_by_param(team, date):
     """
+    指定されたチーム、日付からスコアテーブルを取得して文字列として返す。
 
-    :param team:
-    :param date:
-    :return:
+    :param team: チーム
+    :type team: str
+    :param date: 試合日
+    :type date: str
+    :return: スコアテーブル
+    :rtype: str
     """
-    # スコアテーブルを構築
+    # 対象日をdateオブジェクトに変換
+    if date:
+        target_date = datetime.datetime.strptime(date, '%Y%m%d')
+    else:
+        target_date = datetime.datetime.today()
 
+    # スコアテーブルを構築
+    url = get_game_url(team, target_date)
+    html = get_html(url)
+    data = create_dict(html)
+    data['date'] = get_date(url)
+    retval = create_score_table(data)
+
+    # 構築したスコアテーブルを返す
+    return retval
 
 
 def get_html(url):
