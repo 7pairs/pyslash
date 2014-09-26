@@ -1,16 +1,38 @@
 # -*- coding: utf-8 -*-
 
-import sys
+"""
+execute.py
+
+Usage:
+execute.py -t <team> [-d <day>]
+execute.py -u <url>
+execute.py -h | --help
+execute.py -v | --version
+
+Options:
+-d <day>      game day.
+-h --help     print this help message and exit.
+-t <team>     initials of team.
+-u <url>      url of score table.
+-v --version  print the version number and exit.
+"""
+
+from docopt import docopt
 
 import nikkansports.baseball
 
 
-if __name__ == '__main__':
-    # 引数をチェック
-    if len(sys.argv) != 2:
-        print('Usage: python %s url' % sys.argv[0])
-        quit()
+# バージョン番号
+VERSION = '1.0.0'
 
-    # スコアテーブルを出力
-    score_table = nikkansports.baseball.get_score_table(sys.argv[1])
-    print(score_table)
+
+if __name__ == '__main__':
+    # 引数を取得する
+    args = docopt(__doc__, version=VERSION)
+
+    # スコアテーブルを出力する
+    if args.get('-t'):
+        day = args.get('-d') or ''
+        print(nikkansports.baseball.get_score_table_by_param(args['-t'], day))
+    elif args.get('-u'):
+        print(nikkansports.baseball.get_score_table(args['-u']))
