@@ -1140,7 +1140,7 @@ def test_get_score_table():
         [敗] 成瀬 3勝2敗0Ｓ
     """)
 
-    actual = baseball.get_score_table('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+    actual = baseball.get_score_table_by_url('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
     assert_equal(expected, actual)
 
 

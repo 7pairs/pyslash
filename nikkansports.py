@@ -35,4 +35,4 @@ if __name__ == '__main__':
         day = args.get('-d') or ''
         print(crawler.baseball.get_score_table_by_param(args['-t'], day))
     elif args.get('-u'):
-        print(crawler.baseball.get_score_table(args['-u']))
+        print(crawler.baseball.get_score_table_by_url(args['-u']))

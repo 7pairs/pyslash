@@ -139,7 +139,7 @@ def get_url(team):
                 return score.a.get('href')
 
 
-def get_score_table(url):
+def get_score_table_by_url(url):
     """
     指定されたURLからスコアテーブルを取得して文字列として返す。
 
