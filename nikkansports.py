@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 """
-execute.py
+nikkansports.py
 
 Usage:
-execute.py -t <team> [-d <day>]
-execute.py -u <url>
-execute.py -h | --help
-execute.py -v | --version
+nikkansports.py -t <team> [-d <day>]
+nikkansports.py -u <url>
+nikkansports.py -h | --help
+nikkansports.py -v | --version
 
 Options:
 -d <day>      game day.
