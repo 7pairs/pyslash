@@ -19,7 +19,7 @@ Options:
 
 from docopt import docopt
 
-import nikkansports.baseball
+import crawler.baseball
 
 
 # バージョン番号
@@ -33,6 +33,6 @@ if __name__ == '__main__':
     # スコアテーブルを出力する
     if args.get('-t'):
         day = args.get('-d') or ''
-        print(nikkansports.baseball.get_score_table_by_param(args['-t'], day))
+        print(crawler.baseball.get_score_table_by_param(args['-t'], day))
     elif args.get('-u'):
-        print(nikkansports.baseball.get_score_table(args['-u']))
+        print(crawler.baseball.get_score_table(args['-u']))

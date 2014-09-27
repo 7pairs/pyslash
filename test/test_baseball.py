@@ -7,8 +7,8 @@ from mock import patch
 
 from nose.tools import *
 
-from nikkansports import baseball
-from nikkansports.exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
+from crawler import baseball
+from crawler.exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 
 
 RETURN_VALUE_FOR_GET_URL = """\
@@ -95,7 +95,7 @@ RETURN_VALUE_FOR_GET_URL = """\
 """
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 def test_get_url_01(get_html):
     """
     引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
@@ -105,7 +105,7 @@ def test_get_url_01(get_html):
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_02(get_html):
     """
@@ -116,7 +116,7 @@ def test_get_url_02(get_html):
     baseball.get_url('e')
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_03(get_html):
     """
@@ -127,7 +127,7 @@ def test_get_url_03(get_html):
     baseball.get_url('m')
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_04(get_html):
     """
@@ -138,7 +138,7 @@ def test_get_url_04(get_html):
     baseball.get_url('h')
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 def test_get_url_05(get_html):
     """
     引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
@@ -148,7 +148,7 @@ def test_get_url_05(get_html):
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_06(get_html):
     """
@@ -159,7 +159,7 @@ def test_get_url_06(get_html):
     baseball.get_url('f')
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_07(get_html):
     """
@@ -170,7 +170,7 @@ def test_get_url_07(get_html):
     baseball.get_url('g')
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 def test_get_url_08(get_html):
     """
     引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
@@ -180,7 +180,7 @@ def test_get_url_08(get_html):
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_09(get_html):
     """
@@ -191,7 +191,7 @@ def test_get_url_09(get_html):
     baseball.get_url('c')
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 def test_get_url_10(get_html):
     """
     引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
@@ -201,7 +201,7 @@ def test_get_url_10(get_html):
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_11(get_html):
     """
@@ -212,7 +212,7 @@ def test_get_url_11(get_html):
     baseball.get_url('bs')
 
 
-@patch('nikkansports.baseball.get_html')
+@patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_url_12(get_html):
     """

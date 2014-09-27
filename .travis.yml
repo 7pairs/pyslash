@@ -9,7 +9,7 @@ install:
     - pip install coveralls
 
 script:
-    - nosetests --with-coverage --cover-package=nikkansports
+    - nosetests --with-coverage --cover-package=crawler
 
 after_success:
     - coveralls
