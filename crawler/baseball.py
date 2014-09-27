@@ -158,7 +158,7 @@ def get_score_table_by_url(url):
     return retval
 
 
-def get_score_table_by_param(team, date):
+def get_score_table(team, date):
     """
     指定されたチーム、日付からスコアテーブルを取得して文字列として返す。
 

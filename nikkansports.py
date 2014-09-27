@@ -33,6 +33,6 @@ if __name__ == '__main__':
     # スコアテーブルを出力する
     if args.get('-t'):
         day = args.get('-d') or ''
-        print(crawler.baseball.get_score_table_by_param(args['-t'], day))
+        print(crawler.baseball.get_score_table(args['-t'], day))
     elif args.get('-u'):
         print(crawler.baseball.get_score_table_by_url(args['-u']))
