@@ -251,7 +251,7 @@ def test_get_calendar_url_01():
     """
     引数に正しいチーム名を指定したとき、カレンダーのURLを返すことを確認する。
     """
-    actual = baseball.get_calendar_url('l', '20140401')
+    actual = baseball.get_calendar_url('l', datetime.datetime.strptime('20140401', '%Y%m%d'))
     assert_equal('http://www.nikkansports.com/baseball/professional/schedule/2014/l201404.html', actual)
 
 
@@ -260,7 +260,7 @@ def test_get_calender_url_02():
     """
     引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
     """
-    baseball.get_calendar_url('q', '20140401')
+    baseball.get_calendar_url('q', datetime.datetime.strptime('20140401', '%Y%m%d'))
 
 
 def test_get_game_url_01():

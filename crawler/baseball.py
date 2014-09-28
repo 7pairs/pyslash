@@ -64,33 +64,27 @@ SHORT_TEAM_NAMES = {
 }
 
 
-def get_calendar_url(team, date=''):
+def get_calendar_url(team, day):
     """
-    指定されたチーム、年月のカレンダーのURLを返す。
+    指定されたチーム、日付のカレンダーのURLを返す。
 
-    @param team: チーム
-    @type team: str
-    @param date: 年月
-    @type date: str
-    @return: カレンダーのURL
-    @rtype: str
+    :param team: チーム略称
+    :type team: str
+    :param day: 日付
+    :type day: datetime.datetime
+    :return: カレンダーのURL
+    :rtype: str
     """
     # チーム名をチェック
     if team not in SHORT_TEAM_NAMES:
         raise InvalidTeamError()
 
-    # 日付を年と月に分割
-    if date:
-        target_date = datetime.datetime.strptime(date, '%Y%m%d')
-    else:
-        target_date = datetime.datetime.today()
-
     # URLを構築
     url = 'http://www.nikkansports.com/baseball/professional/schedule/%04d/%s%04d%02d.html' % (
-        target_date.year,
+        day.year,
         team,
-        target_date.year,
-        target_date.month
+        day.year,
+        day.month
     )
 
     # 構築したURLを返す
@@ -109,7 +103,7 @@ def get_game_url(team, day):
     :rtype: str
     """
     # カレンダーのHTLを取得
-    url = get_calendar_url(team, '%04d%02d%02d' % (day.year, day.month, day.day))
+    url = get_calendar_url(team, day)
     html = get_html(url)
 
     # 試合のURLを取得
