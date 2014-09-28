@@ -101,7 +101,7 @@ def test_get_url_01(get_html):
     引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('l')
+    actual = baseball.get_today_game_url('l')
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
 
 
@@ -113,7 +113,7 @@ def test_get_url_02(get_html):
     (東北楽天が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('e')
+    baseball.get_today_game_url('e')
 
 
 @patch('crawler.baseball.get_html')
@@ -124,7 +124,7 @@ def test_get_url_03(get_html):
     (千葉ロッテが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('m')
+    baseball.get_today_game_url('m')
 
 
 @patch('crawler.baseball.get_html')
@@ -135,7 +135,7 @@ def test_get_url_04(get_html):
     (福岡ソフトバンクが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('h')
+    baseball.get_today_game_url('h')
 
 
 @patch('crawler.baseball.get_html')
@@ -144,7 +144,7 @@ def test_get_url_05(get_html):
     引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('bu')
+    actual = baseball.get_today_game_url('bu')
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
 
 
@@ -156,7 +156,7 @@ def test_get_url_06(get_html):
     (北海道日本ハムが試合開始前のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('f')
+    baseball.get_today_game_url('f')
 
 
 @patch('crawler.baseball.get_html')
@@ -167,7 +167,7 @@ def test_get_url_07(get_html):
     (読売が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('g')
+    baseball.get_today_game_url('g')
 
 
 @patch('crawler.baseball.get_html')
@@ -176,7 +176,7 @@ def test_get_url_08(get_html):
     引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('t')
+    actual = baseball.get_today_game_url('t')
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
 
 
@@ -188,7 +188,7 @@ def test_get_url_09(get_html):
     (広島東洋が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('c')
+    baseball.get_today_game_url('c')
 
 
 @patch('crawler.baseball.get_html')
@@ -197,7 +197,7 @@ def test_get_url_10(get_html):
     引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_url('d')
+    actual = baseball.get_today_game_url('d')
     assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
 
 
@@ -209,7 +209,7 @@ def test_get_url_11(get_html):
     (横浜ＤｅＮＡが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('bs')
+    baseball.get_today_game_url('bs')
 
 
 @patch('crawler.baseball.get_html')
@@ -220,7 +220,7 @@ def test_get_url_12(get_html):
     (東京ヤクルトが試合開始前のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_url('s')
+    baseball.get_today_game_url('s')
 
 
 @raises(InvalidTeamError)
@@ -228,7 +228,7 @@ def test_get_url_13():
     """
     引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
     """
-    baseball.get_url('q')
+    baseball.get_today_game_url('q')
 
 
 def test_get_date_01():

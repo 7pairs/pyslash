@@ -129,7 +129,7 @@ def get_date(url):
     return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
 
-def get_url(team):
+def get_today_game_url(team):
     """
     指定されたチームの試合結果のURLを文字列として返す。
 
