@@ -16,6 +16,7 @@ Options:
 -u <url>      url of score table.
 -v --version  print the version number and exit.
 """
+import datetime
 
 from docopt import docopt
 
@@ -32,7 +33,8 @@ if __name__ == '__main__':
 
     # スコアテーブルを出力する
     if args.get('-t'):
-        day = args.get('-d') or ''
+        day_str = args.get('-d')
+        day = datetime.datetime.strptime(day_str, '%Y%m%d') if day_str else None
         print(crawler.baseball.get_score_table(args['-t'], day))
     elif args.get('-u'):
         print(crawler.baseball.get_score_table_by_url(args['-u']))

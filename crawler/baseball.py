@@ -10,6 +10,28 @@ from bs4 import BeautifulSoup
 from .exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 
 
+def get_score_table(team, day):
+    """
+    指定されたチーム、試合日のスコアテーブルを文字列として返す。
+
+    :param team: チーム略称
+    :type team: str
+    :param day: 試合日
+    :type day: datetime.datetime
+    :return: スコアテーブル
+    :rtype: str
+    """
+    # スコアテーブルを構築
+    url = get_game_url(team, day)
+    html = get_html(url)
+    data = create_dict(html)
+    data['date'] = get_date(url)
+    retval = create_score_table(data)
+
+    # 構築したスコアテーブルを返す
+    return retval
+
+
 # チーム短縮名変換テーブル
 SHORT_TEAM_NAMES = {
     'l': '西武',
@@ -60,27 +82,27 @@ def get_calendar_url(team, date=''):
     return url
 
 
-def get_game_url(team, date):
+def get_game_url(team, day):
     """
-    指定されたチーム、試合日のスコアのURLを返す。
+    指定されたチーム、試合日のスコアテーブルのURLを返す。
 
-    :param team: チーム
+    :param team: チーム略称
     :type team: str
-    :param date: 試合日
-    :type date: datetime.date
-    :return: URL
+    :param day: 試合日
+    :type day: datetime.datetime
+    :return: スコアテーブルのURL
     :rtype: str
     """
     # カレンダーのHTLを取得
-    url = get_calendar_url(team, '%04d%02d%02d' % (date.year, date.month, date.day))
+    url = get_calendar_url(team, '%04d%02d%02d' % (day.year, day.month, day.day))
     html = get_html(url)
 
     # 試合のURLを取得
     pattern = r'/baseball/professional/score/%04d/\D+%04d%02d%02d\d+\.html' % (
-        date.year,
-        date.year,
-        date.month,
-        date.day
+        day.year,
+        day.year,
+        day.month,
+        day.day
     )
     m = re.search(pattern, html)
 
@@ -149,34 +171,6 @@ def get_score_table_by_url(url):
     @rtype: str
     """
     # スコアテーブルを構築
-    html = get_html(url)
-    data = create_dict(html)
-    data['date'] = get_date(url)
-    retval = create_score_table(data)
-
-    # 構築したスコアテーブルを返す
-    return retval
-
-
-def get_score_table(team, date):
-    """
-    指定されたチーム、日付からスコアテーブルを取得して文字列として返す。
-
-    :param team: チーム
-    :type team: str
-    :param date: 試合日
-    :type date: str
-    :return: スコアテーブル
-    :rtype: str
-    """
-    # 対象日をdateオブジェクトに変換
-    if date:
-        target_date = datetime.datetime.strptime(date, '%Y%m%d')
-    else:
-        target_date = datetime.datetime.today()
-
-    # スコアテーブルを構築
-    url = get_game_url(team, target_date)
     html = get_html(url)
     data = create_dict(html)
     data['date'] = get_date(url)

@@ -1159,5 +1159,5 @@ def test_get_score_table_by_param():
         [敗] 成瀬 3勝2敗0Ｓ
     """)
 
-    actual = baseball.get_score_table('l', '20140502')
+    actual = baseball.get_score_table('l', datetime.datetime.strptime('20140502', '%Y%m%d'))
     assert_equal(expected, actual)
