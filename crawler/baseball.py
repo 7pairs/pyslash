@@ -10,6 +10,23 @@ from bs4 import BeautifulSoup
 from .exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 
 
+# チーム略称変換テーブル
+SHORT_TEAM_NAMES = {
+    'l': '西武',
+    'e': '楽天',
+    'm': 'ロッテ',
+    'h': 'ソフトバ',
+    'bu': 'オリック',
+    'f': '日本ハム',
+    'g': '巨人',
+    't': '阪神',
+    'c': '広島',
+    'd': '中日',
+    'bs': 'ＤｅＮＡ',
+    's': 'ヤクルト',
+}
+
+
 def get_score_table(team, day):
     """
     指定されたチーム、試合日のスコアテーブルを文字列として返す。
@@ -75,23 +92,6 @@ def get_game_url(team, day):
     return 'http://www.nikkansports.com' + m.group(0)
 
 
-# チーム短縮名変換テーブル
-SHORT_TEAM_NAMES = {
-    'l': '西武',
-    'e': '楽天',
-    'm': 'ロッテ',
-    'h': 'ソフトバ',
-    'bu': 'オリック',
-    'f': '日本ハム',
-    'g': '巨人',
-    't': '阪神',
-    'c': '広島',
-    'd': '中日',
-    'bs': 'ＤｅＮＡ',
-    's': 'ヤクルト',
-}
-
-
 def get_calendar_url(team, day):
     """
     指定されたチーム、日付のカレンダーのURLを返す。
@@ -103,11 +103,11 @@ def get_calendar_url(team, day):
     :return: カレンダーのURL
     :rtype: str
     """
-    # チーム名をチェック
+    # チーム名をチェックする
     if team not in SHORT_TEAM_NAMES:
         raise InvalidTeamError()
 
-    # URLを構築
+    # URLを構築する
     url = 'http://www.nikkansports.com/baseball/professional/schedule/%04d/%s%04d%02d.html' % (
         day.year,
         team,
