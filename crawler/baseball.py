@@ -21,15 +21,11 @@ def get_score_table(team, day):
     :return: スコアテーブル
     :rtype: str
     """
-    # スコアテーブルを構築
-    url = get_game_url(team, day)
-    html = get_html(url)
-    data = create_dict(html)
-    data['date'] = get_date(url)
-    retval = create_score_table(data)
+    # スコアテーブルのURLを取得する
+    url = get_game_url(team, day) if day else get_today_game_url(team)
 
-    # 構築したスコアテーブルを返す
-    return retval
+    # スコアテーブルを返す
+    return get_score_table_by_url(url)
 
 
 # チーム短縮名変換テーブル
