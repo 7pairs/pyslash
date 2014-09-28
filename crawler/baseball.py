@@ -28,6 +28,25 @@ def get_score_table(team, day):
     return get_score_table_by_url(url)
 
 
+def get_score_table_by_url(url):
+    """
+    指定されたURLのスコアテーブルを文字列として返す。
+
+    :param url: URL
+    :type url: str
+    :return: スコアテーブル
+    :rtype: str
+    """
+    # スコアテーブルを構築する
+    html = get_html(url)
+    data = create_dict(html)
+    data['date'] = get_date(url)
+    ret_val = create_score_table(data)
+
+    # スコアテーブルを返す
+    return ret_val
+
+
 # チーム短縮名変換テーブル
 SHORT_TEAM_NAMES = {
     'l': '西武',
@@ -155,25 +174,6 @@ def get_today_game_url(team):
                     raise ResultNotFoundError()
                 score = card.find('td', {'class': 'score'})
                 return score.a.get('href')
-
-
-def get_score_table_by_url(url):
-    """
-    指定されたURLからスコアテーブルを取得して文字列として返す。
-
-    @param url: URL
-    @type url: str
-    @return: スコアテーブル
-    @rtype: str
-    """
-    # スコアテーブルを構築
-    html = get_html(url)
-    data = create_dict(html)
-    data['date'] = get_date(url)
-    retval = create_score_table(data)
-
-    # 構築したスコアテーブルを返す
-    return retval
 
 
 def get_html(url):
