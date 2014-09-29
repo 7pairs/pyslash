@@ -7,7 +7,7 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
-from .exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
+from .exception import InvalidTeamError, ParseError, ResultNotFoundError
 
 
 # チーム短縮名変換テーブル
@@ -298,21 +298,19 @@ def parse_pitcher(node):
 
 def parse_date(url):
     """
-    指定されたURLを解析し、試合日を返す
+    指定されたURLを解析し、試合日を返す。
 
-    @param url: URL
-    @type url: str
-    @return 試合日
-    @rtype datetime.date
+    :param url: URL
+    :type url: str
+    :return 試合日
+    :rtype datetime.datetime
     """
-    # URLから試合日を抽出
+    # URLから試合日を抽出する
     pattern = r'http://www\.nikkansports\.com/baseball/professional/score/\d{4}/\D+(\d{4})(\d{2})(\d{2})\d+\.html'
-    m = re.search(pattern, url)
-    if not m:
-        raise InvalidDateError()
+    m = search_or_error(pattern, url)
 
-    # 抽出した日付を変換
-    return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    # 抽出した日付を返す
+    return datetime.datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
 
 # チーム名変換テーブル

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-class InvalidDateError(Exception):
-    pass
-
 
 class InvalidTeamError(Exception):
     pass

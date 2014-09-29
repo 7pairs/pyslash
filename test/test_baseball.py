@@ -8,7 +8,7 @@ from mock import patch
 from nose.tools import *
 
 from crawler import baseball
-from crawler.exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
+from crawler.exception import InvalidTeamError, ParseError, ResultNotFoundError
 
 
 RETURN_VALUE_FOR_GET_URL = """\
@@ -236,13 +236,13 @@ def test_get_date_01():
     引数にスコアテーブルのURLを指定したとき、試合日を返すことを確認する。
     """
     actual = baseball.parse_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-    assert_equal(datetime.date(2014, 5, 2), actual)
+    assert_equal(datetime.datetime(2014, 5, 2), actual)
 
 
-@raises(InvalidDateError)
+@raises(ParseError)
 def test_get_date_02():
     """
-    引数に無効なURLを指定したとき、InvalidDateErrorがraiseされることを確認する。
+    引数に無効なURLを指定したとき、ParseErrorがraiseされることを確認する。
     """
     baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
 
