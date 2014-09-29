@@ -171,6 +171,115 @@ def get_today_game_url(team):
                 return score.a.get('href')
 
 
+def parse_score_table(html):
+    """
+    指定されたHTML文字列を解析し、スコアに関連する情報を格納した辞書を返す。
+
+    :param html: HTML文字列
+    :type html: str
+    :return: スコア情報
+    :rtype: dict
+    """
+    # 戻り値用の辞書
+    ret_val = {}
+
+    # BeautifulSoupオブジェクトを構築する
+    soup = BeautifulSoup(html)
+
+    # 先攻チーム/後攻チーム
+    card = find_or_error(soup, 'h4', {'id': 'cardTitle'})
+    m = search_or_error(r'([^\s]+)\s対\s([^\s]+)', card.string)
+    ret_val['bat_first'] = m.group(2)
+    ret_val['field_first'] = m.group(1)
+
+    # 回戦
+    match = find_or_error(soup, 'p', {'id': 'time'})
+    m = search_or_error(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
+    ret_val['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
+
+    # 球場
+    stadium = find_or_error(soup, 'p', {'class': 'data'})
+    m = search_or_error(r'◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
+    ret_val['stadium'] = m.group(1)
+
+    # スコア
+    ret_val['score'] = []
+    ret_val['total_score'] = []
+    score = find_or_error(soup, 'table', {'class': 'scoreTable'})
+    rows = score.find_all('tr')
+    for row in rows[1:]:
+        cols = row.find_all('td')
+        ret_val['score'].append([x.string.strip().lower() for x in cols[1:-1]])
+        ret_val['total_score'].append(int(cols[-1].string))
+    for i, (top, bottom) in enumerate(zip(ret_val['score'][0], ret_val['score'][1])):
+        # コールドゲームの場合に最終回以降の無駄な空白を除去する
+        if top == '' and bottom == '':
+            ret_val['score'][0] = ret_val['score'][0][:i]
+            ret_val['score'][1] = ret_val['score'][1][:i]
+
+    # 勝利投手/セーブ投手/敗戦投手
+    pitcher = find_or_error(soup, 'table', {'class': 'pitcher'})
+    rows = pitcher.find_all('tr')
+    for row in rows[1:]:
+        cols = row.find_all('td')
+        status = cols[0].string
+        if status == '○':
+            ret_val['win'] = parse_pitcher(cols)
+        elif status == 'Ｓ':
+            ret_val['save'] = parse_pitcher(cols)
+        elif status == '●':
+            ret_val['lose'] = parse_pitcher(cols)
+
+    # 本塁打
+    ret_val['homerun'] = []
+    footnotes = soup.find_all('dl', {'class': 'data'})
+    for footnote in footnotes:
+        if footnote.dt.string == '◇本塁打':
+            # 打撃成績から本塁打の出たイニングを収集する
+            homerun_innings = defaultdict(list)
+            tables = soup.find_all('table', {'class', 'batter'})
+            for i, table in enumerate(tables):
+                rows = table.find_all('tr')
+
+                # イニングを収集する
+                inning_numbers = []
+                cols = rows[0].find_all('th')
+                for col in cols[8:]:
+                    inning = col.string.strip()
+                    if inning:
+                        inning_numbers.append(int(inning))
+                    else:
+                        # 打者2巡目は見出しが空欄になっているため……
+                        inning_numbers.append(inning_numbers[-1])
+
+                # 本塁打を収集する
+                for row in rows[1:]:
+                    cols = row.find_all('td')
+                    for j, col in enumerate(cols[8:]):
+                        m = re.search(r'.本', col.string)
+                        if m:
+                            m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
+                            homerun_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
+
+            # 末尾の本塁打欄を解析する
+            lines = footnote.find_all('dd')
+            for line in lines:
+                m = search_or_error(r'([^\d]+)(\d+)号（(ソロ|２ラン|３ラン|満塁)\d+m=([^）]+)）', line.string)
+                ret_val['homerun'].append((
+                    homerun_innings[m.group(1)].pop(0),
+                    m.group(1),
+                    int(m.group(2)),
+                    m.group(3),
+                    m.group(4)
+                ))
+
+            # 本塁打欄は1つしかないはず
+            break
+
+    # 構築した辞書を返す
+    return ret_val
+
+
 def get_date(url):
     """
     指定されたURLを解析し、試合日を返す
@@ -188,115 +297,6 @@ def get_date(url):
 
     # 抽出した日付を変換
     return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
-
-
-def parse_score_table(html):
-    """
-    指定されたHTML文字列を解析し、スコアに関連する情報を格納した辞書を返す。
-
-    @param html: HTML文字列
-    @type html: str
-    @return: スコア情報
-    @rtype: dict
-    """
-    # 戻り値用辞書
-    retval = {}
-
-    # 引数をもとにBeautifulSoupオブジェクトを構築
-    soup = BeautifulSoup(html)
-
-    # 先攻チーム/後攻チーム
-    card = find_or_error(soup, 'h4', {'id': 'cardTitle'})
-    m = search_or_error(r'([^\s]+)\s対\s([^\s]+)', card.string)
-    retval['bat_first'] = m.group(2)
-    retval['field_first'] = m.group(1)
-
-    # 回戦
-    match = find_or_error(soup, 'p', {'id': 'time'})
-    m = search_or_error(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
-    retval['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
-
-    # 球場
-    stadium = find_or_error(soup, 'p', {'class': 'data'})
-    m = search_or_error(r'◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
-    retval['stadium'] = m.group(1)
-
-    # スコア
-    retval['score'] = []
-    retval['total_score'] = []
-    score = find_or_error(soup, 'table', {'class': 'scoreTable'})
-    rows = score.find_all('tr')
-    for row in rows[1:]:
-        cols = row.find_all('td')
-        retval['score'].append([x.string.strip().lower() for x in cols[1:-1]])
-        retval['total_score'].append(int(cols[-1].string))
-    for i, (top, bottom) in enumerate(zip(retval['score'][0], retval['score'][1])):
-        if top == '' and bottom == '':
-            retval['score'][0] = retval['score'][0][:i]
-            retval['score'][1] = retval['score'][1][:i]
-
-    # 勝利投手/セーブ投手/敗戦投手
-    pitcher = soup.find('table', {'class': 'pitcher'})
-    if pitcher:
-        rows = pitcher.find_all('tr')
-        for row in rows[1:]:
-            cols = row.find_all('td')
-            status = cols[0].string
-            if status == '○':
-                retval['win'] = parse_pitcher(cols)
-            elif status == 'Ｓ':
-                retval['save'] = parse_pitcher(cols)
-            elif status == '●':
-                retval['lose'] = parse_pitcher(cols)
-
-    # 本塁打
-    retval['homerun'] = []
-    footnotes = soup.find_all('dl', {'class': 'data'})
-    if footnotes:
-        for footnote in footnotes:
-            if footnote.dt.string == '◇本塁打':
-                # テーブルスコアから本塁打の出たイニングを収集
-                innings = defaultdict(list)
-                tables = soup.find_all('table', {'class', 'batter'})
-                for i, table in enumerate(tables):
-                    rows = table.find_all('tr')
-
-                    # イニングを収集
-                    inning_table = []
-                    cols = rows[0].find_all('th')
-                    for col in cols[8:]:
-                        inning = col.string.strip()
-                        if inning:
-                            inning_table.append(int(inning))
-                        else:
-                            inning_table.append(inning_table[-1])
-
-                    # 本塁打を収集
-                    for row in rows[1:]:
-                        cols = row.find_all('td')
-                        for j, col in enumerate(cols[8:]):
-                            m = re.search(r'.本', col.string)
-                            if m:
-                                m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
-                                innings[m.group(1)].append(str(inning_table[j]) + '回' + ['表', '裏'][i])
-
-                # 末尾の本塁打欄を解析
-                lines = footnote.find_all('dd')
-                for line in lines:
-                    m = search_or_error(r'([^\d]+)(\d+)号（(ソロ|２ラン|３ラン|満塁)\d+m=([^）]+)）', line.string)
-                    retval['homerun'].append([
-                        innings[m.group(1)].pop(0),
-                        m.group(1),
-                        int(m.group(2)),
-                        m.group(3),
-                        m.group(4)
-                    ])
-
-                # 本塁打欄は1つしかないはず
-                break
-
-    # 構築した辞書を返す
-    return retval
 
 
 # チーム名変換テーブル
@@ -443,10 +443,13 @@ def create_score_table(data):
             type_max_len = max(type_max_len, len(line[3]))
 
         for line in data['homerun']:
-            line[0] = ' ' * (inning_max_len - len(line[0])) + line[0]
-            line[1] += '　' * (player_max_len - len(line[1]))
-            line[3] += '　' * (type_max_len - len(line[3]))
-            retval += '  %s %s %2d号 %s （%s）\n' % tuple(line)
+            retval += '  %s %s %2d号 %s （%s）\n' % (
+                ' ' * (inning_max_len - len(line[0])) + line[0],
+                line[1] + '　' * (player_max_len - len(line[1])),
+                line[2],
+                line[3] + '　' * (type_max_len - len(line[3])),
+                line[4]
+            )
 
     # 構築したスコアを返す
     return retval
