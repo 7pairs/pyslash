@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from .exception import InvalidDateError, InvalidTeamError, ParseError, ResultNotFoundError
 
 
-# チーム略称変換テーブル
+# チーム短縮名変換テーブル
 SHORT_TEAM_NAMES = {
     'l': '西武',
     'e': '楽天',
@@ -134,6 +134,43 @@ def get_html(url):
         return response.read().decode(encoding)
 
 
+def get_today_game_url(team):
+    """
+    指定されたチームの今日の試合スコアテーブルのURLを返す。
+
+    :param team: チーム略称
+    :type team: str
+    :return: スコアテーブルのURL
+    :rtype: str
+    """
+    # チームの短縮名を取得する
+    try:
+        short_name = SHORT_TEAM_NAMES[team]
+    except KeyError:
+        raise InvalidTeamError()
+
+    # 全カードのスコアテーブルのURLを取得する
+    html = get_html('http://www.nikkansports.com/')
+    soup = BeautifulSoup(html)
+    table = find_or_error(soup, 'table', {'summary': 'プロ野球の対戦表'})
+    cards = table.find_all('tr')
+
+    # 当該チームのスコアを探索する
+    for card in cards:
+        links = card.find_all('a')
+        for link in links:
+            m = re.search(short_name, link.string)
+            if m:
+                # 試合中/中止の場合はエラーとする
+                inning = card.find('td', {'class': 'num'})
+                if inning.string != '終了':
+                    raise ResultNotFoundError()
+
+                # スコアテーブルのURLを返す
+                score = card.find('td', {'class': 'score'})
+                return score.a.get('href')
+
+
 def get_date(url):
     """
     指定されたURLを解析し、試合日を返す
@@ -151,38 +188,6 @@ def get_date(url):
 
     # 抽出した日付を変換
     return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
-
-
-def get_today_game_url(team):
-    """
-    指定されたチームの試合結果のURLを文字列として返す。
-
-    @param team: チーム名
-    @type team: str
-    @return: URL
-    @rtype: str
-    """
-    # チーム短縮名を取得
-    try:
-        short_name = SHORT_TEAM_NAMES[team]
-    except KeyError:
-        raise InvalidTeamError()
-
-    # 試合結果のURLを取得
-    html = get_html('http://www.nikkansports.com/')
-    soup = BeautifulSoup(html)
-    table = find_or_error(soup, 'table', {'summary': 'プロ野球の対戦表'})
-    cards = table.find_all('tr')
-    for card in cards:
-        links = card.find_all('a')
-        for link in links:
-            m = re.search(short_name, link.string)
-            if m:
-                num = card.find('td', {'class': 'num'})
-                if num.string != '終了':
-                    raise ResultNotFoundError()
-                score = card.find('td', {'class': 'score'})
-                return score.a.get('href')
 
 
 def parse_score_table(html):
