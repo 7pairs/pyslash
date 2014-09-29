@@ -280,6 +280,22 @@ def parse_score_table(html):
     return ret_val
 
 
+def parse_pitcher(node):
+    """
+    投手成績を解析し、勝利数、敗北数、セーブ数を返す。
+
+    :param node: 投手成績のHTMLノード
+    :type node: bs4.element.ResultSet
+    :return: 解析結果
+    :rtype: tuple
+    """
+    # 投手の名前を切り出す
+    m = search_or_error(r'([^\s]+)\s（[^）]+）', node[1].string)
+
+    # 解析結果を返す
+    return m.group(1), int(node[2].string), int(node[3].string), int(node[4].string)
+
+
 def get_date(url):
     """
     指定されたURLを解析し、試合日を返す
@@ -423,11 +439,11 @@ def create_score_table(data):
         retval += '\n'
 
     if 'win' in data:
-        retval += '[勝] %s %d勝%d敗%dＳ\n' % tuple([win_pitcher] + data['win'][1:])
+        retval += '[勝] %s %d勝%d敗%dＳ\n' % ((win_pitcher,) + data['win'][1:])
     if 'save' in data:
-        retval += '[Ｓ] %s %d勝%d敗%dＳ\n' % tuple([save_pitcher] + data['save'][1:])
+        retval += '[Ｓ] %s %d勝%d敗%dＳ\n' % ((save_pitcher,) + data['save'][1:])
     if 'lose' in data:
-        retval += '[敗] %s %d勝%d敗%dＳ\n' % tuple([lose_pitcher] + data['lose'][1:])
+        retval += '[敗] %s %d勝%d敗%dＳ\n' % ((lose_pitcher,) + data['lose'][1:])
 
     # 本塁打
     if data.get('homerun'):
@@ -493,24 +509,6 @@ def search_or_error(pattern, string):
         return m
     else:
         raise ParseError()
-
-
-def parse_pitcher(cols):
-    """
-    投手成績を解析する。
-
-    @param cols: 投手成績のHTMLノード
-    @type cols: bs4.element.ResultSet
-    @return: 解析結果
-    @rtype: list
-    """
-    # 投手の名前を切り出す
-    m = re.search(r'([^\s]+)\s（[^）]+）', cols[1].string)
-    if not m:
-        raise ParseError()
-
-    # 解析結果を返す
-    return [m.group(1), int(cols[2].string), int(cols[3].string), int(cols[4].string)]
 
 
 def create_score_line(score):

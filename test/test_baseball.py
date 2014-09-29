@@ -312,9 +312,9 @@ def test_create_dict_01():
         ['0', '0', '1', '0', '2', '0', '0', '1', 'x'],
     ], actual['score'])
     assert_equal([1, 4], actual['total_score'])
-    assert_equal(['牧田', 2, 1, 0], actual['win'])
-    assert_equal(['高橋', 0, 1, 3], actual['save'])
-    assert_equal(['メンドーサ', 1, 4, 0], actual['lose'])
+    assert_equal(('牧田', 2, 1, 0), actual['win'])
+    assert_equal(('高橋', 0, 1, 3), actual['save'])
+    assert_equal(('メンドーサ', 1, 4, 0), actual['lose'])
     assert_equal([('7回表', '佐藤賢', 3, 'ソロ', '牧田')], actual['homerun'])
 
 
@@ -334,9 +334,9 @@ def test_create_dict_02():
         ['1', '1', '0', '0', '0', '0', '2', '0', '0'],
     ], actual['score'])
     assert_equal([6, 4], actual['total_score'])
-    assert_equal(['ウィリアムス', 1, 0, 0], actual['win'])
-    assert_equal(['高橋', 0, 1, 6], actual['save'])
-    assert_equal(['千賀', 0, 1, 0], actual['lose'])
+    assert_equal(('ウィリアムス', 1, 0, 0), actual['win'])
+    assert_equal(('高橋', 0, 1, 6), actual['save'])
+    assert_equal(('千賀', 0, 1, 0), actual['lose'])
     assert_equal([('1回裏', '内川', 8, 'ソロ', '岸'), ('7回裏', '柳田', 5, '２ラン', '岸')], actual['homerun'])
 
 
@@ -356,8 +356,8 @@ def test_create_dict_03():
         ['0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '0', '1x'],
     ], actual['score'])
     assert_equal([5, 6], actual['total_score'])
-    assert_equal(['増井', 1, 0, 0], actual['win'])
-    assert_equal(['海田', 0, 1, 0], actual['lose'])
+    assert_equal(('増井', 1, 0, 0), actual['win'])
+    assert_equal(('海田', 0, 1, 0), actual['lose'])
     assert_equal([('10回表', 'ペーニャ', 1, 'ソロ', '宮西')], actual['homerun'])
 
 
@@ -886,9 +886,9 @@ def test_create_score_table_01():
             ['0', '0', '1', '0', '2', '0', '0', '1', 'x'],
         ],
         'total_score': [1, 4],
-        'win': ['牧田', 2, 1, 0],
-        'save': ['高橋', 0, 1, 3],
-        'lose': ['メンドーサ', 1, 4, 0],
+        'win': ('牧田', 2, 1, 0),
+        'save': ('高橋', 0, 1, 3),
+        'lose': ('メンドーサ', 1, 4, 0),
         'homerun': [('7回表', '佐藤賢', 3, 'ソロ', '牧田')],
     }
 
@@ -927,8 +927,8 @@ def test_create_score_table_02():
             ['1', '0', '0', '0', '0', '0', '0', '1', '0'],
         ],
         'total_score': [6, 2],
-        'win': ['牧田', 1, 0, 0],
-        'lose': ['涌井', 0, 1, 0],
+        'win': ('牧田', 1, 0, 0),
+        'lose': ('涌井', 0, 1, 0),
         'homerun': [('8回表', 'ランサム', 1, 'ソロ', '吉原'), ('9回表', '浅村', 2, '２ラン', '吉原')],
     }
 
@@ -967,8 +967,8 @@ def test_create_score_table_03():
             ['0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '0', '1x'],
         ],
         'total_score': [5, 6],
-        'win': ['増井', 1, 0, 0],
-        'lose': ['海田', 0, 1, 0],
+        'win': ('増井', 1, 0, 0),
+        'lose': ('海田', 0, 1, 0),
         'homerun': [('10回表', 'ペーニャ', 1, 'ソロ', '宮西')]
     }
 
@@ -1006,8 +1006,8 @@ def test_create_score_table_04():
             ['1', '0', '0', '0', '0', '0', '1', '0', '0'],
         ],
         'total_score': [12, 2],
-        'win': ['十亀', 2, 2, 3],
-        'lose': ['塩見', 2, 4, 0],
+        'win': ('十亀', 2, 2, 3),
+        'lose': ('塩見', 2, 4, 0),
         'homerun': [
             ('2回表', '浅村', 6, '２ラン', '塩見'),
             ('3回表', '浅村', 7, 'ソロ', '塩見'),
@@ -1051,8 +1051,8 @@ def test_create_score_table_05():
             ['0', '0', '0', '1', '0', '4', '0', '1', '0', '2x'],
         ],
         'total_score': [7, 8],
-        'win': ['林', 1, 0, 0],
-        'lose': ['ウィリアムス', 1, 2, 0],
+        'win': ('林', 1, 0, 0),
+        'lose': ('ウィリアムス', 1, 2, 0),
         'homerun': [
             ('1回表', 'メヒア', 6, '２ラン', 'モスコーソ'),
             ('4回裏', 'グリエル', 2, 'ソロ', '岸'),
