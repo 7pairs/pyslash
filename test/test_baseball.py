@@ -302,7 +302,7 @@ def test_create_dict_01():
     引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html')
-    actual = baseball.create_dict(html)
+    actual = baseball.parse_score_table(html)
     assert_equal('日本ハム', actual['bat_first'])
     assert_equal('西武', actual['field_first'])
     assert_equal(4, actual['match'])
@@ -324,7 +324,7 @@ def test_create_dict_02():
     （2ラン、3ランの解析時不具合対応 #13）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050906.html')
-    actual = baseball.create_dict(html)
+    actual = baseball.parse_score_table(html)
     assert_equal('西武', actual['bat_first'])
     assert_equal('ソフトバンク', actual['field_first'])
     assert_equal(7, actual['match'])
@@ -346,7 +346,7 @@ def test_create_dict_03():
     （サヨナラゲームの解析時不具合対応 #11）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014032804.html')
-    actual = baseball.create_dict(html)
+    actual = baseball.parse_score_table(html)
     assert_equal('オリックス', actual['bat_first'])
     assert_equal('日本ハム', actual['field_first'])
     assert_equal(1, actual['match'])
@@ -367,7 +367,7 @@ def test_create_dict_04():
     （打者一巡時の本塁打欄不具合対応 #45）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014081605.html')
-    actual = baseball.create_dict(html)
+    actual = baseball.parse_score_table(html)
     assert_equal('日本ハム', actual['bat_first'])
     assert_equal('西武', actual['field_first'])
     assert_equal(15, actual['match'])
@@ -390,7 +390,7 @@ def test_create_dict_05():
     （コールド時のスコア不具合対応 #50）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014090802.html')
-    actual = baseball.create_dict(html)
+    actual = baseball.parse_score_table(html)
     assert_equal('西武', actual['bat_first'])
     assert_equal('ロッテ', actual['field_first'])
     assert_equal(21, actual['match'])
@@ -412,7 +412,7 @@ def test_create_dict_06():
     """
     with open('./test/test_create_dict_error.html') as test_file:
         html = test_file.read()
-    baseball.create_dict(html)
+    baseball.parse_score_table(html)
 
 
 def test_get_full_team_name_01():

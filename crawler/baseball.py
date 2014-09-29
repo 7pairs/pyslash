@@ -56,7 +56,7 @@ def get_score_table_by_url(url):
     """
     # スコアテーブルを構築する
     html = get_html(url)
-    data = create_dict(html)
+    data = parse_score_table(html)
     data['date'] = get_date(url)
     ret_val = create_score_table(data)
 
@@ -185,7 +185,7 @@ def get_today_game_url(team):
                 return score.a.get('href')
 
 
-def create_dict(html):
+def parse_score_table(html):
     """
     指定されたHTML文字列を解析し、スコアに関連する情報を格納した辞書を返す。
 
