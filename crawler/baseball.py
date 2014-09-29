@@ -57,7 +57,7 @@ def get_score_table_by_url(url):
     # スコアテーブルを構築する
     html = get_html(url)
     data = parse_score_table(html)
-    data['date'] = get_date(url)
+    data['date'] = parse_date(url)
     ret_val = create_score_table(data)
 
     # スコアテーブルを返す
@@ -296,7 +296,7 @@ def parse_pitcher(node):
     return m.group(1), int(node[2].string), int(node[3].string), int(node[4].string)
 
 
-def get_date(url):
+def parse_date(url):
     """
     指定されたURLを解析し、試合日を返す
 

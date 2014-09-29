@@ -235,7 +235,7 @@ def test_get_date_01():
     """
     引数にスコアテーブルのURLを指定したとき、試合日を返すことを確認する。
     """
-    actual = baseball.get_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+    actual = baseball.parse_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
     assert_equal(datetime.date(2014, 5, 2), actual)
 
 
@@ -244,7 +244,7 @@ def test_get_date_02():
     """
     引数に無効なURLを指定したとき、InvalidDateErrorがraiseされることを確認する。
     """
-    baseball.get_date('http://www.konami.jp/am/qma/character_s/')
+    baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
 
 
 def test_get_calendar_url_01():
