@@ -288,9 +288,10 @@ def test_get_html_01():
     assert_equal(True, actual)
 
 
+@raises(ValueError)
 def test_get_html_02():
     """
-    引数に無効なURLを指定したとき、空文字列を返すことを確認する。
+    引数に無効なURLを指定したとき、ValueErrorが発生することを確認する。
     """
     html = baseball.get_html('エラーアルよー')
     assert_equal('', html)

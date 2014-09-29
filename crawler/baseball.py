@@ -119,6 +119,21 @@ def get_calendar_url(team, day):
     return url
 
 
+def get_html(url):
+    """
+    指定されたURLのHTMLを文字列として返す。
+
+    :param url: URL
+    :type url: str
+    :return: HTML
+    :rtype: str
+    """
+    # 指定されたURLのHTMLを返す
+    with urllib.request.urlopen(url) as response:
+        encoding = response.headers.get_content_charset() or 'utf-8'
+        return response.read().decode(encoding)
+
+
 def get_date(url):
     """
     指定されたURLを解析し、試合日を返す
@@ -168,30 +183,6 @@ def get_today_game_url(team):
                     raise ResultNotFoundError()
                 score = card.find('td', {'class': 'score'})
                 return score.a.get('href')
-
-
-def get_html(url):
-    """
-    指定されたURLからHTMLを取得して文字列として返す。
-
-    @param url: URL
-    @type url: str
-    @return: HTML文字列
-    @rtype: str
-    """
-    # 指定されたURLを開く
-    html = ''
-    try:
-        with urllib.request.urlopen(url) as response:
-            encoding = response.headers.get_content_charset()
-            if not encoding:
-                encoding = 'utf-8'
-            html = response.read().decode(encoding)
-    except Exception:
-        pass
-
-    # HTMLを文字列として返す
-    return html
 
 
 def create_dict(html):
