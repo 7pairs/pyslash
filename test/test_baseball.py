@@ -879,7 +879,6 @@ def test_create_score_table_01():
         'bat_first': '北海道日本ハム',
         'field_first': '埼玉西武',
         'match': 4,
-        'date': datetime.date(2014, 4, 29),
         'stadium': '西武ドーム',
         'score': [
             ['0', '0', '0', '0', '0', '0', '1', '0', '0'],
@@ -907,7 +906,7 @@ def test_create_score_table_01():
           7回表 佐藤賢  3号 ソロ （牧田）
     """)
 
-    actual = baseball.create_score_table(data)
+    actual = baseball.create_score_table(data, datetime.date(2014, 4, 29))
     assert_equal(expected, actual)
 
 
@@ -920,7 +919,6 @@ def test_create_score_table_02():
         'bat_first': '埼玉西武',
         'field_first': '千葉ロッテ',
         'match': 1,
-        'date': datetime.date(2014, 4, 1),
         'stadium': 'QVCマリンフィールド',
         'score': [
             ['0', '0', '2', '0', '0', '1', '0', '1', '2'],
@@ -947,7 +945,7 @@ def test_create_score_table_02():
           9回表 浅村　　  2号 ２ラン （吉原）
     """)
 
-    actual = baseball.create_score_table(data)
+    actual = baseball.create_score_table(data, datetime.date(2014, 4, 1))
     assert_equal(expected, actual)
 
 
@@ -960,7 +958,6 @@ def test_create_score_table_03():
         'bat_first': 'オリックス',
         'field_first': '北海道日本ハム',
         'match': 1,
-        'date': datetime.date(2014, 3, 28),
         'stadium': '札幌ドーム',
         'score': [
             ['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'],
@@ -986,7 +983,7 @@ def test_create_score_table_03():
           10回表 ペーニャ  1号 ソロ （宮西）
     """)
 
-    actual = baseball.create_score_table(data)
+    actual = baseball.create_score_table(data, datetime.date(2014, 3, 28))
     assert_equal(expected, actual)
 
 
@@ -999,7 +996,6 @@ def test_create_score_table_04():
         'bat_first': '埼玉西武',
         'field_first': '東北楽天',
         'match': 10,
-        'date': datetime.date(2014, 5, 18),
         'stadium': '岩手県営野球場',
         'score': [
             ['1', '4', '1', '2', '0', '1', '0', '3', '0'],
@@ -1031,7 +1027,7 @@ def test_create_score_table_04():
           4回表 山崎  1号 ２ラン （塩見）
     """)
 
-    actual = baseball.create_score_table(data)
+    actual = baseball.create_score_table(data, datetime.date(2014, 5, 18))
     assert_equal(expected, actual)
 
 
@@ -1044,7 +1040,6 @@ def test_create_score_table_05():
         'bat_first': '埼玉西武',
         'field_first': '横浜ＤｅＮＡ',
         'match': 3,
-        'date': datetime.date(2014, 6, 21),
         'stadium': '横浜スタジアム',
         'score': [
             ['2', '0', '0', '0', '0', '0', '0', '3', '1', '1'],
@@ -1082,7 +1077,7 @@ def test_create_score_table_05():
           10回表 脇谷　　  1号 ソロ　 （加賀）
     """)
 
-    actual = baseball.create_score_table(data)
+    actual = baseball.create_score_table(data, datetime.date(2014, 6, 21))
     assert_equal(expected, actual)
 
 
@@ -1095,7 +1090,6 @@ def test_create_score_table_06():
         'bat_first': '北海道日本ハム',
         'field_first': '埼玉西武',
         'match': 15,
-        'date': datetime.date(2014, 8, 16),
         'stadium': '西武ドーム',
         'score': [
             ['0', '0', '0', '0', '1', '4', '0', '1', '1', '1', '0', '0'],
@@ -1122,7 +1116,7 @@ def test_create_score_table_06():
           10回裏 森　  3号 ソロ　 （増井）
     """)
 
-    actual = baseball.create_score_table(data)
+    actual = baseball.create_score_table(data, datetime.date(2014, 8, 16))
     assert_equal(expected, actual)
 
 

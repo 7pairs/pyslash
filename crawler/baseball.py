@@ -57,8 +57,7 @@ def get_score_table_by_url(url):
     # スコアテーブルを構築する
     html = get_html(url)
     data = parse_score_table(html)
-    data['date'] = parse_date(url)
-    ret_val = create_score_table(data)
+    ret_val = create_score_table(data, parse_date(url))
 
     # スコアテーブルを返す
     return ret_val
@@ -397,7 +396,7 @@ def get_full_stadium_name(stadium_name):
     return FULL_STADIUM_NAME.get(stadium_name, stadium_name)
 
 
-def create_score_table(data):
+def create_score_table(data, day):
     """
     スコア情報の格納された辞書をもとにスコアテーブルを構築する。
 
@@ -411,9 +410,9 @@ def create_score_table(data):
     bat_first = get_full_team_name(data['bat_first'])
     retval = '【%s vs %s 第%d回戦】\n' % (field_first, bat_first, data['match'])
     retval += '（%d年%d月%d日：%s）\n' % (
-        data['date'].year,
-        data['date'].month,
-        data['date'].day,
+        day.year,
+        day.month,
+        day.day,
         get_full_stadium_name(data['stadium'])
     )
     retval += '\n'
