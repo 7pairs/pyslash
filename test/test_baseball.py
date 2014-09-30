@@ -315,7 +315,7 @@ def test_create_dict_01():
     assert_equal(('牧田', 2, 1, 0), actual['win'])
     assert_equal(('高橋', 0, 1, 3), actual['save'])
     assert_equal(('メンドーサ', 1, 4, 0), actual['lose'])
-    assert_equal([('7回表', '佐藤賢', 3, 'ソロ', '牧田')], actual['homerun'])
+    assert_equal([('7回表', '佐藤賢', 3, 'ソロ', '牧田')], actual['home_run'])
 
 
 def test_create_dict_02():
@@ -337,7 +337,7 @@ def test_create_dict_02():
     assert_equal(('ウィリアムス', 1, 0, 0), actual['win'])
     assert_equal(('高橋', 0, 1, 6), actual['save'])
     assert_equal(('千賀', 0, 1, 0), actual['lose'])
-    assert_equal([('1回裏', '内川', 8, 'ソロ', '岸'), ('7回裏', '柳田', 5, '２ラン', '岸')], actual['homerun'])
+    assert_equal([('1回裏', '内川', 8, 'ソロ', '岸'), ('7回裏', '柳田', 5, '２ラン', '岸')], actual['home_run'])
 
 
 def test_create_dict_03():
@@ -358,7 +358,7 @@ def test_create_dict_03():
     assert_equal([5, 6], actual['total_score'])
     assert_equal(('増井', 1, 0, 0), actual['win'])
     assert_equal(('海田', 0, 1, 0), actual['lose'])
-    assert_equal([('10回表', 'ペーニャ', 1, 'ソロ', '宮西')], actual['homerun'])
+    assert_equal([('10回表', 'ペーニャ', 1, 'ソロ', '宮西')], actual['home_run'])
 
 
 def test_create_dict_04():
@@ -381,7 +381,7 @@ def test_create_dict_04():
         ('5回裏', '中村', 21, '２ラン', '吉川'),
         ('10回表', '陽', 16, 'ソロ', '中郷'),
         ('10回裏', '森', 3, 'ソロ', '増井'),
-    ], actual['homerun'])
+    ], actual['home_run'])
 
 
 def test_create_dict_05():
@@ -402,7 +402,7 @@ def test_create_dict_05():
     assert_equal([7, 0], actual['total_score'])
     assert_equal([
         ('1回表', '中村', 30, 'ソロ', '藤岡'),
-    ], actual['homerun'])
+    ], actual['home_run'])
 
 
 @raises(ParseError)
@@ -888,7 +888,7 @@ def test_create_score_table_01():
         'win': ('牧田', 2, 1, 0),
         'save': ('高橋', 0, 1, 3),
         'lose': ('メンドーサ', 1, 4, 0),
-        'homerun': [('7回表', '佐藤賢', 3, 'ソロ', '牧田')],
+        'home_run': [('7回表', '佐藤賢', 3, 'ソロ', '牧田')],
     }
 
     expected = textwrap.dedent("""\
@@ -927,7 +927,7 @@ def test_create_score_table_02():
         'total_score': [6, 2],
         'win': ('牧田', 1, 0, 0),
         'lose': ('涌井', 0, 1, 0),
-        'homerun': [('8回表', 'ランサム', 1, 'ソロ', '吉原'), ('9回表', '浅村', 2, '２ラン', '吉原')],
+        'home_run': [('8回表', 'ランサム', 1, 'ソロ', '吉原'), ('9回表', '浅村', 2, '２ラン', '吉原')],
     }
 
     expected = textwrap.dedent("""\
@@ -966,7 +966,7 @@ def test_create_score_table_03():
         'total_score': [5, 6],
         'win': ('増井', 1, 0, 0),
         'lose': ('海田', 0, 1, 0),
-        'homerun': [('10回表', 'ペーニャ', 1, 'ソロ', '宮西')]
+        'home_run': [('10回表', 'ペーニャ', 1, 'ソロ', '宮西')]
     }
 
     expected = textwrap.dedent("""\
@@ -1004,7 +1004,7 @@ def test_create_score_table_04():
         'total_score': [12, 2],
         'win': ('十亀', 2, 2, 3),
         'lose': ('塩見', 2, 4, 0),
-        'homerun': [
+        'home_run': [
             ('2回表', '浅村', 6, '２ラン', '塩見'),
             ('3回表', '浅村', 7, 'ソロ', '塩見'),
             ('4回表', '山崎', 1, '２ラン', '塩見'),
@@ -1048,7 +1048,7 @@ def test_create_score_table_05():
         'total_score': [7, 8],
         'win': ('林', 1, 0, 0),
         'lose': ('ウィリアムス', 1, 2, 0),
-        'homerun': [
+        'home_run': [
             ('1回表', 'メヒア', 6, '２ラン', 'モスコーソ'),
             ('4回裏', 'グリエル', 2, 'ソロ', '岸'),
             ('6回裏', '後藤', 3, 'ソロ', '岸'),
@@ -1096,7 +1096,7 @@ def test_create_score_table_06():
             ['0', '0', '0', '0', '6', '0', '0', '1', '0', '1', '0', '0'],
         ],
         'total_score': [8, 8],
-        'homerun': [
+        'home_run': [
             ('5回裏', '中村', 21, '２ラン', '吉川'),
             ('10回表', '陽', 16, 'ソロ', '中郷'),
             ('10回裏', '森', 3, 'ソロ', '増井'),

@@ -56,8 +56,8 @@ def get_score_table_by_url(url):
     """
     # スコアテーブルを構築する
     html = get_html(url)
-    data = parse_score_table(html)
-    ret_val = create_score_table(data, parse_date(url))
+    score_data = parse_score_table(html)
+    ret_val = create_score_table(score_data, parse_date(url))
 
     # スコアテーブルを返す
     return ret_val
@@ -230,12 +230,12 @@ def parse_score_table(html):
             ret_val['lose'] = parse_pitcher(cols)
 
     # 本塁打
-    ret_val['homerun'] = []
+    ret_val['home_run'] = []
     footnotes = soup.find_all('dl', {'class': 'data'})
     for footnote in footnotes:
         if footnote.dt.string == '◇本塁打':
             # 打撃成績から本塁打の出たイニングを収集する
-            homerun_innings = defaultdict(list)
+            home_run_innings = defaultdict(list)
             tables = soup.find_all('table', {'class', 'batter'})
             for i, table in enumerate(tables):
                 rows = table.find_all('tr')
@@ -258,14 +258,14 @@ def parse_score_table(html):
                         m = re.search(r'.本', col.string)
                         if m:
                             m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
-                            homerun_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
+                            home_run_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
 
             # 末尾の本塁打欄を解析する
             lines = footnote.find_all('dd')
             for line in lines:
                 m = search_or_error(r'([^\d]+)(\d+)号（(ソロ|２ラン|３ラン|満塁)\d+m=([^）]+)）', line.string)
-                ret_val['homerun'].append((
-                    homerun_innings[m.group(1)].pop(0),
+                ret_val['home_run'].append((
+                    home_run_innings[m.group(1)].pop(0),
                     m.group(1),
                     int(m.group(2)),
                     m.group(3),
@@ -310,6 +310,103 @@ def parse_date(url):
 
     # 抽出した日付を返す
     return datetime.datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+
+
+def create_score_table(score_data, day):
+    """
+    スコア情報の格納された辞書をもとにスコアテーブルを構築する。
+
+    :param score_data: スコア情報
+    :type score_data: dict
+    :return: スコアテーブル
+    :rtype: str
+    """
+    # ヘッダ欄を構築する
+    field_first = get_full_team_name(score_data['field_first'])
+    bat_first = get_full_team_name(score_data['bat_first'])
+    ret_val = '【%s vs %s 第%d回戦】\n' % (field_first, bat_first, score_data['match'])
+    ret_val += '（%d年%d月%d日：%s）\n' % (
+        day.year,
+        day.month,
+        day.day,
+        get_full_stadium_name(score_data['stadium'])
+    )
+    ret_val += '\n'
+
+    # スコア欄を構築する
+    bat_first, field_first = add_zenkaku_space(bat_first, field_first)
+    top_score, bottom_score = add_space(
+        create_score_line(score_data['score'][0]),
+        create_score_line(score_data['score'][1])
+    )
+    top_total_score, bottom_total_score = space_padding(
+        str(score_data['total_score'][0]),
+        str(score_data['total_score'][1])
+    )
+    ret_val += '%s  %s  %s\n' % (bat_first, top_score, top_total_score)
+    ret_val += '%s  %s  %s\n' % (field_first, bottom_score, bottom_total_score)
+
+    # 投手成績欄を構築する
+    win = score_data.get('win')
+    save = score_data.get('save')
+    lose = score_data.get('lose')
+    win_player, save_player, lose_player = add_zenkaku_space(
+        win[0] if win else '',
+        save[0] if save else '',
+        lose[0] if lose else ''
+    )
+    pitcher = (
+        create_pitcher_line('勝', win_player, win[1:] if win else None) +
+        create_pitcher_line('Ｓ', save_player, save[1:] if save else None) +
+        create_pitcher_line('敗', lose_player, lose[1:] if lose else None)
+    )
+    if pitcher:
+        ret_val += '\n' + pitcher
+
+    # 本塁打欄を構築する
+    home_run = score_data.get('home_run')
+    if home_run:
+        ret_val += '\n'
+        ret_val += '[本塁打]\n'
+
+        # 各項目の最大長を取得する
+        max_inning_len = 0
+        max_player_len = 0
+        max_type_len = 0
+        for line in home_run:
+            max_inning_len = max(max_inning_len, len(line[0]))
+            max_player_len = max(max_player_len, len(line[1]))
+            max_type_len = max(max_type_len, len(line[3]))
+
+        # 桁揃えのスペースを付与しながら本塁打欄を構築する
+        for line in home_run:
+            ret_val += '  %s %s %2d号 %s （%s）\n' % (
+                ' ' * (max_inning_len - len(line[0])) + line[0],
+                line[1] + '　' * (max_player_len - len(line[1])),
+                line[2],
+                line[3] + '　' * (max_type_len - len(line[3])),
+                line[4]
+            )
+
+    # 構築したスコアを返す
+    return ret_val
+
+
+def create_pitcher_line(caption, name, result):
+    """
+    投手成績(1行)を構築する。
+
+    :param caption: 見出し
+    :type caption: str
+    :param name: 投手名
+    :type name: str
+    :param result: 成績
+    :type result: tuple
+    :return: 投手成績
+    :rtype: str
+    """
+    # 投手成績を編集して返す
+    return '[{0}] {1} {2}勝{3}敗{4}Ｓ\n'.format(caption, name, *result) if result else ''
 
 
 # チーム名変換テーブル
@@ -394,78 +491,6 @@ def get_full_stadium_name(stadium_name):
     """
     # 変換テーブルを探索
     return FULL_STADIUM_NAME.get(stadium_name, stadium_name)
-
-
-def create_score_table(data, day):
-    """
-    スコア情報の格納された辞書をもとにスコアテーブルを構築する。
-
-    @param data: スコア情報
-    @type data: dict
-    @return: スコアテーブル
-    @rtype: str
-    """
-    # ヘッダ
-    field_first = get_full_team_name(data['field_first'])
-    bat_first = get_full_team_name(data['bat_first'])
-    retval = '【%s vs %s 第%d回戦】\n' % (field_first, bat_first, data['match'])
-    retval += '（%d年%d月%d日：%s）\n' % (
-        day.year,
-        day.month,
-        day.day,
-        get_full_stadium_name(data['stadium'])
-    )
-    retval += '\n'
-
-    # スコア
-    bat_first, field_first = add_zenkaku_space(bat_first, field_first)
-    top_score, bottom_score = add_space(create_score_line(data['score'][0]), create_score_line(data['score'][1]))
-    top_total_score, bottom_total_score = space_padding(str(data['total_score'][0]), str(data['total_score'][1]))
-
-    retval += '%s  %s  %s\n' % (bat_first, top_score, top_total_score)
-    retval += '%s  %s  %s\n' % (field_first, bottom_score, bottom_total_score)
-
-    # 投手成績
-    win_pitcher, save_pitcher, lose_pitcher = add_zenkaku_space(
-        data.get('win', [''])[0],
-        data.get('save', [''])[0],
-        data.get('lose', [''])[0]
-    )
-
-    if 'win' in data or 'save' in data or 'lose' in data:
-        retval += '\n'
-
-    if 'win' in data:
-        retval += '[勝] %s %d勝%d敗%dＳ\n' % ((win_pitcher,) + data['win'][1:])
-    if 'save' in data:
-        retval += '[Ｓ] %s %d勝%d敗%dＳ\n' % ((save_pitcher,) + data['save'][1:])
-    if 'lose' in data:
-        retval += '[敗] %s %d勝%d敗%dＳ\n' % ((lose_pitcher,) + data['lose'][1:])
-
-    # 本塁打
-    if data.get('homerun'):
-        retval += '\n'
-        retval += '[本塁打]\n'
-
-        inning_max_len = 0
-        player_max_len = 0
-        type_max_len = 0
-        for line in data['homerun']:
-            inning_max_len = max(inning_max_len, len(line[0]))
-            player_max_len = max(player_max_len, len(line[1]))
-            type_max_len = max(type_max_len, len(line[3]))
-
-        for line in data['homerun']:
-            retval += '  %s %s %2d号 %s （%s）\n' % (
-                ' ' * (inning_max_len - len(line[0])) + line[0],
-                line[1] + '　' * (player_max_len - len(line[1])),
-                line[2],
-                line[3] + '　' * (type_max_len - len(line[3])),
-                line[4]
-            )
-
-    # 構築したスコアを返す
-    return retval
 
 
 def find_or_error(bs, *args):
