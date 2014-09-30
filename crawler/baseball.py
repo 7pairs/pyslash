@@ -322,8 +322,8 @@ def create_score_table(score_data, day):
     :rtype: str
     """
     # ヘッダ欄を構築する
-    field_first = get_full_team_name(score_data['field_first'])
-    bat_first = get_full_team_name(score_data['bat_first'])
+    field_first = get_long_team_name(score_data['field_first'])
+    bat_first = get_long_team_name(score_data['bat_first'])
     ret_val = '【%s vs %s 第%d回戦】\n' % (field_first, bat_first, score_data['match'])
     ret_val += '（%d年%d月%d日：%s）\n' % (
         day.year,
@@ -423,7 +423,7 @@ FULL_TEAM_NAME = {
 }
 
 
-def get_full_team_name(team_name):
+def get_long_team_name(team_name):
     """
     指定されたチーム名を正式名称に変換する。
 
