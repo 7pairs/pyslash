@@ -27,6 +27,20 @@ SHORT_TEAM_NAMES = {
 }
 
 
+# チーム名変換テーブル
+LONG_TEAM_NAMES = {
+    '西武': '埼玉西武',
+    '楽天': '東北楽天',
+    'ロッテ': '千葉ロッテ',
+    'ソフトバンク': '福岡ソフトバンク',
+    '日本ハム': '北海道日本ハム',
+    '巨人': '読売',
+    '広島': '広島東洋',
+    'ＤｅＮＡ': '横浜ＤｅＮＡ',
+    'ヤクルト': '東京ヤクルト',
+}
+
+
 def get_score_table(team, day):
     """
     指定されたチーム、試合日のスコアテーブルを文字列として返す。
@@ -392,6 +406,19 @@ def create_score_table(score_data, day):
     return ret_val
 
 
+def get_long_team_name(team_name):
+    """
+    指定されたチーム名を正式名称に変換する。
+
+    :param team_name: チーム名
+    :type team_name: str
+    :return: チームの正式名称
+    :rtype: str
+    """
+    # 変換テーブルを探索する
+    return LONG_TEAM_NAMES.get(team_name, team_name)
+
+
 def create_pitcher_line(caption, name, result):
     """
     投手成績(1行)を構築する。
@@ -407,33 +434,6 @@ def create_pitcher_line(caption, name, result):
     """
     # 投手成績を編集して返す
     return '[{0}] {1} {2}勝{3}敗{4}Ｓ\n'.format(caption, name, *result) if result else ''
-
-
-# チーム名変換テーブル
-FULL_TEAM_NAME = {
-    '西武': '埼玉西武',
-    '楽天': '東北楽天',
-    'ロッテ': '千葉ロッテ',
-    'ソフトバンク': '福岡ソフトバンク',
-    '日本ハム': '北海道日本ハム',
-    '巨人': '読売',
-    '広島': '広島東洋',
-    'ＤｅＮＡ': '横浜ＤｅＮＡ',
-    'ヤクルト': '東京ヤクルト',        
-}
-
-
-def get_long_team_name(team_name):
-    """
-    指定されたチーム名を正式名称に変換する。
-
-    @param team_name: チーム名
-    @type team_name: str
-    @return: 変換後のチーム名
-    @rtype: str
-    """
-    # 変換テーブルを探索
-    return FULL_TEAM_NAME.get(team_name, team_name)
 
 
 # 球場名変換テーブル
