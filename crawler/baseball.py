@@ -476,6 +476,30 @@ def get_long_stadium_name(stadium_name):
     return LONG_STADIUM_NAMES.get(stadium_name, stadium_name)
 
 
+def create_score_line(scores):
+    """
+    スコア行(先攻のみ、もしくは後攻のみ)を構築する。
+
+    :param scores: 各イニングのスコア
+    :type scores: list
+    :return: スコア行
+    :rtype: str
+    """
+    # 各イニングのスコアを連結する
+    ret_val = ''
+    for i, score in enumerate(scores):
+        if i != 0:
+            # 3イニングごとに広めに区切る
+            if i % 3 == 0:
+                ret_val += '  '
+            else:
+                ret_val += ' '
+        ret_val += score
+
+    # 構築したスコア行を返す
+    return ret_val
+
+
 def create_pitcher_line(caption, name, result):
     """
     投手成績(1行)を構築する。
@@ -531,30 +555,6 @@ def search_or_error(pattern, string):
         return m
     else:
         raise ParseError()
-
-
-def create_score_line(score):
-    """
-    スコア行(先攻のみ、もしくは後攻のみ)を構築する。
-
-    @param score: 各イニングのスコア
-    @type score: list
-    @return: スコア行
-    @rtype: str
-    """
-    # イニングスコアを連結
-    retval = ''
-    for i, run in enumerate(score):
-        if i != 0:
-            # 3イニングごとに広めに区切る
-            if i % 3 == 0:
-                retval += '  '
-            else:
-                retval += ' '
-        retval += run
-
-    # 構築したスコア行を返す
-    return retval
 
 
 def add_space(*args):
