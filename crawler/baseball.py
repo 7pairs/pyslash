@@ -343,7 +343,7 @@ def create_score_table(score_data, day):
         day.year,
         day.month,
         day.day,
-        get_full_stadium_name(score_data['stadium'])
+        get_long_stadium_name(score_data['stadium'])
     )
     ret_val += '\n'
 
@@ -480,7 +480,7 @@ FULL_STADIUM_NAME = {
 }
 
 
-def get_full_stadium_name(stadium_name):
+def get_long_stadium_name(stadium_name):
     """
     指定された球場名を正式名称に変換する。
 
