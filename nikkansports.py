@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-nikkansports.py
+Tools for parsing 'nikkansports.com'.
 
 Usage:
 nikkansports.py -t <team> [-d <day>]
@@ -24,12 +24,12 @@ import crawler.baseball
 
 
 # バージョン番号
-VERSION = '1.0.0'
+__version__ = '1.0.0'
 
 
 if __name__ == '__main__':
     # 引数を取得する
-    args = docopt(__doc__, version=VERSION)
+    args = docopt(__doc__, version=__version__)
 
     # スコアテーブルを出力する
     if args.get('-t'):
