@@ -578,17 +578,17 @@ def add_em_space(*args):
     """
     指定された文字列のうち、最大長に満たなかった文字列の末尾に全角スペースを付与する。
 
-    @param args: 対象文字列
-    @type args: list
-    @return: 編集後の文字列
-    @rtype: tuple
+    :param args: 対象の文字列群
+    :type args: list
+    :return: 編集後の文字列群
+    :rtype: tuple
     """
-    # スペースを付与
+    # スペースを付与する
     max_len = max(map(len, args))
-    retval = map(lambda x: x + '　' * (max_len - len(x)), args)
+    ret_val = map(lambda x: x + '　' * (max_len - len(x)), args)
 
     # 編集結果を返す
-    return tuple(retval)
+    return tuple(ret_val)
 
 
 def space_padding(*args):
