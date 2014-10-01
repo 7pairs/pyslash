@@ -539,17 +539,17 @@ def search_or_error(pattern, string):
 
 def find_or_error(bs, *args):
     """
-    BeautifulSoupのfindメソッドを呼び出し、その結果を返す。
-    findの結果がNoneだった場合はParseErrorを送出する。
+    bs4.BeautifulSoup.find() を実行し、その結果を返す。
+    ただし、結果がNoneだった場合はParseErrorを送出する。
 
-    @param bs: findメソッドを呼び出すオブジェクト
-    @type bs: bs4.BeautifulSoup
-    @param args: findメソッドに渡す引数
-    @type args: list
-    @return: findの結果
-    @rtype: bs4.element.Tag
+    :param bs: findメソッドを実行するBeautifulSoupオブジェクト
+    :type bs: bs4.BeautifulSoup
+    :param args: findメソッドに渡す引数群
+    :type args: list
+    :return: 探索結果
+    :rtype: bs4.element.Tag
     """
-    # findメソッドを呼び出して結果を返す
+    # bs4.BeautifulSoup.find() の結果を返す
     result = bs.find(*args)
     if result:
         return result
