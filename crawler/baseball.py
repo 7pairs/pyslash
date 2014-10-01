@@ -392,7 +392,7 @@ def create_score_table(score_data, day):
     ret_val += '\n'
 
     # スコア欄を構築する
-    bat_first, field_first = add_zenkaku_space(bat_first, field_first)
+    bat_first, field_first = add_em_space(bat_first, field_first)
     top_score, bottom_score = add_space(
         create_score_line(score_data['score'][0]),
         create_score_line(score_data['score'][1])
@@ -408,7 +408,7 @@ def create_score_table(score_data, day):
     win = score_data.get('win')
     save = score_data.get('save')
     lose = score_data.get('lose')
-    win_player, save_player, lose_player = add_zenkaku_space(
+    win_player, save_player, lose_player = add_em_space(
         win[0] if win else '',
         save[0] if save else '',
         lose[0] if lose else ''
@@ -574,7 +574,7 @@ def add_space(*args):
     return tuple(ret_val)
 
 
-def add_zenkaku_space(*args):
+def add_em_space(*args):
     """
     指定された文字列のうち、最大長に満たなかった文字列の末尾に全角スペースを付与する。
 
