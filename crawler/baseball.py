@@ -517,6 +517,26 @@ def create_pitcher_line(caption, name, result):
     return '[{0}] {1} {2}勝{3}敗{4}Ｓ\n'.format(caption, name, *result) if result else ''
 
 
+def search_or_error(pattern, string):
+    """
+    re.search() を実行し、その結果を返す。
+    ただし、結果がNoneだった場合はParseErrorを送出する。
+
+    :param pattern: 正規表現パターン
+    :type pattern: str
+    :param string: 走査対象文字列
+    :type string: str
+    :return: マッチング結果
+    :rtype: pre.MatchObject
+    """
+    # re.search() の結果を返す
+    m = re.search(pattern, string)
+    if m:
+        return m
+    else:
+        raise ParseError()
+
+
 def find_or_error(bs, *args):
     """
     BeautifulSoupのfindメソッドを呼び出し、その結果を返す。
@@ -533,26 +553,6 @@ def find_or_error(bs, *args):
     result = bs.find(*args)
     if result:
         return result
-    else:
-        raise ParseError()
-
-
-def search_or_error(pattern, string):
-    """
-    re.search関数を呼び出し、その結果を返す。
-    searchの結果がNoneだった場合はParseErrorを送出する。
-
-    @param pattern: 正規表現
-    @type pattern: str
-    @param string: 走査対象
-    @type string: str
-    @return: マッチング結果
-    @rtype: re.MatchObject
-    """
-    # searchメソッドを実行して結果を返す
-    m = re.search(pattern, string)
-    if m:
-        return m
     else:
         raise ParseError()
 
