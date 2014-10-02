@@ -96,6 +96,65 @@ RETURN_VALUE_FOR_GET_URL = """\
 """
 
 
+def test_get_score_table_01():
+    """
+    get_score_table()：引数に有効なチーム、試合日を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    """
+    expected = textwrap.dedent("""\
+        【千葉ロッテ vs 埼玉西武 第6回戦】
+        （2014年5月2日：QVCマリンフィールド）
+
+        埼玉西武　  0 2 0  0 0 0  0 0 0  2
+        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
+
+        [勝] 岸　 3勝2敗0Ｓ
+        [敗] 成瀬 3勝2敗0Ｓ
+    """)
+    result = baseball.get_score_table('l', datetime.datetime.strptime('20140502', '%Y%m%d'))
+    tools.assert_equal(expected, result)
+
+
+@patch('crawler.baseball.get_today_game_url')
+def test_get_score_table_02(get_today_game_url):
+    """
+    get_score_table()：試合日にNoneを指定したとき、当日の試合のスコアテーブルの文字列を返すことを確認する。
+    """
+    get_today_game_url.return_value = 'http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html'
+    expected = textwrap.dedent("""\
+        【埼玉西武 vs 阪神 第3回戦】
+        （2014年6月14日：西武ドーム）
+
+        阪神　　  1 0 0  0 0 1  0 0 0  2
+        埼玉西武  0 2 0  0 0 1  0 0 x  3
+
+        [勝] 菊池 3勝6敗0Ｓ
+        [Ｓ] 高橋 0勝1敗12Ｓ
+        [敗] 能見 5勝5敗0Ｓ
+
+        [本塁打]
+          2回裏 木村　　  6号 ２ラン （能見）
+          6回表 マートン  8号 ソロ　 （菊池）
+    """)
+    result = baseball.get_score_table('l', None)
+    tools.assert_equal(expected, result)
+
+
+@raises(InvalidTeamError)
+def test_get_score_table_03():
+    """
+    get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
+    """
+    baseball.get_score_table('err', datetime.datetime.strptime('20140502', '%Y%m%d'))
+
+
+@raises(InvalidTeamError)
+def test_get_score_table_04():
+    """
+    get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
+    """
+    baseball.get_score_table('err', None)
+
+
 @patch('crawler.baseball.get_html')
 def test_get_url_01(get_html):
     """
@@ -1137,23 +1196,4 @@ def test_get_score_table():
     """)
 
     actual = baseball.get_score_table_by_url('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-    tools.assert_equal(expected, actual)
-
-
-def test_get_score_table_by_param():
-    """
-    引数に有効なチーム、日付を指定したとき、スコアテーブルの文字列を返すことを確認する。
-    """
-    expected = textwrap.dedent("""\
-        【千葉ロッテ vs 埼玉西武 第6回戦】
-        （2014年5月2日：QVCマリンフィールド）
-
-        埼玉西武　  0 2 0  0 0 0  0 0 0  2
-        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
-
-        [勝] 岸　 3勝2敗0Ｓ
-        [敗] 成瀬 3勝2敗0Ｓ
-    """)
-
-    actual = baseball.get_score_table('l', datetime.datetime.strptime('20140502', '%Y%m%d'))
     tools.assert_equal(expected, actual)
