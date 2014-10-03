@@ -207,6 +207,22 @@ def test_get_calender_url_02():
     baseball.get_calendar_url('err', datetime.datetime(2014, 4, 1))
 
 
+def test_get_html_01():
+    """
+    get_html()：引数に有効なURLを指定したとき、HTMLの内容を文字列として返すことを確認する。
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+    tools.assert_equal(True, '<title>プロ野球スコア速報 ロッテ対西武 : nikkansports.com</title>' in html)
+
+
+@raises(ValueError)
+def test_get_html_02():
+    """
+    get_html()：引数に無効なURLを指定したとき、ValueErrorが送出されることを確認する。
+    """
+    baseball.get_html('えいちてぃーてぃーぴーころんすらっしゅすらっしゅ')
+
+
 @patch('crawler.baseball.get_html')
 def test_get_url_01(get_html):
     """
@@ -357,24 +373,6 @@ def test_get_date_02():
     引数に無効なURLを指定したとき、ParseErrorがraiseされることを確認する。
     """
     baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
-
-
-def test_get_html_01():
-    """
-    引数に有効なURLを指定したとき、そのURLのHTMLの内容を文字列として返すことを確認する。
-    """
-    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-    actual = ('<title>プロ野球スコア速報 ロッテ対西武 : nikkansports.com</title>' in html)
-    tools.assert_equal(True, actual)
-
-
-@raises(ValueError)
-def test_get_html_02():
-    """
-    引数に無効なURLを指定したとき、ValueErrorが発生することを確認する。
-    """
-    html = baseball.get_html('エラーアルよー')
-    tools.assert_equal('', html)
 
 
 def test_create_dict_01():
