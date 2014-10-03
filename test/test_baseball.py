@@ -175,6 +175,22 @@ def test_get_score_table_by_url_01():
     tools.assert_equal(expected, result)
 
 
+def test_get_game_url_01():
+    """
+    get_game_url()：引数に有効なチーム、試合日を指定したとき、スコアテーブルのURLを返すことを確認する。
+    """
+    result = baseball.get_game_url('l', datetime.date(2014, 5, 2))
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', result)
+
+
+@raises(InvalidTeamError)
+def test_get_game_url_02():
+    """
+    get_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
+    """
+    baseball.get_calendar_url('err', datetime.date(2014, 5, 2))
+
+
 @patch('crawler.baseball.get_html')
 def test_get_url_01(get_html):
     """
@@ -341,22 +357,6 @@ def test_get_calender_url_02():
     引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
     """
     baseball.get_calendar_url('q', datetime.datetime.strptime('20140401', '%Y%m%d'))
-
-
-def test_get_game_url_01():
-    """
-    引数に有効なチーム名、日付を指定したとき、スコアテーブルのURLを返すことを確認する。
-    """
-    actual = baseball.get_game_url('l', datetime.date(2014, 5, 2))
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', actual)
-
-
-@raises(InvalidTeamError)
-def test_get_game_url_02():
-    """
-    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
-    """
-    baseball.get_calendar_url('q', datetime.date(2014, 5, 2))
 
 
 def test_get_html_01():
