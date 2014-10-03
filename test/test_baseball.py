@@ -1303,6 +1303,24 @@ def test_search_or_error_01():
 @raises(ParseError)
 def test_search_or_error_02():
     """
-    search_or_error()：検索にヒットしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
+    search_or_error()：マッチしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
     """
     baseball.search_or_error(r'(\d+)(\D+)', 'アンマッチ123')
+
+
+def test_find_or_error_01():
+    """
+    find_or_error()：検索にヒットする条件を引数として指定したとき、ヒットしたノードを返すことを確認する。
+    """
+    soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
+    result = baseball.find_or_error(soup, 'span')
+    tools.assert_equal(result.string, 'テスト')
+
+
+@raises(ParseError)
+def test_find_or_error_02():
+    """
+    find_or_error()：検索にしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
+    """
+    soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
+    baseball.find_or_error(soup, 'a')
