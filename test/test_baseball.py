@@ -1240,3 +1240,43 @@ def test_get_long_stadium_name_44():
     """
     result = baseball.get_long_stadium_name('宇都宮')
     tools.assert_equal('宇都宮清原球場', result)
+
+
+def test_create_score_line_01():
+    """
+    create_score_line()：引数に有効な配列を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['0', '0', '0', '0', '0', '0', '1', '0', '0'])
+    tools.assert_equal('0 0 0  0 0 0  1 0 0', result)
+
+
+def test_create_score_line_02():
+    """
+    create_score_line()：引数に有効な配列(9回裏なし)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['0', '0', '1', '0', '2', '0', '0', '1', 'x'])
+    tools.assert_equal('0 0 1  0 2 0  0 1 x', result)
+
+
+def test_create_score_line_03():
+    """
+    create_score_line()：引数に有効な配列(サヨナラ)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['0', '1', '0', '1', '1', '0', '1', '0', '1x'])
+    tools.assert_equal('0 1 0  1 1 0  1 0 1x', result)
+
+
+def test_create_score_line_04():
+    """
+    create_score_line()：引数に有効な配列(延長戦)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'])
+    tools.assert_equal('2 1 0  0 0 0  0 0 1  1 0 0', result)
+
+
+def test_create_score_line_05():
+    """
+    create_score_line()：引数に有効な配列(コールド)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['3', '0', '0', '1', '2', '1', '0x'])
+    tools.assert_equal('3 0 0  1 2 1  0x', result)
