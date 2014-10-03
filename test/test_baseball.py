@@ -890,361 +890,353 @@ def test_get_long_team_name_12():
     tools.assert_equal('東京ヤクルト', result)
 
 
-def test_get_full_stadium_name_01():
+def test_get_long_stadium_name_01():
     """
-    引数に'西武ドーム'を指定したとき、'西武ドーム'を返すことを確認する。
+    get_long_stadium_name()：引数に'西武ドーム'を指定したとき、'西武ドーム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('西武ドーム')
-    tools.assert_equal('西武ドーム', actual)
+    result = baseball.get_long_stadium_name('西武ドーム')
+    tools.assert_equal('西武ドーム', result)
 
 
-def test_get_full_stadium_name_02():
+def test_get_long_stadium_name_02():
     """
-    引数に'コボスタ宮城'を指定したとき、'楽天Koboスタジアム宮城'を返すことを確認する。
+    get_long_stadium_name()：引数に'コボスタ宮城'を指定したとき、'楽天Koboスタジアム宮城'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('コボスタ宮城')
-    tools.assert_equal('楽天Koboスタジアム宮城', actual)
+    result = baseball.get_long_stadium_name('コボスタ宮城')
+    tools.assert_equal('楽天Koboスタジアム宮城', result)
 
 
-def test_get_full_stadium_name_03():
+def test_get_long_stadium_name_03():
     """
-    引数に'ＱＶＣマリン'を指定したとき、'QVCマリンフィールド'を返すことを確認する。
+    get_long_stadium_name()：引数に'ＱＶＣマリン'を指定したとき、'QVCマリンフィールド'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('ＱＶＣマリン')
-    tools.assert_equal('QVCマリンフィールド', actual)
+    result = baseball.get_long_stadium_name('ＱＶＣマリン')
+    tools.assert_equal('QVCマリンフィールド', result)
 
 
-def test_get_full_stadium_name_04():
+def test_get_long_stadium_name_04():
     """
-    引数に'ヤフオクドーム'を指定したとき、'福岡 ヤフオク!ドーム'を返すことを確認する。
+    get_long_stadium_name()：引数に'ヤフオクドーム'を指定したとき、'福岡 ヤフオク!ドーム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('ヤフオクドーム')
-    tools.assert_equal('福岡 ヤフオク!ドーム', actual)
+    result = baseball.get_long_stadium_name('ヤフオクドーム')
+    tools.assert_equal('福岡 ヤフオク!ドーム', result)
 
 
-def test_get_full_stadium_name_05():
+def test_get_long_stadium_name_05():
     """
-    引数に'京セラドーム大阪'を指定したとき、'京セラドーム大阪'を返すことを確認する。
+    get_long_stadium_name()：引数に'京セラドーム大阪'を指定したとき、'京セラドーム大阪'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('京セラドーム大阪')
-    tools.assert_equal('京セラドーム大阪', actual)
+    result = baseball.get_long_stadium_name('京セラドーム大阪')
+    tools.assert_equal('京セラドーム大阪', result)
 
 
-def test_get_full_stadium_name_06():
+def test_get_long_stadium_name_06():
     """
-    引数に'札幌ドーム'を指定したとき、'札幌ドーム'を返すことを確認する。
+    get_long_stadium_name()：引数に'札幌ドーム'を指定したとき、'札幌ドーム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('札幌ドーム')
-    tools.assert_equal('札幌ドーム', actual)
+    result = baseball.get_long_stadium_name('札幌ドーム')
+    tools.assert_equal('札幌ドーム', result)
 
 
-def test_get_full_stadium_name_07():
+def test_get_long_stadium_name_07():
     """
-    引数に'東京ドーム'を指定したとき、'東京ドーム'を返すことを確認する。
+    get_long_stadium_name()：引数に'東京ドーム'を指定したとき、'東京ドーム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('東京ドーム')
-    tools.assert_equal('東京ドーム', actual)
+    result = baseball.get_long_stadium_name('東京ドーム')
+    tools.assert_equal('東京ドーム', result)
 
 
-def test_get_full_stadium_name_08():
+def test_get_long_stadium_name_08():
     """
-    引数に'甲子園'を指定したとき、'阪神甲子園球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'甲子園'を指定したとき、'阪神甲子園球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('甲子園')
-    tools.assert_equal('阪神甲子園球場', actual)
+    result = baseball.get_long_stadium_name('甲子園')
+    tools.assert_equal('阪神甲子園球場', result)
 
 
-def test_get_full_stadium_name_09():
+def test_get_long_stadium_name_09():
     """
-    引数に'マツダスタジアム'を指定したとき、'Mazda Zoom-Zoomスタジアム広島'を返すことを確認する。
+    get_long_stadium_name()：引数に'マツダスタジアム'を指定したとき、'Mazda Zoom-Zoomスタジアム広島'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('マツダスタジアム')
-    tools.assert_equal('Mazda Zoom-Zoomスタジアム広島', actual)
+    result = baseball.get_long_stadium_name('マツダスタジアム')
+    tools.assert_equal('Mazda Zoom-Zoomスタジアム広島', result)
 
 
-def test_get_full_stadium_name_10():
+def test_get_long_stadium_name_10():
     """
-    引数に'ナゴヤドーム'を指定したとき、'ナゴヤドーム'を返すことを確認する。
+    get_long_stadium_name()：引数に'ナゴヤドーム'を指定したとき、'ナゴヤドーム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('ナゴヤドーム')
-    tools.assert_equal('ナゴヤドーム', actual)
+    result = baseball.get_long_stadium_name('ナゴヤドーム')
+    tools.assert_equal('ナゴヤドーム', result)
 
 
-def test_get_full_stadium_name_11():
+def test_get_long_stadium_name_11():
     """
-    引数に'横浜'を指定したとき、'横浜スタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'横浜'を指定したとき、'横浜スタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('横浜')
-    tools.assert_equal('横浜スタジアム', actual)
+    result = baseball.get_long_stadium_name('横浜')
+    tools.assert_equal('横浜スタジアム', result)
 
 
-def test_get_full_stadium_name_12():
+def test_get_long_stadium_name_12():
     """
-    引数に'神宮'を指定したとき、'明治神宮野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'神宮'を指定したとき、'明治神宮野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('神宮')
-    tools.assert_equal('明治神宮野球場', actual)
+    result = baseball.get_long_stadium_name('神宮')
+    tools.assert_equal('明治神宮野球場', result)
 
 
-def test_get_full_stadium_name_13():
+def test_get_long_stadium_name_13():
     """
-    引数に'ほっともっと神戸'を指定したとき、'ほっともっとフィールド神戸'を返すことを確認する。
+    get_long_stadium_name()：引数に'ほっともっと神戸'を指定したとき、'ほっともっとフィールド神戸'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('ほっともっと神戸')
-    tools.assert_equal('ほっともっとフィールド神戸', actual)
+    result = baseball.get_long_stadium_name('ほっともっと神戸')
+    tools.assert_equal('ほっともっとフィールド神戸', result)
 
 
-def test_get_full_stadium_name_14():
+def test_get_long_stadium_name_14():
     """
-    引数に'大宮'を指定したとき、'埼玉県営大宮公園野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'大宮'を指定したとき、'埼玉県営大宮公園野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('大宮')
-    tools.assert_equal('埼玉県営大宮公園野球場', actual)
+    result = baseball.get_long_stadium_name('大宮')
+    tools.assert_equal('埼玉県営大宮公園野球場', result)
 
 
-def test_get_full_stadium_name_15():
+def test_get_long_stadium_name_15():
     """
-    引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('静岡')
-    tools.assert_equal('静岡県草薙総合運動場硬式野球場', actual)
+    result = baseball.get_long_stadium_name('静岡')
+    tools.assert_equal('静岡県草薙総合運動場硬式野球場', result)
 
 
-def test_get_full_stadium_name_16():
+def test_get_long_stadium_name_16():
     """
-    引数に'サンマリン宮崎'を指定したとき、'サンマリンスタジアム宮崎'を返すことを確認する。
+    get_long_stadium_name()：引数に'サンマリン宮崎'を指定したとき、'サンマリンスタジアム宮崎'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('サンマリン宮崎')
-    tools.assert_equal('サンマリンスタジアム宮崎', actual)
+    result = baseball.get_long_stadium_name('サンマリン宮崎')
+    tools.assert_equal('サンマリンスタジアム宮崎', result)
 
 
-def test_get_full_stadium_name_17():
+def test_get_long_stadium_name_17():
     """
-    引数に'鹿児島'を指定したとき、'鹿児島県立鴨池野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'鹿児島'を指定したとき、'鹿児島県立鴨池野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('鹿児島')
-    tools.assert_equal('鹿児島県立鴨池野球場', actual)
+    result = baseball.get_long_stadium_name('鹿児島')
+    tools.assert_equal('鹿児島県立鴨池野球場', result)
 
 
-def test_get_full_stadium_name_18():
+def test_get_long_stadium_name_18():
     """
-    引数に'北九州'を指定したとき、'北九州市民球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'北九州'を指定したとき、'北九州市民球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('北九州')
-    tools.assert_equal('北九州市民球場', actual)
+    result = baseball.get_long_stadium_name('北九州')
+    tools.assert_equal('北九州市民球場', result)
     
 
-def test_get_full_stadium_name_19():
+def test_get_long_stadium_name_19():
     """
-    引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('函館')
-    tools.assert_equal('オーシャンスタジアム', actual)
+    result = baseball.get_long_stadium_name('函館')
+    tools.assert_equal('オーシャンスタジアム', result)
 
 
-def test_get_full_stadium_name_20():
+def test_get_long_stadium_name_20():
     """
-    引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'いわき'を指定したとき、'いわきグリーンスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('函館')
-    tools.assert_equal('オーシャンスタジアム', actual)
+    result = baseball.get_long_stadium_name('いわき')
+    tools.assert_equal('いわきグリーンスタジアム', result)
 
 
-def test_get_full_stadium_name_21():
+def test_get_long_stadium_name_21():
     """
-    引数に'いわき'を指定したとき、'いわきグリーンスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'どらドラパーク米子'を指定したとき、'どらドラパーク米子市民球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('いわき')
-    tools.assert_equal('いわきグリーンスタジアム', actual)
+    result = baseball.get_long_stadium_name('どらドラパーク米子')
+    tools.assert_equal('どらドラパーク米子市民球場', result)
 
 
-def test_get_full_stadium_name_22():
+def test_get_long_stadium_name_22():
     """
-    引数に'どらドラパーク米子'を指定したとき、'どらドラパーク米子市民球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'バッティングパレス相石ひらつか'を指定したとき、'バッティングパレス相石スタジアムひらつか'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('どらドラパーク米子')
-    tools.assert_equal('どらドラパーク米子市民球場', actual)
+    result = baseball.get_long_stadium_name('バッティングパレス相石ひらつか')
+    tools.assert_equal('バッティングパレス相石スタジアムひらつか', result)
 
 
-def test_get_full_stadium_name_23():
+def test_get_long_stadium_name_23():
     """
-    引数に'バッティングパレス相石ひらつか'を指定したとき、'バッティングパレス相石スタジアムひらつか'を返すことを確認する。
+    get_long_stadium_name()：引数に'ひたちなか'を指定したとき、'ひたちなか市民球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('バッティングパレス相石ひらつか')
-    tools.assert_equal('バッティングパレス相石スタジアムひらつか', actual)
+    result = baseball.get_long_stadium_name('ひたちなか')
+    tools.assert_equal('ひたちなか市民球場', result)
 
 
-def test_get_full_stadium_name_24():
+def test_get_long_stadium_name_24():
     """
-    引数に'ひたちなか'を指定したとき、'ひたちなか市民球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'秋田'を指定したとき、'こまちスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('ひたちなか')
-    tools.assert_equal('ひたちなか市民球場', actual)
+    result = baseball.get_long_stadium_name('秋田')
+    tools.assert_equal('こまちスタジアム', result)
 
 
-def test_get_full_stadium_name_25():
+def test_get_long_stadium_name_25():
     """
-    引数に'秋田'を指定したとき、'こまちスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'盛岡'を指定したとき、'岩手県営野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('秋田')
-    tools.assert_equal('こまちスタジアム', actual)
+    result = baseball.get_long_stadium_name('盛岡')
+    tools.assert_equal('岩手県営野球場', result)
 
 
-def test_get_full_stadium_name_26():
+def test_get_long_stadium_name_26():
     """
-    引数に'盛岡'を指定したとき、'岩手県営野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'三次'を指定したとき、'三次きんさいスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('盛岡')
-    tools.assert_equal('岩手県営野球場', actual)
+    result = baseball.get_long_stadium_name('三次')
+    tools.assert_equal('三次きんさいスタジアム', result)
 
 
-def test_get_full_stadium_name_27():
+def test_get_long_stadium_name_27():
     """
-    引数に'三次'を指定したとき、'三次きんさいスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'呉'を指定したとき、'呉市二河野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('三次')
-    tools.assert_equal('三次きんさいスタジアム', actual)
+    result = baseball.get_long_stadium_name('呉')
+    tools.assert_equal('呉市二河野球場', result)
 
 
-def test_get_full_stadium_name_28():
+def test_get_long_stadium_name_28():
     """
-    引数に'呉'を指定したとき、'呉市二河野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'郡山'を指定したとき、'郡山総合運動場開成山野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('呉')
-    tools.assert_equal('呉市二河野球場', actual)
+    result = baseball.get_long_stadium_name('郡山')
+    tools.assert_equal('郡山総合運動場開成山野球場', result)
 
 
-def test_get_full_stadium_name_29():
+def test_get_long_stadium_name_29():
     """
-    引数に'郡山'を指定したとき、'郡山総合運動場開成山野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'浜松'を指定したとき、'浜松球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('郡山')
-    tools.assert_equal('郡山総合運動場開成山野球場', actual)
+    result = baseball.get_long_stadium_name('浜松')
+    tools.assert_equal('浜松球場', result)
 
 
-def test_get_full_stadium_name_30():
+def test_get_long_stadium_name_30():
     """
-    引数に'浜松'を指定したとき、'浜松球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'倉敷'を指定したとき、'マスカットスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('浜松')
-    tools.assert_equal('浜松球場', actual)
+    result = baseball.get_long_stadium_name('倉敷')
+    tools.assert_equal('マスカットスタジアム', result)
 
 
-def test_get_full_stadium_name_31():
+def test_get_long_stadium_name_31():
     """
-    引数に'倉敷'を指定したとき、'マスカットスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'金沢'を指定したとき、'石川県立野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('倉敷')
-    tools.assert_equal('マスカットスタジアム', actual)
+    result = baseball.get_long_stadium_name('金沢')
+    tools.assert_equal('石川県立野球場', result)
 
 
-def test_get_full_stadium_name_32():
+def test_get_long_stadium_name_32():
     """
-    引数に'金沢'を指定したとき、'石川県立野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'富山'を指定したとき、'富山市民球場アルペンスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('金沢')
-    tools.assert_equal('石川県立野球場', actual)
+    result = baseball.get_long_stadium_name('富山')
+    tools.assert_equal('富山市民球場アルペンスタジアム', result)
 
 
-def test_get_full_stadium_name_33():
+def test_get_long_stadium_name_33():
     """
-    引数に'富山'を指定したとき、'富山市民球場アルペンスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'沖縄セルラー那覇'を指定したとき、'沖縄セルラースタジアム那覇'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('富山')
-    tools.assert_equal('富山市民球場アルペンスタジアム', actual)
+    result = baseball.get_long_stadium_name('沖縄セルラー那覇')
+    tools.assert_equal('沖縄セルラースタジアム那覇', result)
 
 
-def test_get_full_stadium_name_34():
+def test_get_long_stadium_name_34():
     """
-    引数に'沖縄セルラー那覇'を指定したとき、'沖縄セルラースタジアム那覇'を返すことを確認する。
+    get_long_stadium_name()：引数に'旭川'を指定したとき、'スタルヒン球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('沖縄セルラー那覇')
-    tools.assert_equal('沖縄セルラースタジアム那覇', actual)
+    result = baseball.get_long_stadium_name('旭川')
+    tools.assert_equal('スタルヒン球場', result)
 
 
-def test_get_full_stadium_name_35():
+def test_get_long_stadium_name_35():
     """
-    引数に'旭川'を指定したとき、'スタルヒン球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('旭川')
-    tools.assert_equal('スタルヒン球場', actual)
+    result = baseball.get_long_stadium_name('荘内銀行・日新製薬スタジアム')
+    tools.assert_equal('荘内銀行・日新製薬スタジアムやまがた', result)
 
 
-def test_get_full_stadium_name_36():
+def test_get_long_stadium_name_36():
     """
-    引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
+    get_long_stadium_name()：引数に'帯広'を指定したとき、'帯広の森野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('荘内銀行・日新製薬スタジアム')
-    tools.assert_equal('荘内銀行・日新製薬スタジアムやまがた', actual)
+    result = baseball.get_long_stadium_name('帯広')
+    tools.assert_equal('帯広の森野球場', result)
 
 
-def test_get_full_stadium_name_37():
+def test_get_long_stadium_name_37():
     """
-    引数に'帯広'を指定したとき、'帯広の森野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'豊橋'を指定したとき、'豊橋市民球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('帯広')
-    tools.assert_equal('帯広の森野球場', actual)
+    result = baseball.get_long_stadium_name('豊橋')
+    tools.assert_equal('豊橋市民球場', result)
 
 
-def test_get_full_stadium_name_38():
+def test_get_long_stadium_name_38():
     """
-    引数に'豊橋'を指定したとき、'豊橋市民球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'ハードオフ新潟'を指定したとき、'HARD OFF ECOスタジアム新潟'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('豊橋')
-    tools.assert_equal('豊橋市民球場', actual)
+    result = baseball.get_long_stadium_name('ハードオフ新潟')
+    tools.assert_equal('HARD OFF ECOスタジアム新潟', result)
 
 
-def test_get_full_stadium_name_39():
+def test_get_long_stadium_name_39():
     """
-    引数に'ハードオフ新潟'を指定したとき、'HARD OFF ECOスタジアム新潟'を返すことを確認する。
+    get_long_stadium_name()：引数に'熊本'を指定したとき、'藤崎台県営野球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('ハードオフ新潟')
-    tools.assert_equal('HARD OFF ECOスタジアム新潟', actual)
+    result = baseball.get_long_stadium_name('熊本')
+    tools.assert_equal('藤崎台県営野球場', result)
 
 
-def test_get_full_stadium_name_40():
+def test_get_long_stadium_name_40():
     """
-    引数に'熊本'を指定したとき、'藤崎台県営野球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'岐阜'を指定したとき、'長良川球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('熊本')
-    tools.assert_equal('藤崎台県営野球場', actual)
+    result = baseball.get_long_stadium_name('岐阜')
+    tools.assert_equal('長良川球場', result)
 
 
-def test_get_full_stadium_name_41():
+def test_get_long_stadium_name_41():
     """
-    引数に'岐阜'を指定したとき、'長良川球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'松山'を指定したとき、'坊っちゃんスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('岐阜')
-    tools.assert_equal('長良川球場', actual)
+    result = baseball.get_long_stadium_name('松山')
+    tools.assert_equal('坊っちゃんスタジアム', result)
 
 
-def test_get_full_stadium_name_42():
+def test_get_long_stadium_name_42():
     """
-    引数に'松山'を指定したとき、'坊っちゃんスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'長野'を指定したとき、'長野オリンピックスタジアム'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('松山')
-    tools.assert_equal('坊っちゃんスタジアム', actual)
+    result = baseball.get_long_stadium_name('長野')
+    tools.assert_equal('長野オリンピックスタジアム', result)
 
 
-def test_get_full_stadium_name_43():
+def test_get_long_stadium_name_43():
     """
-    引数に'長野'を指定したとき、'長野オリンピックスタジアム'を返すことを確認する。
+    get_long_stadium_name()：引数に'上毛敷島'を指定したとき、'上毛新聞敷島球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('長野')
-    tools.assert_equal('長野オリンピックスタジアム', actual)
+    result = baseball.get_long_stadium_name('上毛敷島')
+    tools.assert_equal('上毛新聞敷島球場', result)
 
 
-def test_get_full_stadium_name_44():
+def test_get_long_stadium_name_44():
     """
-    引数に'上毛敷島'を指定したとき、'上毛新聞敷島球場'を返すことを確認する。
+    get_long_stadium_name()：引数に'宇都宮'を指定したとき、'宇都宮清原球場'を返すことを確認する。
     """
-    actual = baseball.get_long_stadium_name('上毛敷島')
-    tools.assert_equal('上毛新聞敷島球場', actual)
-
-
-def test_get_full_stadium_name_45():
-    """
-    引数に'宇都宮'を指定したとき、'宇都宮清原球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('宇都宮')
-    tools.assert_equal('宇都宮清原球場', actual)
+    result = baseball.get_long_stadium_name('宇都宮')
+    tools.assert_equal('宇都宮清原球場', result)
