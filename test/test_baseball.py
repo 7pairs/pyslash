@@ -538,18 +538,18 @@ def test_parse_pitcher_02():
     tools.assert_equal(('レイノルズ', 3, 5, 0), result)
 
 
-def test_get_date_01():
+def test_parse_date_01():
     """
-    引数にスコアテーブルのURLを指定したとき、試合日を返すことを確認する。
+    parse_date()：引数に有効なURLを指定したとき、試合日を返すことを確認する。
     """
-    actual = baseball.parse_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-    tools.assert_equal(datetime.datetime(2014, 5, 2), actual)
+    result = baseball.parse_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+    tools.assert_equal(datetime.datetime(2014, 5, 2), result)
 
 
 @raises(ParseError)
-def test_get_date_02():
+def test_parse_date_02():
     """
-    引数に無効なURLを指定したとき、ParseErrorがraiseされることを確認する。
+    parse_date()：引数に無効なURLを指定したとき、ParseErrorが送出されることを確認する。
     """
     baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
 
