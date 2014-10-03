@@ -794,100 +794,100 @@ def test_create_score_table_06():
     tools.assert_equal(expected, result)
 
 
-def test_get_full_team_name_01():
+def test_get_long_team_name_01():
     """
-    引数に'西武'を指定したとき、'埼玉西武'を返すことを確認する。
+    get_long_team_name()：引数に'西武'を指定したとき、'埼玉西武'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('西武')
-    tools.assert_equal('埼玉西武', actual)
+    result = baseball.get_long_team_name('西武')
+    tools.assert_equal('埼玉西武', result)
 
 
-def test_get_full_team_name_02():
+def test_get_long_team_name_02():
     """
-    引数に'楽天'を指定したとき、'東北楽天'を返すことを確認する。
+    get_long_team_name()：引数に'楽天'を指定したとき、'東北楽天'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('楽天')
-    tools.assert_equal('東北楽天', actual)
+    result = baseball.get_long_team_name('楽天')
+    tools.assert_equal('東北楽天', result)
 
 
-def test_get_full_team_name_03():
+def test_get_long_team_name_03():
     """
-    引数に'ロッテ'を指定したとき、'千葉ロッテ'を返すことを確認する。
+    get_long_team_name()：引数に'ロッテ'を指定したとき、'千葉ロッテ'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('ロッテ')
-    tools.assert_equal('千葉ロッテ', actual)
+    result = baseball.get_long_team_name('ロッテ')
+    tools.assert_equal('千葉ロッテ', result)
 
 
-def test_get_full_team_name_04():
+def test_get_long_team_name_04():
     """
-    引数に'ソフトバンク'を指定したとき、'福岡ソフトバンク'を返すことを確認する。
+    get_long_team_name()：引数に'ソフトバンク'を指定したとき、'福岡ソフトバンク'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('ソフトバンク')
-    tools.assert_equal('福岡ソフトバンク', actual)
+    result = baseball.get_long_team_name('ソフトバンク')
+    tools.assert_equal('福岡ソフトバンク', result)
 
 
-def test_get_full_team_name_05():
+def test_get_long_team_name_05():
     """
-    引数に'オリックス'を指定したとき、'オリックス'を返すことを確認する。
+    get_long_team_name()：引数に'オリックス'を指定したとき、'オリックス'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('オリックス')
-    tools.assert_equal('オリックス', actual)
+    result = baseball.get_long_team_name('オリックス')
+    tools.assert_equal('オリックス', result)
 
 
-def test_get_full_team_name_06():
+def test_get_long_team_name_06():
     """
-    引数に'日本ハム'を指定したとき、'北海道日本ハム'を返すことを確認する。
+    get_long_team_name()：引数に'日本ハム'を指定したとき、'北海道日本ハム'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('日本ハム')
-    tools.assert_equal('北海道日本ハム', actual)
+    result = baseball.get_long_team_name('日本ハム')
+    tools.assert_equal('北海道日本ハム', result)
 
 
-def test_get_full_team_name_07():
+def test_get_long_team_name_07():
     """
-    引数に'巨人'を指定したとき、'読売'を返すことを確認する。
+    get_long_team_name()：引数に'巨人'を指定したとき、'読売'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('巨人')
-    tools.assert_equal('読売', actual)
+    result = baseball.get_long_team_name('巨人')
+    tools.assert_equal('読売', result)
 
 
-def test_get_full_team_name_08():
+def test_get_long_team_name_08():
     """
-    引数に'阪神'を指定したとき、'阪神'を返すことを確認する。
+    get_long_team_name()：引数に'阪神'を指定したとき、'阪神'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('阪神')
-    tools.assert_equal('阪神', actual)
+    result = baseball.get_long_team_name('阪神')
+    tools.assert_equal('阪神', result)
 
 
-def test_get_full_team_name_09():
+def test_get_long_team_name_09():
     """
-    引数に'広島'を指定したとき、'広島東洋'を返すことを確認する。
+    get_long_team_name()：引数に'広島'を指定したとき、'広島東洋'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('広島')
-    tools.assert_equal('広島東洋', actual)
+    result = baseball.get_long_team_name('広島')
+    tools.assert_equal('広島東洋', result)
 
 
-def test_get_full_team_name_10():
+def test_get_long_team_name_10():
     """
-    引数に'中日'を指定したとき、'中日'を返すことを確認する。
+    get_long_team_name()：引数に'中日'を指定したとき、'中日'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('中日')
-    tools.assert_equal('中日', actual)
+    result = baseball.get_long_team_name('中日')
+    tools.assert_equal('中日', result)
 
 
-def test_get_full_team_name_11():
+def test_get_long_team_name_11():
     """
-    引数に'ＤｅＮＡ'を指定したとき、'横浜ＤｅＮＡ'を返すことを確認する。
+    get_long_team_name()：引数に'ＤｅＮＡ'を指定したとき、'横浜ＤｅＮＡ'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('ＤｅＮＡ')
-    tools.assert_equal('横浜ＤｅＮＡ', actual)
+    result = baseball.get_long_team_name('ＤｅＮＡ')
+    tools.assert_equal('横浜ＤｅＮＡ', result)
 
 
-def test_get_full_team_name_12():
+def test_get_long_team_name_12():
     """
-    引数に'ヤクルト'を指定したとき、'東京ヤクルト'を返すことを確認する。
+    get_long_team_name()：引数に'ヤクルト'を指定したとき、'東京ヤクルト'を返すことを確認する。
     """
-    actual = baseball.get_long_team_name('ヤクルト')
-    tools.assert_equal('東京ヤクルト', actual)
+    result = baseball.get_long_team_name('ヤクルト')
+    tools.assert_equal('東京ヤクルト', result)
 
 
 def test_get_full_stadium_name_01():
