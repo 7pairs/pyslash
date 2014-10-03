@@ -3,6 +3,8 @@
 import datetime
 import textwrap
 
+from bs4 import BeautifulSoup
+
 from mock import patch
 
 from nose import tools
@@ -476,6 +478,64 @@ def test_parse_score_table_06():
     parse_score_table()：引数に無効なHTML文字列を指定したとき、ParseErrorが送出されることを確認する。
     """
     baseball.parse_score_table("えいちてぃーえむえる")
+
+
+def test_parse_pitcher_01():
+    """
+    parse_pitcher()：引数に有効なノードを指定したとき、投手成績のタプルを返すことを確認する。
+    """
+    soup = BeautifulSoup("""\
+        <tr>
+            <td class="line">Ｓ</td>
+            <td class="line left">高橋&nbsp;（左）</td>
+            <td class="line">２</td>
+            <td class="line">１</td>
+            <td class="line">28</td>
+            <td class="line">62</td>
+            <td class="line">１</td>
+            <td class="line">３</td>
+            <td class="line">11</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">2.04</td>
+        </tr>
+    """)
+    node = soup.find_all('td')
+    result = baseball.parse_pitcher(node)
+    tools.assert_equal(('高橋', 2, 1, 28), result)
+
+
+def test_parse_pitcher_02():
+    """
+    parse_pitcher()：引数に有効なノード(新加入選手)を指定したとき、投手成績のタプルを返すことを確認する。
+    """
+    soup = BeautifulSoup("""\
+        <tr>
+            <td>○</td>
+            <td class="left">レイノルズ&nbsp;（右=レッズ）</td>
+            <td>３</td>
+            <td>５</td>
+            <td>０</td>
+            <td>９</td>
+            <td>７&nbsp;1/3</td>
+            <td>33</td>
+            <td>109</td>
+            <td>９</td>
+            <td>２</td>
+            <td>１</td>
+            <td>１</td>
+            <td>５</td>
+            <td>５</td>
+            <td>4.47</td>
+        </tr>
+    """)
+    node = soup.find_all('td')
+    result = baseball.parse_pitcher(node)
+    tools.assert_equal(('レイノルズ', 3, 5, 0), result)
 
 
 def test_get_date_01():
