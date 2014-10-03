@@ -1324,3 +1324,19 @@ def test_find_or_error_02():
     """
     soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
     baseball.find_or_error(soup, 'a')
+
+
+def test_add_space_01():
+    """
+    add_space()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の末尾にスペースが付与されていることを確認する。
+    """
+    result = baseball.add_space('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
+    tools.assert_equal(('yui    ', 'mio    ', 'ritsu  ', 'tsumugi', 'azusa  '), result)
+
+
+def test_add_space_02():
+    """
+    add_space()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
+    """
+    result = baseball.add_space('Python', 'Erlang', 'Groovy', 'Pascal')
+    tools.assert_equal(('Python', 'Erlang', 'Groovy', 'Pascal'), result)
