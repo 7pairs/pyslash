@@ -110,7 +110,7 @@ def test_get_score_table_01():
         [勝] 岸　 3勝2敗0Ｓ
         [敗] 成瀬 3勝2敗0Ｓ
     """)
-    result = baseball.get_score_table('l', datetime.datetime.strptime('20140502', '%Y%m%d'))
+    result = baseball.get_score_table('l', datetime.datetime(2014, 5, 2))
     tools.assert_equal(expected, result)
 
 
@@ -144,7 +144,7 @@ def test_get_score_table_03():
     """
     get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
     """
-    baseball.get_score_table('err', datetime.datetime.strptime('20140502', '%Y%m%d'))
+    baseball.get_score_table('err', datetime.datetime(2014, 5, 2))
 
 
 @raises(InvalidTeamError)
@@ -179,7 +179,7 @@ def test_get_game_url_01():
     """
     get_game_url()：引数に有効なチーム、試合日を指定したとき、スコアテーブルのURLを返すことを確認する。
     """
-    result = baseball.get_game_url('l', datetime.date(2014, 5, 2))
+    result = baseball.get_game_url('l', datetime.datetime(2014, 5, 2))
     tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', result)
 
 
@@ -188,7 +188,7 @@ def test_get_game_url_02():
     """
     get_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
     """
-    baseball.get_calendar_url('err', datetime.date(2014, 5, 2))
+    baseball.get_calendar_url('err', datetime.datetime(2014, 5, 2))
 
 
 def test_get_calendar_url_01():
