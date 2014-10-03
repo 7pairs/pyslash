@@ -3,15 +3,18 @@
 import datetime
 import textwrap
 
+from bs4 import BeautifulSoup
+
 from mock import patch
 
-from nose.tools import *
+from nose import tools
+from nose.tools import raises
 
 from crawler import baseball
 from crawler.exception import InvalidTeamError, ParseError, ResultNotFoundError
 
 
-RETURN_VALUE_FOR_GET_URL = """\
+RETURN_VALUE_FOR_GET_HTML = """\
 <div class="dataContents">
     <table border="1" summary="プロ野球の対戦表">
         <tr>
@@ -95,785 +98,465 @@ RETURN_VALUE_FOR_GET_URL = """\
 """
 
 
-@patch('crawler.baseball.get_html')
-def test_get_url_01(get_html):
+def test_get_score_table_01():
     """
-    引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
+    get_score_table()：引数に有効なチーム、試合日を指定したとき、スコアテーブルの文字列を返すことを確認する。
     """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_today_game_url('l')
-    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
+    expected = textwrap.dedent("""\
+        【千葉ロッテ vs 埼玉西武 第6回戦】
+        （2014年5月2日：QVCマリンフィールド）
+
+        埼玉西武　  0 2 0  0 0 0  0 0 0  2
+        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
+
+        [勝] 岸　 3勝2敗0Ｓ
+        [敗] 成瀬 3勝2敗0Ｓ
+    """)
+    result = baseball.get_score_table('l', datetime.datetime(2014, 5, 2))
+    tools.assert_equal(expected, result)
 
 
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_02(get_html):
+@patch('crawler.baseball.get_today_game_url')
+def test_get_score_table_02(get_today_game_url):
     """
-    引数に'e'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (東北楽天が試合中のため)
+    get_score_table()：試合日にNoneを指定したとき、当日の試合のスコアテーブルの文字列を返すことを確認する。
     """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('e')
+    get_today_game_url.return_value = 'http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html'
+    expected = textwrap.dedent("""\
+        【埼玉西武 vs 阪神 第3回戦】
+        （2014年6月14日：西武ドーム）
 
+        阪神　　  1 0 0  0 0 1  0 0 0  2
+        埼玉西武  0 2 0  0 0 1  0 0 x  3
 
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_03(get_html):
-    """
-    引数に'm'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (千葉ロッテが試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('m')
+        [勝] 菊池 3勝6敗0Ｓ
+        [Ｓ] 高橋 0勝1敗12Ｓ
+        [敗] 能見 5勝5敗0Ｓ
 
-
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_04(get_html):
-    """
-    引数に'h'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (福岡ソフトバンクが試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('h')
-
-
-@patch('crawler.baseball.get_html')
-def test_get_url_05(get_html):
-    """
-    引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_today_game_url('bu')
-    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
-
-
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_06(get_html):
-    """
-    引数に'f'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (北海道日本ハムが試合開始前のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('f')
-
-
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_07(get_html):
-    """
-    引数に'g'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (読売が試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('g')
-
-
-@patch('crawler.baseball.get_html')
-def test_get_url_08(get_html):
-    """
-    引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_today_game_url('t')
-    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
-
-
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_09(get_html):
-    """
-    引数に'c'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (広島東洋が試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('c')
-
-
-@patch('crawler.baseball.get_html')
-def test_get_url_10(get_html):
-    """
-    引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    actual = baseball.get_today_game_url('d')
-    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
-
-
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_11(get_html):
-    """
-    引数に'bs'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (横浜ＤｅＮＡが試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('bs')
-
-
-@patch('crawler.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_url_12(get_html):
-    """
-    引数に's'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
-    (東京ヤクルトが試合開始前のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_URL
-    baseball.get_today_game_url('s')
+        [本塁打]
+          2回裏 木村　　  6号 ２ラン （能見）
+          6回表 マートン  8号 ソロ　 （菊池）
+    """)
+    result = baseball.get_score_table('l', None)
+    tools.assert_equal(expected, result)
 
 
 @raises(InvalidTeamError)
-def test_get_url_13():
+def test_get_score_table_03():
     """
-    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
+    get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
     """
-    baseball.get_today_game_url('q')
-
-
-def test_get_date_01():
-    """
-    引数にスコアテーブルのURLを指定したとき、試合日を返すことを確認する。
-    """
-    actual = baseball.parse_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-    assert_equal(datetime.datetime(2014, 5, 2), actual)
-
-
-@raises(ParseError)
-def test_get_date_02():
-    """
-    引数に無効なURLを指定したとき、ParseErrorがraiseされることを確認する。
-    """
-    baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
-
-
-def test_get_calendar_url_01():
-    """
-    引数に正しいチーム名を指定したとき、カレンダーのURLを返すことを確認する。
-    """
-    actual = baseball.get_calendar_url('l', datetime.datetime.strptime('20140401', '%Y%m%d'))
-    assert_equal('http://www.nikkansports.com/baseball/professional/schedule/2014/l201404.html', actual)
+    baseball.get_score_table('err', datetime.datetime(2014, 5, 2))
 
 
 @raises(InvalidTeamError)
-def test_get_calender_url_02():
+def test_get_score_table_04():
     """
-    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
+    get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
     """
-    baseball.get_calendar_url('q', datetime.datetime.strptime('20140401', '%Y%m%d'))
+    baseball.get_score_table('err', None)
+
+
+def test_get_score_table_by_url_01():
+    """
+    get_score_table_by_url()：引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
+    """
+    expected = textwrap.dedent("""\
+        【千葉ロッテ vs 埼玉西武 第6回戦】
+        （2014年5月2日：QVCマリンフィールド）
+
+        埼玉西武　  0 2 0  0 0 0  0 0 0  2
+        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
+
+        [勝] 岸　 3勝2敗0Ｓ
+        [敗] 成瀬 3勝2敗0Ｓ
+    """)
+    result = baseball.get_score_table_by_url(
+        'http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html'
+    )
+    tools.assert_equal(expected, result)
 
 
 def test_get_game_url_01():
     """
-    引数に有効なチーム名、日付を指定したとき、スコアテーブルのURLを返すことを確認する。
+    get_game_url()：引数に有効なチーム、試合日を指定したとき、スコアテーブルのURLを返すことを確認する。
     """
-    actual = baseball.get_game_url('l', datetime.date(2014, 5, 2))
-    assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', actual)
+    result = baseball.get_game_url('l', datetime.datetime(2014, 5, 2))
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', result)
 
 
 @raises(InvalidTeamError)
 def test_get_game_url_02():
     """
-    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
+    get_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
     """
-    baseball.get_calendar_url('q', datetime.date(2014, 5, 2))
+    baseball.get_calendar_url('err', datetime.datetime(2014, 5, 2))
+
+
+def test_get_calendar_url_01():
+    """
+    get_calendar_url()：引数に有効なチーム、試合日を指定したとき、カレンダーのURLを返すことを確認する。
+    """
+    result = baseball.get_calendar_url('l', datetime.datetime(2014, 4, 1))
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/schedule/2014/l201404.html', result)
+
+
+@raises(InvalidTeamError)
+def test_get_calender_url_02():
+    """
+    get_calendar_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
+    """
+    baseball.get_calendar_url('err', datetime.datetime(2014, 4, 1))
 
 
 def test_get_html_01():
     """
-    引数に有効なURLを指定したとき、そのURLのHTMLの内容を文字列として返すことを確認する。
+    get_html()：引数に有効なURLを指定したとき、HTMLの内容を文字列として返すことを確認する。
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-    actual = ('<title>プロ野球スコア速報 ロッテ対西武 : nikkansports.com</title>' in html)
-    assert_equal(True, actual)
+    tools.assert_equal(True, '<title>プロ野球スコア速報 ロッテ対西武 : nikkansports.com</title>' in html)
 
 
 @raises(ValueError)
 def test_get_html_02():
     """
-    引数に無効なURLを指定したとき、ValueErrorが発生することを確認する。
+    get_html()：引数に無効なURLを指定したとき、ValueErrorが送出されることを確認する。
     """
-    html = baseball.get_html('エラーアルよー')
-    assert_equal('', html)
+    baseball.get_html('えいちてぃーてぃーぴーころんすらっしゅすらっしゅ')
 
 
-def test_create_dict_01():
+@patch('crawler.baseball.get_html')
+def test_get_today_game_url_01(get_html):
     """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    get_today_game_url()：引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    result = baseball.get_today_game_url('l')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_02(get_html):
+    """
+    get_today_game_url()：引数に'e'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (東北楽天が試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('e')
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_03(get_html):
+    """
+    get_today_game_url()：引数に'm'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (千葉ロッテが試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('m')
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_04(get_html):
+    """
+    get_today_game_url()：引数に'h'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (福岡ソフトバンクが試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('h')
+
+
+@patch('crawler.baseball.get_html')
+def test_get_today_game_url_05(get_html):
+    """
+    get_today_game_url()：引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    result = baseball.get_today_game_url('bu')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_06(get_html):
+    """
+    get_today_game_url()：引数に'f'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (北海道日本ハムが試合開始前のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('f')
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_07(get_html):
+    """
+    get_today_game_url()：引数に'g'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (読売が試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('g')
+
+
+@patch('crawler.baseball.get_html')
+def test_get_today_game_url_08(get_html):
+    """
+    get_today_game_url()：引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    result = baseball.get_today_game_url('t')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_09(get_html):
+    """
+    get_today_game_url()：引数に'c'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (広島東洋が試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('c')
+
+
+@patch('crawler.baseball.get_html')
+def test_get_today_game_url_10(get_html):
+    """
+    get_today_game_url()：引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    result = baseball.get_today_game_url('d')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_11(get_html):
+    """
+    get_today_game_url()：引数に'bs'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (横浜ＤｅＮＡが試合中のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('bs')
+
+
+@patch('crawler.baseball.get_html')
+@raises(ResultNotFoundError)
+def test_get_today_game_url_12(get_html):
+    """
+    get_today_game_url()：引数に's'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
+    (東京ヤクルトが試合開始前のため)
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('s')
+
+
+@patch('crawler.baseball.get_html')
+@raises(InvalidTeamError)
+def test_get_today_game_url_13(get_html):
+    """
+    get_today_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
+    """
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('err')
+
+
+def test_parse_score_table_01():
+    """
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html')
-    actual = baseball.parse_score_table(html)
-    assert_equal('日本ハム', actual['bat_first'])
-    assert_equal('西武', actual['field_first'])
-    assert_equal(4, actual['match'])
-    assert_equal('西武ドーム', actual['stadium'])
-    assert_equal([
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('日本ハム', result['bat_first'])
+    tools.assert_equal('西武', result['field_first'])
+    tools.assert_equal(4, result['match'])
+    tools.assert_equal('西武ドーム', result['stadium'])
+    tools.assert_equal([
         ['0', '0', '0', '0', '0', '0', '1', '0', '0'],
         ['0', '0', '1', '0', '2', '0', '0', '1', 'x'],
-    ], actual['score'])
-    assert_equal([1, 4], actual['total_score'])
-    assert_equal(('牧田', 2, 1, 0), actual['win'])
-    assert_equal(('高橋', 0, 1, 3), actual['save'])
-    assert_equal(('メンドーサ', 1, 4, 0), actual['lose'])
-    assert_equal([('7回表', '佐藤賢', 3, 'ソロ', '牧田')], actual['home_run'])
+    ], result['score'])
+    tools.assert_equal([1, 4], result['total_score'])
+    tools.assert_equal(('牧田', 2, 1, 0), result['win'])
+    tools.assert_equal(('高橋', 0, 1, 3), result['save'])
+    tools.assert_equal(('メンドーサ', 1, 4, 0), result['lose'])
+    tools.assert_equal([('7回表', '佐藤賢', 3, 'ソロ', '牧田')], result['home_run'])
 
 
-def test_create_dict_02():
+def test_parse_score_table_02():
     """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （2ラン、3ランの解析時不具合対応 #13）
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （2ラン、3ラン解析時の不具合対応 #13）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050906.html')
-    actual = baseball.parse_score_table(html)
-    assert_equal('西武', actual['bat_first'])
-    assert_equal('ソフトバンク', actual['field_first'])
-    assert_equal(7, actual['match'])
-    assert_equal('北九州', actual['stadium'])
-    assert_equal([
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('西武', result['bat_first'])
+    tools.assert_equal('ソフトバンク', result['field_first'])
+    tools.assert_equal(7, result['match'])
+    tools.assert_equal('北九州', result['stadium'])
+    tools.assert_equal([
         ['0', '1', '0', '3', '0', '0', '0', '0', '2'],
         ['1', '1', '0', '0', '0', '0', '2', '0', '0'],
-    ], actual['score'])
-    assert_equal([6, 4], actual['total_score'])
-    assert_equal(('ウィリアムス', 1, 0, 0), actual['win'])
-    assert_equal(('高橋', 0, 1, 6), actual['save'])
-    assert_equal(('千賀', 0, 1, 0), actual['lose'])
-    assert_equal([('1回裏', '内川', 8, 'ソロ', '岸'), ('7回裏', '柳田', 5, '２ラン', '岸')], actual['home_run'])
+    ], result['score'])
+    tools.assert_equal([6, 4], result['total_score'])
+    tools.assert_equal(('ウィリアムス', 1, 0, 0), result['win'])
+    tools.assert_equal(('高橋', 0, 1, 6), result['save'])
+    tools.assert_equal(('千賀', 0, 1, 0), result['lose'])
+    tools.assert_equal([
+        ('1回裏', '内川', 8, 'ソロ', '岸'),
+        ('7回裏', '柳田', 5, '２ラン', '岸')
+    ], result['home_run'])
 
 
-def test_create_dict_03():
+def test_parse_score_table_03():
     """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （サヨナラゲームの解析時不具合対応 #11）
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （サヨナラゲーム解析時の不具合対応 #11）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014032804.html')
-    actual = baseball.parse_score_table(html)
-    assert_equal('オリックス', actual['bat_first'])
-    assert_equal('日本ハム', actual['field_first'])
-    assert_equal(1, actual['match'])
-    assert_equal('札幌ドーム', actual['stadium'])
-    assert_equal([
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('オリックス', result['bat_first'])
+    tools.assert_equal('日本ハム', result['field_first'])
+    tools.assert_equal(1, result['match'])
+    tools.assert_equal('札幌ドーム', result['stadium'])
+    tools.assert_equal([
         ['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'],
         ['0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '0', '1x'],
-    ], actual['score'])
-    assert_equal([5, 6], actual['total_score'])
-    assert_equal(('増井', 1, 0, 0), actual['win'])
-    assert_equal(('海田', 0, 1, 0), actual['lose'])
-    assert_equal([('10回表', 'ペーニャ', 1, 'ソロ', '宮西')], actual['home_run'])
+    ], result['score'])
+    tools.assert_equal([5, 6], result['total_score'])
+    tools.assert_equal(('増井', 1, 0, 0), result['win'])
+    tools.assert_equal(('海田', 0, 1, 0), result['lose'])
+    tools.assert_equal([('10回表', 'ペーニャ', 1, 'ソロ', '宮西')], result['home_run'])
 
 
-def test_create_dict_04():
+def test_parse_score_table_04():
     """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （打者一巡時の本塁打欄不具合対応 #45）
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （打者一巡があった試合の本塁打解析時の不具合対応 #45）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014081605.html')
-    actual = baseball.parse_score_table(html)
-    assert_equal('日本ハム', actual['bat_first'])
-    assert_equal('西武', actual['field_first'])
-    assert_equal(15, actual['match'])
-    assert_equal('西武ドーム', actual['stadium'])
-    assert_equal([
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('日本ハム', result['bat_first'])
+    tools.assert_equal('西武', result['field_first'])
+    tools.assert_equal(15, result['match'])
+    tools.assert_equal('西武ドーム', result['stadium'])
+    tools.assert_equal([
         ['0', '0', '0', '0', '1', '4', '0', '1', '1', '1', '0', '0'],
         ['0', '0', '0', '0', '6', '0', '0', '1', '0', '1', '0', '0'],
-    ], actual['score'])
-    assert_equal([8, 8], actual['total_score'])
-    assert_equal([
+    ], result['score'])
+    tools.assert_equal([8, 8], result['total_score'])
+    tools.assert_equal([
         ('5回裏', '中村', 21, '２ラン', '吉川'),
         ('10回表', '陽', 16, 'ソロ', '中郷'),
         ('10回裏', '森', 3, 'ソロ', '増井'),
-    ], actual['home_run'])
+    ], result['home_run'])
 
 
-def test_create_dict_05():
+def test_parse_score_table_05():
     """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （コールド時のスコア不具合対応 #50）
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （コールドゲーム解析時の不具合対応 #50）
     """
     html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014090802.html')
-    actual = baseball.parse_score_table(html)
-    assert_equal('西武', actual['bat_first'])
-    assert_equal('ロッテ', actual['field_first'])
-    assert_equal(21, actual['match'])
-    assert_equal('ＱＶＣマリン', actual['stadium'])
-    assert_equal([
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('西武', result['bat_first'])
+    tools.assert_equal('ロッテ', result['field_first'])
+    tools.assert_equal(21, result['match'])
+    tools.assert_equal('ＱＶＣマリン', result['stadium'])
+    tools.assert_equal([
         ['3', '0', '0', '1', '2', '1', '0x'],
         ['0', '0', '0', '0', '0', '0', ''],
-    ], actual['score'])
-    assert_equal([7, 0], actual['total_score'])
-    assert_equal([
-        ('1回表', '中村', 30, 'ソロ', '藤岡'),
-    ], actual['home_run'])
+    ], result['score'])
+    tools.assert_equal([7, 0], result['total_score'])
+    tools.assert_equal([('1回表', '中村', 30, 'ソロ', '藤岡')], result['home_run'])
 
 
 @raises(ParseError)
-def test_create_dict_06():
-    """
-    引数に無効なHTML文字列を指定したとき、ParseErrorが発生することを確認する。
-    """
-    with open('./test/test_create_dict_error.html') as test_file:
-        html = test_file.read()
-    baseball.parse_score_table(html)
-
-
-def test_get_full_team_name_01():
-    """
-    引数に'西武'を指定したとき、'埼玉西武'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('西武')
-    assert_equal('埼玉西武', actual)
-
-
-def test_get_full_team_name_02():
-    """
-    引数に'楽天'を指定したとき、'東北楽天'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('楽天')
-    assert_equal('東北楽天', actual)
-
-
-def test_get_full_team_name_03():
-    """
-    引数に'ロッテ'を指定したとき、'千葉ロッテ'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('ロッテ')
-    assert_equal('千葉ロッテ', actual)
-
-
-def test_get_full_team_name_04():
-    """
-    引数に'ソフトバンク'を指定したとき、'福岡ソフトバンク'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('ソフトバンク')
-    assert_equal('福岡ソフトバンク', actual)
-
-
-def test_get_full_team_name_05():
-    """
-    引数に'オリックス'を指定したとき、'オリックス'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('オリックス')
-    assert_equal('オリックス', actual)
-
-
-def test_get_full_team_name_06():
-    """
-    引数に'日本ハム'を指定したとき、'北海道日本ハム'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('日本ハム')
-    assert_equal('北海道日本ハム', actual)
-
-
-def test_get_full_team_name_07():
-    """
-    引数に'巨人'を指定したとき、'読売'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('巨人')
-    assert_equal('読売', actual)
-
-
-def test_get_full_team_name_08():
-    """
-    引数に'阪神'を指定したとき、'阪神'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('阪神')
-    assert_equal('阪神', actual)
-
-
-def test_get_full_team_name_09():
-    """
-    引数に'広島'を指定したとき、'広島東洋'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('広島')
-    assert_equal('広島東洋', actual)
-
-
-def test_get_full_team_name_10():
-    """
-    引数に'中日'を指定したとき、'中日'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('中日')
-    assert_equal('中日', actual)
-
-
-def test_get_full_team_name_11():
-    """
-    引数に'ＤｅＮＡ'を指定したとき、'横浜ＤｅＮＡ'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('ＤｅＮＡ')
-    assert_equal('横浜ＤｅＮＡ', actual)
-
-
-def test_get_full_team_name_12():
-    """
-    引数に'ヤクルト'を指定したとき、'東京ヤクルト'を返すことを確認する。
-    """
-    actual = baseball.get_long_team_name('ヤクルト')
-    assert_equal('東京ヤクルト', actual)
-
-
-def test_get_full_stadium_name_01():
-    """
-    引数に'西武ドーム'を指定したとき、'西武ドーム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('西武ドーム')
-    assert_equal('西武ドーム', actual)
-
-
-def test_get_full_stadium_name_02():
-    """
-    引数に'コボスタ宮城'を指定したとき、'楽天Koboスタジアム宮城'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('コボスタ宮城')
-    assert_equal('楽天Koboスタジアム宮城', actual)
-
-
-def test_get_full_stadium_name_03():
-    """
-    引数に'ＱＶＣマリン'を指定したとき、'QVCマリンフィールド'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('ＱＶＣマリン')
-    assert_equal('QVCマリンフィールド', actual)
-
-
-def test_get_full_stadium_name_04():
-    """
-    引数に'ヤフオクドーム'を指定したとき、'福岡 ヤフオク!ドーム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('ヤフオクドーム')
-    assert_equal('福岡 ヤフオク!ドーム', actual)
-
-
-def test_get_full_stadium_name_05():
-    """
-    引数に'京セラドーム大阪'を指定したとき、'京セラドーム大阪'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('京セラドーム大阪')
-    assert_equal('京セラドーム大阪', actual)
-
-
-def test_get_full_stadium_name_06():
-    """
-    引数に'札幌ドーム'を指定したとき、'札幌ドーム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('札幌ドーム')
-    assert_equal('札幌ドーム', actual)
-
-
-def test_get_full_stadium_name_07():
-    """
-    引数に'東京ドーム'を指定したとき、'東京ドーム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('東京ドーム')
-    assert_equal('東京ドーム', actual)
-
-
-def test_get_full_stadium_name_08():
-    """
-    引数に'甲子園'を指定したとき、'阪神甲子園球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('甲子園')
-    assert_equal('阪神甲子園球場', actual)
-
-
-def test_get_full_stadium_name_09():
-    """
-    引数に'マツダスタジアム'を指定したとき、'Mazda Zoom-Zoomスタジアム広島'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('マツダスタジアム')
-    assert_equal('Mazda Zoom-Zoomスタジアム広島', actual)
-
-
-def test_get_full_stadium_name_10():
-    """
-    引数に'ナゴヤドーム'を指定したとき、'ナゴヤドーム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('ナゴヤドーム')
-    assert_equal('ナゴヤドーム', actual)
-
-
-def test_get_full_stadium_name_11():
-    """
-    引数に'横浜'を指定したとき、'横浜スタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('横浜')
-    assert_equal('横浜スタジアム', actual)
-
-
-def test_get_full_stadium_name_12():
-    """
-    引数に'神宮'を指定したとき、'明治神宮野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('神宮')
-    assert_equal('明治神宮野球場', actual)
-
-
-def test_get_full_stadium_name_13():
-    """
-    引数に'ほっともっと神戸'を指定したとき、'ほっともっとフィールド神戸'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('ほっともっと神戸')
-    assert_equal('ほっともっとフィールド神戸', actual)
-
-
-def test_get_full_stadium_name_14():
-    """
-    引数に'大宮'を指定したとき、'埼玉県営大宮公園野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('大宮')
-    assert_equal('埼玉県営大宮公園野球場', actual)
-
-
-def test_get_full_stadium_name_15():
-    """
-    引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('静岡')
-    assert_equal('静岡県草薙総合運動場硬式野球場', actual)
-
-
-def test_get_full_stadium_name_16():
-    """
-    引数に'サンマリン宮崎'を指定したとき、'サンマリンスタジアム宮崎'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('サンマリン宮崎')
-    assert_equal('サンマリンスタジアム宮崎', actual)
-
-
-def test_get_full_stadium_name_17():
-    """
-    引数に'鹿児島'を指定したとき、'鹿児島県立鴨池野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('鹿児島')
-    assert_equal('鹿児島県立鴨池野球場', actual)
-
-
-def test_get_full_stadium_name_18():
-    """
-    引数に'北九州'を指定したとき、'北九州市民球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('北九州')
-    assert_equal('北九州市民球場', actual)
-    
-
-def test_get_full_stadium_name_19():
-    """
-    引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('函館')
-    assert_equal('オーシャンスタジアム', actual)
-
-
-def test_get_full_stadium_name_20():
-    """
-    引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('函館')
-    assert_equal('オーシャンスタジアム', actual)
-
-
-def test_get_full_stadium_name_21():
-    """
-    引数に'いわき'を指定したとき、'いわきグリーンスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('いわき')
-    assert_equal('いわきグリーンスタジアム', actual)
-
-
-def test_get_full_stadium_name_22():
-    """
-    引数に'どらドラパーク米子'を指定したとき、'どらドラパーク米子市民球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('どらドラパーク米子')
-    assert_equal('どらドラパーク米子市民球場', actual)
-
-
-def test_get_full_stadium_name_23():
-    """
-    引数に'バッティングパレス相石ひらつか'を指定したとき、'バッティングパレス相石スタジアムひらつか'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('バッティングパレス相石ひらつか')
-    assert_equal('バッティングパレス相石スタジアムひらつか', actual)
-
-
-def test_get_full_stadium_name_24():
-    """
-    引数に'ひたちなか'を指定したとき、'ひたちなか市民球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('ひたちなか')
-    assert_equal('ひたちなか市民球場', actual)
-
-
-def test_get_full_stadium_name_25():
-    """
-    引数に'秋田'を指定したとき、'こまちスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('秋田')
-    assert_equal('こまちスタジアム', actual)
-
-
-def test_get_full_stadium_name_26():
-    """
-    引数に'盛岡'を指定したとき、'岩手県営野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('盛岡')
-    assert_equal('岩手県営野球場', actual)
-
-
-def test_get_full_stadium_name_27():
-    """
-    引数に'三次'を指定したとき、'三次きんさいスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('三次')
-    assert_equal('三次きんさいスタジアム', actual)
-
-
-def test_get_full_stadium_name_28():
-    """
-    引数に'呉'を指定したとき、'呉市二河野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('呉')
-    assert_equal('呉市二河野球場', actual)
-
-
-def test_get_full_stadium_name_29():
-    """
-    引数に'郡山'を指定したとき、'郡山総合運動場開成山野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('郡山')
-    assert_equal('郡山総合運動場開成山野球場', actual)
-
-
-def test_get_full_stadium_name_30():
-    """
-    引数に'浜松'を指定したとき、'浜松球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('浜松')
-    assert_equal('浜松球場', actual)
-
-
-def test_get_full_stadium_name_31():
-    """
-    引数に'倉敷'を指定したとき、'マスカットスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('倉敷')
-    assert_equal('マスカットスタジアム', actual)
-
-
-def test_get_full_stadium_name_32():
-    """
-    引数に'金沢'を指定したとき、'石川県立野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('金沢')
-    assert_equal('石川県立野球場', actual)
-
-
-def test_get_full_stadium_name_33():
-    """
-    引数に'富山'を指定したとき、'富山市民球場アルペンスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('富山')
-    assert_equal('富山市民球場アルペンスタジアム', actual)
-
-
-def test_get_full_stadium_name_34():
-    """
-    引数に'沖縄セルラー那覇'を指定したとき、'沖縄セルラースタジアム那覇'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('沖縄セルラー那覇')
-    assert_equal('沖縄セルラースタジアム那覇', actual)
-
-
-def test_get_full_stadium_name_35():
-    """
-    引数に'旭川'を指定したとき、'スタルヒン球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('旭川')
-    assert_equal('スタルヒン球場', actual)
-
-
-def test_get_full_stadium_name_36():
-    """
-    引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('荘内銀行・日新製薬スタジアム')
-    assert_equal('荘内銀行・日新製薬スタジアムやまがた', actual)
-
-
-def test_get_full_stadium_name_37():
-    """
-    引数に'帯広'を指定したとき、'帯広の森野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('帯広')
-    assert_equal('帯広の森野球場', actual)
-
-
-def test_get_full_stadium_name_38():
-    """
-    引数に'豊橋'を指定したとき、'豊橋市民球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('豊橋')
-    assert_equal('豊橋市民球場', actual)
-
-
-def test_get_full_stadium_name_39():
-    """
-    引数に'ハードオフ新潟'を指定したとき、'HARD OFF ECOスタジアム新潟'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('ハードオフ新潟')
-    assert_equal('HARD OFF ECOスタジアム新潟', actual)
-
-
-def test_get_full_stadium_name_40():
-    """
-    引数に'熊本'を指定したとき、'藤崎台県営野球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('熊本')
-    assert_equal('藤崎台県営野球場', actual)
-
-
-def test_get_full_stadium_name_41():
-    """
-    引数に'岐阜'を指定したとき、'長良川球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('岐阜')
-    assert_equal('長良川球場', actual)
-
-
-def test_get_full_stadium_name_42():
-    """
-    引数に'松山'を指定したとき、'坊っちゃんスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('松山')
-    assert_equal('坊っちゃんスタジアム', actual)
-
-
-def test_get_full_stadium_name_43():
-    """
-    引数に'長野'を指定したとき、'長野オリンピックスタジアム'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('長野')
-    assert_equal('長野オリンピックスタジアム', actual)
-
-
-def test_get_full_stadium_name_44():
-    """
-    引数に'上毛敷島'を指定したとき、'上毛新聞敷島球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('上毛敷島')
-    assert_equal('上毛新聞敷島球場', actual)
-
-
-def test_get_full_stadium_name_45():
-    """
-    引数に'宇都宮'を指定したとき、'宇都宮清原球場'を返すことを確認する。
-    """
-    actual = baseball.get_long_stadium_name('宇都宮')
-    assert_equal('宇都宮清原球場', actual)
+def test_parse_score_table_06():
+    """
+    parse_score_table()：引数に無効なHTML文字列を指定したとき、ParseErrorが送出されることを確認する。
+    """
+    baseball.parse_score_table("えいちてぃーえむえる")
+
+
+def test_parse_pitcher_01():
+    """
+    parse_pitcher()：引数に有効なノードを指定したとき、投手成績のタプルを返すことを確認する。
+    """
+    soup = BeautifulSoup("""\
+        <tr>
+            <td class="line">Ｓ</td>
+            <td class="line left">高橋&nbsp;（左）</td>
+            <td class="line">２</td>
+            <td class="line">１</td>
+            <td class="line">28</td>
+            <td class="line">62</td>
+            <td class="line">１</td>
+            <td class="line">３</td>
+            <td class="line">11</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">０</td>
+            <td class="line">2.04</td>
+        </tr>
+    """)
+    node = soup.find_all('td')
+    result = baseball.parse_pitcher(node)
+    tools.assert_equal(('高橋', 2, 1, 28), result)
+
+
+def test_parse_pitcher_02():
+    """
+    parse_pitcher()：引数に有効なノード(新加入選手)を指定したとき、投手成績のタプルを返すことを確認する。
+    """
+    soup = BeautifulSoup("""\
+        <tr>
+            <td>○</td>
+            <td class="left">レイノルズ&nbsp;（右=レッズ）</td>
+            <td>３</td>
+            <td>５</td>
+            <td>０</td>
+            <td>９</td>
+            <td>７&nbsp;1/3</td>
+            <td>33</td>
+            <td>109</td>
+            <td>９</td>
+            <td>２</td>
+            <td>１</td>
+            <td>１</td>
+            <td>５</td>
+            <td>５</td>
+            <td>4.47</td>
+        </tr>
+    """)
+    node = soup.find_all('td')
+    result = baseball.parse_pitcher(node)
+    tools.assert_equal(('レイノルズ', 3, 5, 0), result)
+
+
+def test_parse_date_01():
+    """
+    parse_date()：引数に有効なURLを指定したとき、試合日を返すことを確認する。
+    """
+    result = baseball.parse_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+    tools.assert_equal(datetime.datetime(2014, 5, 2), result)
+
+
+@raises(ParseError)
+def test_parse_date_02():
+    """
+    parse_date()：引数に無効なURLを指定したとき、ParseErrorが送出されることを確認する。
+    """
+    baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
 
 
 def test_create_score_table_01():
     """
-    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
     """
     data = {
         'bat_first': '北海道日本ハム',
@@ -890,30 +573,28 @@ def test_create_score_table_01():
         'lose': ('メンドーサ', 1, 4, 0),
         'home_run': [('7回表', '佐藤賢', 3, 'ソロ', '牧田')],
     }
-
     expected = textwrap.dedent("""\
         【埼玉西武 vs 北海道日本ハム 第4回戦】
         （2014年4月29日：西武ドーム）
-        
+
         北海道日本ハム  0 0 0  0 0 0  1 0 0  1
         埼玉西武　　　  0 0 1  0 2 0  0 1 x  4
-        
+
         [勝] 牧田　　　 2勝1敗0Ｓ
         [Ｓ] 高橋　　　 0勝1敗3Ｓ
         [敗] メンドーサ 1勝4敗0Ｓ
-        
+
         [本塁打]
           7回表 佐藤賢  3号 ソロ （牧田）
     """)
-
-    actual = baseball.create_score_table(data, datetime.date(2014, 4, 29))
-    assert_equal(expected, actual)
+    result = baseball.create_score_table(data, datetime.datetime(2014, 4, 29))
+    tools.assert_equal(expected, result)
 
 
 def test_create_score_table_02():
     """
-    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
-    （本塁打欄の整列不具合対応 #14）
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （本塁打欄の不具合対応 #14）
     """
     data = {
         'bat_first': '埼玉西武',
@@ -927,32 +608,33 @@ def test_create_score_table_02():
         'total_score': [6, 2],
         'win': ('牧田', 1, 0, 0),
         'lose': ('涌井', 0, 1, 0),
-        'home_run': [('8回表', 'ランサム', 1, 'ソロ', '吉原'), ('9回表', '浅村', 2, '２ラン', '吉原')],
+        'home_run': [
+            ('8回表', 'ランサム', 1, 'ソロ', '吉原'),
+            ('9回表', '浅村', 2, '２ラン', '吉原')
+        ],
     }
-
     expected = textwrap.dedent("""\
         【千葉ロッテ vs 埼玉西武 第1回戦】
         （2014年4月1日：QVCマリンフィールド）
-        
+
         埼玉西武　  0 0 2  0 0 1  0 1 2  6
         千葉ロッテ  1 0 0  0 0 0  0 1 0  2
-        
+
         [勝] 牧田 1勝0敗0Ｓ
         [敗] 涌井 0勝1敗0Ｓ
-        
+
         [本塁打]
           8回表 ランサム  1号 ソロ　 （吉原）
           9回表 浅村　　  2号 ２ラン （吉原）
     """)
-
-    actual = baseball.create_score_table(data, datetime.date(2014, 4, 1))
-    assert_equal(expected, actual)
+    result = baseball.create_score_table(data, datetime.datetime(2014, 4, 1))
+    tools.assert_equal(expected, result)
 
 
 def test_create_score_table_03():
     """
-    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
-    （サヨナラゲームの解析時不具合対応 #11）
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （サヨナラゲーム解析時の不具合対応 #11）
     """
     data = {
         'bat_first': 'オリックス',
@@ -968,29 +650,27 @@ def test_create_score_table_03():
         'lose': ('海田', 0, 1, 0),
         'home_run': [('10回表', 'ペーニャ', 1, 'ソロ', '宮西')]
     }
-
     expected = textwrap.dedent("""\
         【北海道日本ハム vs オリックス 第1回戦】
         （2014年3月28日：札幌ドーム）
-        
+
         オリックス　　  2 1 0  0 0 0  0 0 1  1 0 0   5
         北海道日本ハム  0 1 0  0 1 0  1 1 0  1 0 1x  6
-        
+
         [勝] 増井 1勝0敗0Ｓ
         [敗] 海田 0勝1敗0Ｓ
-        
+
         [本塁打]
           10回表 ペーニャ  1号 ソロ （宮西）
     """)
-
-    actual = baseball.create_score_table(data, datetime.date(2014, 3, 28))
-    assert_equal(expected, actual)
+    result = baseball.create_score_table(data, datetime.datetime(2014, 3, 28))
+    tools.assert_equal(expected, result)
 
 
 def test_create_score_table_04():
     """
-    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
-    （2桁得点時不具合対応 #15）
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （2桁得点試合解析時の不具合対応 #15）
     """
     data = {
         'bat_first': '埼玉西武',
@@ -1010,31 +690,29 @@ def test_create_score_table_04():
             ('4回表', '山崎', 1, '２ラン', '塩見'),
         ],
     }
-
     expected = textwrap.dedent("""\
         【東北楽天 vs 埼玉西武 第10回戦】
         （2014年5月18日：岩手県営野球場）
-        
+
         埼玉西武  1 4 1  2 0 1  0 3 0  12
         東北楽天  1 0 0  0 0 0  1 0 0   2
-        
+
         [勝] 十亀 2勝2敗3Ｓ
         [敗] 塩見 2勝4敗0Ｓ
-        
+
         [本塁打]
           2回表 浅村  6号 ２ラン （塩見）
           3回表 浅村  7号 ソロ　 （塩見）
           4回表 山崎  1号 ２ラン （塩見）
     """)
-
-    actual = baseball.create_score_table(data, datetime.date(2014, 5, 18))
-    assert_equal(expected, actual)
+    result = baseball.create_score_table(data, datetime.datetime(2014, 5, 18))
+    tools.assert_equal(expected, result)
 
 
 def test_create_score_table_05():
     """
-    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
-    （延長戦本塁打不具合対応 #23）
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （延長戦の本塁打解析時の不具合対応 #23）
     """
     data = {
         'bat_first': '埼玉西武',
@@ -1057,17 +735,16 @@ def test_create_score_table_05():
             ('10回表', '脇谷', 1, 'ソロ', '加賀'),
         ],
     }
-
     expected = textwrap.dedent("""\
         【横浜ＤｅＮＡ vs 埼玉西武 第3回戦】
         （2014年6月21日：横浜スタジアム）
-        
+
         埼玉西武　　  2 0 0  0 0 0  0 3 1  1   7
         横浜ＤｅＮＡ  0 0 0  1 0 4  0 1 0  2x  8
-        
+
         [勝] 林　　　　　 1勝0敗0Ｓ
         [敗] ウィリアムス 1勝2敗0Ｓ
-        
+
         [本塁打]
            1回表 メヒア　  6号 ２ラン （モスコーソ）
            4回裏 グリエル  2号 ソロ　 （岸）
@@ -1076,15 +753,14 @@ def test_create_score_table_05():
            8回表 木村　　  8号 ３ラン （ソーサ）
           10回表 脇谷　　  1号 ソロ　 （加賀）
     """)
-
-    actual = baseball.create_score_table(data, datetime.date(2014, 6, 21))
-    assert_equal(expected, actual)
+    result = baseball.create_score_table(data, datetime.datetime(2014, 6, 21))
+    tools.assert_equal(expected, result)
 
 
 def test_create_score_table_06():
     """
-    引数に辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
-    （延長戦時の空行不具合対応 #44）
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （延長戦の空行出力時の不具合対応 #44）
     """
     data = {
         'bat_first': '北海道日本ハム',
@@ -1102,57 +778,611 @@ def test_create_score_table_06():
             ('10回裏', '森', 3, 'ソロ', '増井'),
         ],
     }
-
     expected = textwrap.dedent("""\
         【埼玉西武 vs 北海道日本ハム 第15回戦】
         （2014年8月16日：西武ドーム）
-        
+
         北海道日本ハム  0 0 0  0 1 4  0 1 1  1 0 0  8
         埼玉西武　　　  0 0 0  0 6 0  0 1 0  1 0 0  8
-        
+
         [本塁打]
            5回裏 中村 21号 ２ラン （吉川）
           10回表 陽　 16号 ソロ　 （中郷）
           10回裏 森　  3号 ソロ　 （増井）
     """)
+    result = baseball.create_score_table(data, datetime.datetime(2014, 8, 16))
+    tools.assert_equal(expected, result)
 
-    actual = baseball.create_score_table(data, datetime.date(2014, 8, 16))
-    assert_equal(expected, actual)
 
-
-def test_get_score_table():
+def test_get_long_team_name_01():
     """
-    引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
+    get_long_team_name()：引数に'西武'を指定したとき、'埼玉西武'を返すことを確認する。
     """
-    expected = textwrap.dedent("""\
-        【千葉ロッテ vs 埼玉西武 第6回戦】
-        （2014年5月2日：QVCマリンフィールド）
-        
-        埼玉西武　  0 2 0  0 0 0  0 0 0  2
-        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
-        
-        [勝] 岸　 3勝2敗0Ｓ
-        [敗] 成瀬 3勝2敗0Ｓ
-    """)
-
-    actual = baseball.get_score_table_by_url('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-    assert_equal(expected, actual)
+    result = baseball.get_long_team_name('西武')
+    tools.assert_equal('埼玉西武', result)
 
 
-def test_get_score_table_by_param():
+def test_get_long_team_name_02():
     """
-    引数に有効なチーム、日付を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    get_long_team_name()：引数に'楽天'を指定したとき、'東北楽天'を返すことを確認する。
     """
-    expected = textwrap.dedent("""\
-        【千葉ロッテ vs 埼玉西武 第6回戦】
-        （2014年5月2日：QVCマリンフィールド）
+    result = baseball.get_long_team_name('楽天')
+    tools.assert_equal('東北楽天', result)
 
-        埼玉西武　  0 2 0  0 0 0  0 0 0  2
-        千葉ロッテ  0 0 0  0 0 0  0 0 0  0
 
-        [勝] 岸　 3勝2敗0Ｓ
-        [敗] 成瀬 3勝2敗0Ｓ
-    """)
+def test_get_long_team_name_03():
+    """
+    get_long_team_name()：引数に'ロッテ'を指定したとき、'千葉ロッテ'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('ロッテ')
+    tools.assert_equal('千葉ロッテ', result)
 
-    actual = baseball.get_score_table('l', datetime.datetime.strptime('20140502', '%Y%m%d'))
-    assert_equal(expected, actual)
+
+def test_get_long_team_name_04():
+    """
+    get_long_team_name()：引数に'ソフトバンク'を指定したとき、'福岡ソフトバンク'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('ソフトバンク')
+    tools.assert_equal('福岡ソフトバンク', result)
+
+
+def test_get_long_team_name_05():
+    """
+    get_long_team_name()：引数に'オリックス'を指定したとき、'オリックス'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('オリックス')
+    tools.assert_equal('オリックス', result)
+
+
+def test_get_long_team_name_06():
+    """
+    get_long_team_name()：引数に'日本ハム'を指定したとき、'北海道日本ハム'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('日本ハム')
+    tools.assert_equal('北海道日本ハム', result)
+
+
+def test_get_long_team_name_07():
+    """
+    get_long_team_name()：引数に'巨人'を指定したとき、'読売'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('巨人')
+    tools.assert_equal('読売', result)
+
+
+def test_get_long_team_name_08():
+    """
+    get_long_team_name()：引数に'阪神'を指定したとき、'阪神'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('阪神')
+    tools.assert_equal('阪神', result)
+
+
+def test_get_long_team_name_09():
+    """
+    get_long_team_name()：引数に'広島'を指定したとき、'広島東洋'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('広島')
+    tools.assert_equal('広島東洋', result)
+
+
+def test_get_long_team_name_10():
+    """
+    get_long_team_name()：引数に'中日'を指定したとき、'中日'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('中日')
+    tools.assert_equal('中日', result)
+
+
+def test_get_long_team_name_11():
+    """
+    get_long_team_name()：引数に'ＤｅＮＡ'を指定したとき、'横浜ＤｅＮＡ'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('ＤｅＮＡ')
+    tools.assert_equal('横浜ＤｅＮＡ', result)
+
+
+def test_get_long_team_name_12():
+    """
+    get_long_team_name()：引数に'ヤクルト'を指定したとき、'東京ヤクルト'を返すことを確認する。
+    """
+    result = baseball.get_long_team_name('ヤクルト')
+    tools.assert_equal('東京ヤクルト', result)
+
+
+def test_get_long_stadium_name_01():
+    """
+    get_long_stadium_name()：引数に'西武ドーム'を指定したとき、'西武ドーム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('西武ドーム')
+    tools.assert_equal('西武ドーム', result)
+
+
+def test_get_long_stadium_name_02():
+    """
+    get_long_stadium_name()：引数に'コボスタ宮城'を指定したとき、'楽天Koboスタジアム宮城'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('コボスタ宮城')
+    tools.assert_equal('楽天Koboスタジアム宮城', result)
+
+
+def test_get_long_stadium_name_03():
+    """
+    get_long_stadium_name()：引数に'ＱＶＣマリン'を指定したとき、'QVCマリンフィールド'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('ＱＶＣマリン')
+    tools.assert_equal('QVCマリンフィールド', result)
+
+
+def test_get_long_stadium_name_04():
+    """
+    get_long_stadium_name()：引数に'ヤフオクドーム'を指定したとき、'福岡 ヤフオク!ドーム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('ヤフオクドーム')
+    tools.assert_equal('福岡 ヤフオク!ドーム', result)
+
+
+def test_get_long_stadium_name_05():
+    """
+    get_long_stadium_name()：引数に'京セラドーム大阪'を指定したとき、'京セラドーム大阪'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('京セラドーム大阪')
+    tools.assert_equal('京セラドーム大阪', result)
+
+
+def test_get_long_stadium_name_06():
+    """
+    get_long_stadium_name()：引数に'札幌ドーム'を指定したとき、'札幌ドーム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('札幌ドーム')
+    tools.assert_equal('札幌ドーム', result)
+
+
+def test_get_long_stadium_name_07():
+    """
+    get_long_stadium_name()：引数に'東京ドーム'を指定したとき、'東京ドーム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('東京ドーム')
+    tools.assert_equal('東京ドーム', result)
+
+
+def test_get_long_stadium_name_08():
+    """
+    get_long_stadium_name()：引数に'甲子園'を指定したとき、'阪神甲子園球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('甲子園')
+    tools.assert_equal('阪神甲子園球場', result)
+
+
+def test_get_long_stadium_name_09():
+    """
+    get_long_stadium_name()：引数に'マツダスタジアム'を指定したとき、'Mazda Zoom-Zoomスタジアム広島'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('マツダスタジアム')
+    tools.assert_equal('Mazda Zoom-Zoomスタジアム広島', result)
+
+
+def test_get_long_stadium_name_10():
+    """
+    get_long_stadium_name()：引数に'ナゴヤドーム'を指定したとき、'ナゴヤドーム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('ナゴヤドーム')
+    tools.assert_equal('ナゴヤドーム', result)
+
+
+def test_get_long_stadium_name_11():
+    """
+    get_long_stadium_name()：引数に'横浜'を指定したとき、'横浜スタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('横浜')
+    tools.assert_equal('横浜スタジアム', result)
+
+
+def test_get_long_stadium_name_12():
+    """
+    get_long_stadium_name()：引数に'神宮'を指定したとき、'明治神宮野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('神宮')
+    tools.assert_equal('明治神宮野球場', result)
+
+
+def test_get_long_stadium_name_13():
+    """
+    get_long_stadium_name()：引数に'ほっともっと神戸'を指定したとき、'ほっともっとフィールド神戸'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('ほっともっと神戸')
+    tools.assert_equal('ほっともっとフィールド神戸', result)
+
+
+def test_get_long_stadium_name_14():
+    """
+    get_long_stadium_name()：引数に'大宮'を指定したとき、'埼玉県営大宮公園野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('大宮')
+    tools.assert_equal('埼玉県営大宮公園野球場', result)
+
+
+def test_get_long_stadium_name_15():
+    """
+    get_long_stadium_name()：引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('静岡')
+    tools.assert_equal('静岡県草薙総合運動場硬式野球場', result)
+
+
+def test_get_long_stadium_name_16():
+    """
+    get_long_stadium_name()：引数に'サンマリン宮崎'を指定したとき、'サンマリンスタジアム宮崎'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('サンマリン宮崎')
+    tools.assert_equal('サンマリンスタジアム宮崎', result)
+
+
+def test_get_long_stadium_name_17():
+    """
+    get_long_stadium_name()：引数に'鹿児島'を指定したとき、'鹿児島県立鴨池野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('鹿児島')
+    tools.assert_equal('鹿児島県立鴨池野球場', result)
+
+
+def test_get_long_stadium_name_18():
+    """
+    get_long_stadium_name()：引数に'北九州'を指定したとき、'北九州市民球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('北九州')
+    tools.assert_equal('北九州市民球場', result)
+    
+
+def test_get_long_stadium_name_19():
+    """
+    get_long_stadium_name()：引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('函館')
+    tools.assert_equal('オーシャンスタジアム', result)
+
+
+def test_get_long_stadium_name_20():
+    """
+    get_long_stadium_name()：引数に'いわき'を指定したとき、'いわきグリーンスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('いわき')
+    tools.assert_equal('いわきグリーンスタジアム', result)
+
+
+def test_get_long_stadium_name_21():
+    """
+    get_long_stadium_name()：引数に'どらドラパーク米子'を指定したとき、'どらドラパーク米子市民球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('どらドラパーク米子')
+    tools.assert_equal('どらドラパーク米子市民球場', result)
+
+
+def test_get_long_stadium_name_22():
+    """
+    get_long_stadium_name()：引数に'バッティングパレス相石ひらつか'を指定したとき、'バッティングパレス相石スタジアムひらつか'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('バッティングパレス相石ひらつか')
+    tools.assert_equal('バッティングパレス相石スタジアムひらつか', result)
+
+
+def test_get_long_stadium_name_23():
+    """
+    get_long_stadium_name()：引数に'ひたちなか'を指定したとき、'ひたちなか市民球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('ひたちなか')
+    tools.assert_equal('ひたちなか市民球場', result)
+
+
+def test_get_long_stadium_name_24():
+    """
+    get_long_stadium_name()：引数に'秋田'を指定したとき、'こまちスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('秋田')
+    tools.assert_equal('こまちスタジアム', result)
+
+
+def test_get_long_stadium_name_25():
+    """
+    get_long_stadium_name()：引数に'盛岡'を指定したとき、'岩手県営野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('盛岡')
+    tools.assert_equal('岩手県営野球場', result)
+
+
+def test_get_long_stadium_name_26():
+    """
+    get_long_stadium_name()：引数に'三次'を指定したとき、'三次きんさいスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('三次')
+    tools.assert_equal('三次きんさいスタジアム', result)
+
+
+def test_get_long_stadium_name_27():
+    """
+    get_long_stadium_name()：引数に'呉'を指定したとき、'呉市二河野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('呉')
+    tools.assert_equal('呉市二河野球場', result)
+
+
+def test_get_long_stadium_name_28():
+    """
+    get_long_stadium_name()：引数に'郡山'を指定したとき、'郡山総合運動場開成山野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('郡山')
+    tools.assert_equal('郡山総合運動場開成山野球場', result)
+
+
+def test_get_long_stadium_name_29():
+    """
+    get_long_stadium_name()：引数に'浜松'を指定したとき、'浜松球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('浜松')
+    tools.assert_equal('浜松球場', result)
+
+
+def test_get_long_stadium_name_30():
+    """
+    get_long_stadium_name()：引数に'倉敷'を指定したとき、'マスカットスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('倉敷')
+    tools.assert_equal('マスカットスタジアム', result)
+
+
+def test_get_long_stadium_name_31():
+    """
+    get_long_stadium_name()：引数に'金沢'を指定したとき、'石川県立野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('金沢')
+    tools.assert_equal('石川県立野球場', result)
+
+
+def test_get_long_stadium_name_32():
+    """
+    get_long_stadium_name()：引数に'富山'を指定したとき、'富山市民球場アルペンスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('富山')
+    tools.assert_equal('富山市民球場アルペンスタジアム', result)
+
+
+def test_get_long_stadium_name_33():
+    """
+    get_long_stadium_name()：引数に'沖縄セルラー那覇'を指定したとき、'沖縄セルラースタジアム那覇'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('沖縄セルラー那覇')
+    tools.assert_equal('沖縄セルラースタジアム那覇', result)
+
+
+def test_get_long_stadium_name_34():
+    """
+    get_long_stadium_name()：引数に'旭川'を指定したとき、'スタルヒン球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('旭川')
+    tools.assert_equal('スタルヒン球場', result)
+
+
+def test_get_long_stadium_name_35():
+    """
+    get_long_stadium_name()：引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('荘内銀行・日新製薬スタジアム')
+    tools.assert_equal('荘内銀行・日新製薬スタジアムやまがた', result)
+
+
+def test_get_long_stadium_name_36():
+    """
+    get_long_stadium_name()：引数に'帯広'を指定したとき、'帯広の森野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('帯広')
+    tools.assert_equal('帯広の森野球場', result)
+
+
+def test_get_long_stadium_name_37():
+    """
+    get_long_stadium_name()：引数に'豊橋'を指定したとき、'豊橋市民球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('豊橋')
+    tools.assert_equal('豊橋市民球場', result)
+
+
+def test_get_long_stadium_name_38():
+    """
+    get_long_stadium_name()：引数に'ハードオフ新潟'を指定したとき、'HARD OFF ECOスタジアム新潟'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('ハードオフ新潟')
+    tools.assert_equal('HARD OFF ECOスタジアム新潟', result)
+
+
+def test_get_long_stadium_name_39():
+    """
+    get_long_stadium_name()：引数に'熊本'を指定したとき、'藤崎台県営野球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('熊本')
+    tools.assert_equal('藤崎台県営野球場', result)
+
+
+def test_get_long_stadium_name_40():
+    """
+    get_long_stadium_name()：引数に'岐阜'を指定したとき、'長良川球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('岐阜')
+    tools.assert_equal('長良川球場', result)
+
+
+def test_get_long_stadium_name_41():
+    """
+    get_long_stadium_name()：引数に'松山'を指定したとき、'坊っちゃんスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('松山')
+    tools.assert_equal('坊っちゃんスタジアム', result)
+
+
+def test_get_long_stadium_name_42():
+    """
+    get_long_stadium_name()：引数に'長野'を指定したとき、'長野オリンピックスタジアム'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('長野')
+    tools.assert_equal('長野オリンピックスタジアム', result)
+
+
+def test_get_long_stadium_name_43():
+    """
+    get_long_stadium_name()：引数に'上毛敷島'を指定したとき、'上毛新聞敷島球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('上毛敷島')
+    tools.assert_equal('上毛新聞敷島球場', result)
+
+
+def test_get_long_stadium_name_44():
+    """
+    get_long_stadium_name()：引数に'宇都宮'を指定したとき、'宇都宮清原球場'を返すことを確認する。
+    """
+    result = baseball.get_long_stadium_name('宇都宮')
+    tools.assert_equal('宇都宮清原球場', result)
+
+
+def test_create_score_line_01():
+    """
+    create_score_line()：引数に有効な配列を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['0', '0', '0', '0', '0', '0', '1', '0', '0'])
+    tools.assert_equal('0 0 0  0 0 0  1 0 0', result)
+
+
+def test_create_score_line_02():
+    """
+    create_score_line()：引数に有効な配列(9回裏なし)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['0', '0', '1', '0', '2', '0', '0', '1', 'x'])
+    tools.assert_equal('0 0 1  0 2 0  0 1 x', result)
+
+
+def test_create_score_line_03():
+    """
+    create_score_line()：引数に有効な配列(サヨナラ)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['0', '1', '0', '1', '1', '0', '1', '0', '1x'])
+    tools.assert_equal('0 1 0  1 1 0  1 0 1x', result)
+
+
+def test_create_score_line_04():
+    """
+    create_score_line()：引数に有効な配列(延長戦)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'])
+    tools.assert_equal('2 1 0  0 0 0  0 0 1  1 0 0', result)
+
+
+def test_create_score_line_05():
+    """
+    create_score_line()：引数に有効な配列(コールド)を指定したとき、スコア行を返すことを確認する。
+    """
+    result = baseball.create_score_line(['3', '0', '0', '1', '2', '1', '0x'])
+    tools.assert_equal('3 0 0  1 2 1  0x', result)
+
+
+def test_create_pitcher_line_01():
+    """
+    create_pitcher_line()：有効な引数を指定したとき、投手成績行を返すことを確認する。
+    """
+    result = baseball.create_pitcher_line('Ｓ', '高橋', (2, 1, 28))
+    tools.assert_equal('[Ｓ] 高橋 2勝1敗28Ｓ\n', result)
+
+
+def test_search_or_error_01():
+    """
+    search_or_error()：マッチする条件を引数として指定したとき、マッチングオブジェクトを返すことを確認する。
+    """
+    result = baseball.search_or_error(r'(\D+)(\d+)', 'マッチ123')
+    tools.assert_equal(result.group(0), 'マッチ123')
+    tools.assert_equal(result.group(1), 'マッチ')
+    tools.assert_equal(result.group(2), '123')
+
+
+@raises(ParseError)
+def test_search_or_error_02():
+    """
+    search_or_error()：マッチしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
+    """
+    baseball.search_or_error(r'(\d+)(\D+)', 'アンマッチ123')
+
+
+def test_find_or_error_01():
+    """
+    find_or_error()：検索にヒットする条件を引数として指定したとき、ヒットしたノードを返すことを確認する。
+    """
+    soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
+    result = baseball.find_or_error(soup, 'span')
+    tools.assert_equal(result.string, 'テスト')
+
+
+@raises(ParseError)
+def test_find_or_error_02():
+    """
+    find_or_error()：検索にしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
+    """
+    soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
+    baseball.find_or_error(soup, 'a')
+
+
+def test_add_space_01():
+    """
+    add_space()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の末尾にスペースが付与されていることを確認する。
+    """
+    result = baseball.add_space('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
+    tools.assert_equal(('yui    ', 'mio    ', 'ritsu  ', 'tsumugi', 'azusa  '), result)
+
+
+def test_add_space_02():
+    """
+    add_space()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
+    """
+    result = baseball.add_space('Python', 'Erlang', 'Groovy', 'Pascal')
+    tools.assert_equal(('Python', 'Erlang', 'Groovy', 'Pascal'), result)
+
+
+def test_add_em_space_01():
+    """
+    add_em_space()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の末尾にスペースが付与されていることを確認する。
+    """
+    result = baseball.add_em_space(
+        '埼玉西武',
+        '東北楽天',
+        '千葉ロッテ',
+        '福岡ソフトバンク',
+        'オリックス',
+        '北海道日本ハム'
+    )
+    tools.assert_equal((
+        '埼玉西武　　　　',
+        '東北楽天　　　　',
+        '千葉ロッテ　　　',
+        '福岡ソフトバンク',
+        'オリックス　　　',
+        '北海道日本ハム　',
+    ), result)
+
+
+def test_add_em_space_02():
+    """
+    add_em_space()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
+    """
+    result = baseball.add_em_space('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ')
+    tools.assert_equal(('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ'), result)
+
+
+def test_space_padding_01():
+    """
+    space_padding()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の先頭にスペースが付与されていることを確認する。
+    """
+    result = baseball.space_padding('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
+    tools.assert_equal(('    yui', '    mio', '  ritsu', 'tsumugi', '  azusa'), result)
+
+
+def test_space_padding_02():
+    """
+    space_padding()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
+    """
+    result = baseball.space_padding('Python', 'Erlang', 'Groovy', 'Pascal')
+    tools.assert_equal(('Python', 'Erlang', 'Groovy', 'Pascal'), result)
