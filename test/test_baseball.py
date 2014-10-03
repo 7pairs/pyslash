@@ -1340,3 +1340,33 @@ def test_add_space_02():
     """
     result = baseball.add_space('Python', 'Erlang', 'Groovy', 'Pascal')
     tools.assert_equal(('Python', 'Erlang', 'Groovy', 'Pascal'), result)
+
+
+def test_add_em_space_01():
+    """
+    add_em_space()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の末尾にスペースが付与されていることを確認する。
+    """
+    result = baseball.add_em_space(
+        '埼玉西武',
+        '東北楽天',
+        '千葉ロッテ',
+        '福岡ソフトバンク',
+        'オリックス',
+        '北海道日本ハム'
+    )
+    tools.assert_equal((
+        '埼玉西武　　　　',
+        '東北楽天　　　　',
+        '千葉ロッテ　　　',
+        '福岡ソフトバンク',
+        'オリックス　　　',
+        '北海道日本ハム　',
+    ), result)
+
+
+def test_add_em_space_02():
+    """
+    add_em_space()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
+    """
+    result = baseball.add_em_space('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ')
+    tools.assert_equal(('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ'), result)
