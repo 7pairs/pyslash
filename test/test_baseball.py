@@ -1288,3 +1288,21 @@ def test_create_pitcher_line_01():
     """
     result = baseball.create_pitcher_line('Ｓ', '高橋', (2, 1, 28))
     tools.assert_equal('[Ｓ] 高橋 2勝1敗28Ｓ\n', result)
+
+
+def test_search_or_error_01():
+    """
+    search_or_error()：マッチする条件を引数として指定したとき、マッチングオブジェクトを返すことを確認する。
+    """
+    result = baseball.search_or_error(r'(\D+)(\d+)', 'マッチ123')
+    tools.assert_equal(result.group(0), 'マッチ123')
+    tools.assert_equal(result.group(1), 'マッチ')
+    tools.assert_equal(result.group(2), '123')
+
+
+@raises(ParseError)
+def test_search_or_error_02():
+    """
+    search_or_error()：検索にヒットしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
+    """
+    baseball.search_or_error(r'(\d+)(\D+)', 'アンマッチ123')
