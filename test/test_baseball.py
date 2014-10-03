@@ -1370,3 +1370,19 @@ def test_add_em_space_02():
     """
     result = baseball.add_em_space('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ')
     tools.assert_equal(('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ'), result)
+
+
+def test_space_padding_01():
+    """
+    space_padding()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の先頭にスペースが付与されていることを確認する。
+    """
+    result = baseball.space_padding('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
+    tools.assert_equal(('    yui', '    mio', '  ritsu', 'tsumugi', '  azusa'), result)
+
+
+def test_space_padding_02():
+    """
+    space_padding()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
+    """
+    result = baseball.space_padding('Python', 'Erlang', 'Groovy', 'Pascal')
+    tools.assert_equal(('Python', 'Erlang', 'Groovy', 'Pascal'), result)
