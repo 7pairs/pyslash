@@ -361,6 +361,123 @@ def test_get_today_game_url_13(get_html):
     baseball.get_today_game_url('err')
 
 
+def test_parse_score_table_01():
+    """
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('日本ハム', result['bat_first'])
+    tools.assert_equal('西武', result['field_first'])
+    tools.assert_equal(4, result['match'])
+    tools.assert_equal('西武ドーム', result['stadium'])
+    tools.assert_equal([
+        ['0', '0', '0', '0', '0', '0', '1', '0', '0'],
+        ['0', '0', '1', '0', '2', '0', '0', '1', 'x'],
+    ], result['score'])
+    tools.assert_equal([1, 4], result['total_score'])
+    tools.assert_equal(('牧田', 2, 1, 0), result['win'])
+    tools.assert_equal(('高橋', 0, 1, 3), result['save'])
+    tools.assert_equal(('メンドーサ', 1, 4, 0), result['lose'])
+    tools.assert_equal([('7回表', '佐藤賢', 3, 'ソロ', '牧田')], result['home_run'])
+
+
+def test_parse_score_table_02():
+    """
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （2ラン、3ラン解析時の不具合対応 #13）
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050906.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('西武', result['bat_first'])
+    tools.assert_equal('ソフトバンク', result['field_first'])
+    tools.assert_equal(7, result['match'])
+    tools.assert_equal('北九州', result['stadium'])
+    tools.assert_equal([
+        ['0', '1', '0', '3', '0', '0', '0', '0', '2'],
+        ['1', '1', '0', '0', '0', '0', '2', '0', '0'],
+    ], result['score'])
+    tools.assert_equal([6, 4], result['total_score'])
+    tools.assert_equal(('ウィリアムス', 1, 0, 0), result['win'])
+    tools.assert_equal(('高橋', 0, 1, 6), result['save'])
+    tools.assert_equal(('千賀', 0, 1, 0), result['lose'])
+    tools.assert_equal([
+        ('1回裏', '内川', 8, 'ソロ', '岸'),
+        ('7回裏', '柳田', 5, '２ラン', '岸')
+    ], result['home_run'])
+
+
+def test_parse_score_table_03():
+    """
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （サヨナラゲーム解析時の不具合対応 #11）
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014032804.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('オリックス', result['bat_first'])
+    tools.assert_equal('日本ハム', result['field_first'])
+    tools.assert_equal(1, result['match'])
+    tools.assert_equal('札幌ドーム', result['stadium'])
+    tools.assert_equal([
+        ['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'],
+        ['0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '0', '1x'],
+    ], result['score'])
+    tools.assert_equal([5, 6], result['total_score'])
+    tools.assert_equal(('増井', 1, 0, 0), result['win'])
+    tools.assert_equal(('海田', 0, 1, 0), result['lose'])
+    tools.assert_equal([('10回表', 'ペーニャ', 1, 'ソロ', '宮西')], result['home_run'])
+
+
+def test_parse_score_table_04():
+    """
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （打者一巡があった試合の本塁打解析時の不具合対応 #45）
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014081605.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('日本ハム', result['bat_first'])
+    tools.assert_equal('西武', result['field_first'])
+    tools.assert_equal(15, result['match'])
+    tools.assert_equal('西武ドーム', result['stadium'])
+    tools.assert_equal([
+        ['0', '0', '0', '0', '1', '4', '0', '1', '1', '1', '0', '0'],
+        ['0', '0', '0', '0', '6', '0', '0', '1', '0', '1', '0', '0'],
+    ], result['score'])
+    tools.assert_equal([8, 8], result['total_score'])
+    tools.assert_equal([
+        ('5回裏', '中村', 21, '２ラン', '吉川'),
+        ('10回表', '陽', 16, 'ソロ', '中郷'),
+        ('10回裏', '森', 3, 'ソロ', '増井'),
+    ], result['home_run'])
+
+
+def test_parse_score_table_05():
+    """
+    parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
+    （コールドゲーム解析時の不具合対応 #50）
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014090802.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('西武', result['bat_first'])
+    tools.assert_equal('ロッテ', result['field_first'])
+    tools.assert_equal(21, result['match'])
+    tools.assert_equal('ＱＶＣマリン', result['stadium'])
+    tools.assert_equal([
+        ['3', '0', '0', '1', '2', '1', '0x'],
+        ['0', '0', '0', '0', '0', '0', ''],
+    ], result['score'])
+    tools.assert_equal([7, 0], result['total_score'])
+    tools.assert_equal([('1回表', '中村', 30, 'ソロ', '藤岡')], result['home_run'])
+
+
+@raises(ParseError)
+def test_parse_score_table_06():
+    """
+    parse_score_table()：引数に無効なHTML文字列を指定したとき、ParseErrorが送出されることを確認する。
+    """
+    baseball.parse_score_table("えいちてぃーえむえる")
+
+
 def test_get_date_01():
     """
     引数にスコアテーブルのURLを指定したとき、試合日を返すことを確認する。
@@ -375,124 +492,6 @@ def test_get_date_02():
     引数に無効なURLを指定したとき、ParseErrorがraiseされることを確認する。
     """
     baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
-
-
-def test_create_dict_01():
-    """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    """
-    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html')
-    actual = baseball.parse_score_table(html)
-    tools.assert_equal('日本ハム', actual['bat_first'])
-    tools.assert_equal('西武', actual['field_first'])
-    tools.assert_equal(4, actual['match'])
-    tools.assert_equal('西武ドーム', actual['stadium'])
-    tools.assert_equal([
-        ['0', '0', '0', '0', '0', '0', '1', '0', '0'],
-        ['0', '0', '1', '0', '2', '0', '0', '1', 'x'],
-    ], actual['score'])
-    tools.assert_equal([1, 4], actual['total_score'])
-    tools.assert_equal(('牧田', 2, 1, 0), actual['win'])
-    tools.assert_equal(('高橋', 0, 1, 3), actual['save'])
-    tools.assert_equal(('メンドーサ', 1, 4, 0), actual['lose'])
-    tools.assert_equal([('7回表', '佐藤賢', 3, 'ソロ', '牧田')], actual['home_run'])
-
-
-def test_create_dict_02():
-    """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （2ラン、3ランの解析時不具合対応 #13）
-    """
-    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050906.html')
-    actual = baseball.parse_score_table(html)
-    tools.assert_equal('西武', actual['bat_first'])
-    tools.assert_equal('ソフトバンク', actual['field_first'])
-    tools.assert_equal(7, actual['match'])
-    tools.assert_equal('北九州', actual['stadium'])
-    tools.assert_equal([
-        ['0', '1', '0', '3', '0', '0', '0', '0', '2'],
-        ['1', '1', '0', '0', '0', '0', '2', '0', '0'],
-    ], actual['score'])
-    tools.assert_equal([6, 4], actual['total_score'])
-    tools.assert_equal(('ウィリアムス', 1, 0, 0), actual['win'])
-    tools.assert_equal(('高橋', 0, 1, 6), actual['save'])
-    tools.assert_equal(('千賀', 0, 1, 0), actual['lose'])
-    tools.assert_equal([('1回裏', '内川', 8, 'ソロ', '岸'), ('7回裏', '柳田', 5, '２ラン', '岸')], actual['home_run'])
-
-
-def test_create_dict_03():
-    """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （サヨナラゲームの解析時不具合対応 #11）
-    """
-    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014032804.html')
-    actual = baseball.parse_score_table(html)
-    tools.assert_equal('オリックス', actual['bat_first'])
-    tools.assert_equal('日本ハム', actual['field_first'])
-    tools.assert_equal(1, actual['match'])
-    tools.assert_equal('札幌ドーム', actual['stadium'])
-    tools.assert_equal([
-        ['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'],
-        ['0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '0', '1x'],
-    ], actual['score'])
-    tools.assert_equal([5, 6], actual['total_score'])
-    tools.assert_equal(('増井', 1, 0, 0), actual['win'])
-    tools.assert_equal(('海田', 0, 1, 0), actual['lose'])
-    tools.assert_equal([('10回表', 'ペーニャ', 1, 'ソロ', '宮西')], actual['home_run'])
-
-
-def test_create_dict_04():
-    """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （打者一巡時の本塁打欄不具合対応 #45）
-    """
-    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014081605.html')
-    actual = baseball.parse_score_table(html)
-    tools.assert_equal('日本ハム', actual['bat_first'])
-    tools.assert_equal('西武', actual['field_first'])
-    tools.assert_equal(15, actual['match'])
-    tools.assert_equal('西武ドーム', actual['stadium'])
-    tools.assert_equal([
-        ['0', '0', '0', '0', '1', '4', '0', '1', '1', '1', '0', '0'],
-        ['0', '0', '0', '0', '6', '0', '0', '1', '0', '1', '0', '0'],
-    ], actual['score'])
-    tools.assert_equal([8, 8], actual['total_score'])
-    tools.assert_equal([
-        ('5回裏', '中村', 21, '２ラン', '吉川'),
-        ('10回表', '陽', 16, 'ソロ', '中郷'),
-        ('10回裏', '森', 3, 'ソロ', '増井'),
-    ], actual['home_run'])
-
-
-def test_create_dict_05():
-    """
-    引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
-    （コールド時のスコア不具合対応 #50）
-    """
-    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014090802.html')
-    actual = baseball.parse_score_table(html)
-    tools.assert_equal('西武', actual['bat_first'])
-    tools.assert_equal('ロッテ', actual['field_first'])
-    tools.assert_equal(21, actual['match'])
-    tools.assert_equal('ＱＶＣマリン', actual['stadium'])
-    tools.assert_equal([
-        ['3', '0', '0', '1', '2', '1', '0x'],
-        ['0', '0', '0', '0', '0', '0', ''],
-    ], actual['score'])
-    tools.assert_equal([7, 0], actual['total_score'])
-    tools.assert_equal([
-        ('1回表', '中村', 30, 'ソロ', '藤岡'),
-    ], actual['home_run'])
-
-
-@raises(ParseError)
-def test_create_dict_06():
-    """
-    引数に無効なHTML文字列を指定したとき、ParseErrorが発生することを確認する。
-    """
-    with open('./test/test_create_dict_error.html') as test_file:
-        html = test_file.read()
-    baseball.parse_score_table(html)
 
 
 def test_get_full_team_name_01():
