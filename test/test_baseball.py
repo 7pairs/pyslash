@@ -224,20 +224,20 @@ def test_get_html_02():
 
 
 @patch('crawler.baseball.get_html')
-def test_get_url_01(get_html):
+def test_get_today_game_url_01(get_html):
     """
-    引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
+    get_today_game_url()：引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    actual = baseball.get_today_game_url('l')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
+    result = baseball.get_today_game_url('l')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
 
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_02(get_html):
+def test_get_today_game_url_02(get_html):
     """
-    引数に'e'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に'e'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (東北楽天が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
@@ -246,9 +246,9 @@ def test_get_url_02(get_html):
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_03(get_html):
+def test_get_today_game_url_03(get_html):
     """
-    引数に'm'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に'm'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (千葉ロッテが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
@@ -257,9 +257,9 @@ def test_get_url_03(get_html):
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_04(get_html):
+def test_get_today_game_url_04(get_html):
     """
-    引数に'h'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に'h'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (福岡ソフトバンクが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
@@ -267,20 +267,20 @@ def test_get_url_04(get_html):
 
 
 @patch('crawler.baseball.get_html')
-def test_get_url_05(get_html):
+def test_get_today_game_url_05(get_html):
     """
-    引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
+    get_today_game_url()：引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    actual = baseball.get_today_game_url('bu')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
+    result = baseball.get_today_game_url('bu')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
 
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_06(get_html):
+def test_get_today_game_url_06(get_html):
     """
-    引数に'f'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に'f'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (北海道日本ハムが試合開始前のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
@@ -289,9 +289,9 @@ def test_get_url_06(get_html):
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_07(get_html):
+def test_get_today_game_url_07(get_html):
     """
-    引数に'g'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に'g'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (読売が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
@@ -299,20 +299,20 @@ def test_get_url_07(get_html):
 
 
 @patch('crawler.baseball.get_html')
-def test_get_url_08(get_html):
+def test_get_today_game_url_08(get_html):
     """
-    引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
+    get_today_game_url()：引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    actual = baseball.get_today_game_url('t')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', actual)
+    result = baseball.get_today_game_url('t')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
 
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_09(get_html):
+def test_get_today_game_url_09(get_html):
     """
-    引数に'c'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に'c'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (広島東洋が試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
@@ -320,20 +320,20 @@ def test_get_url_09(get_html):
 
 
 @patch('crawler.baseball.get_html')
-def test_get_url_10(get_html):
+def test_get_today_game_url_10(get_html):
     """
-    引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
+    get_today_game_url()：引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    actual = baseball.get_today_game_url('d')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', actual)
+    result = baseball.get_today_game_url('d')
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
 
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_11(get_html):
+def test_get_today_game_url_11(get_html):
     """
-    引数に'bs'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に'bs'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (横浜ＤｅＮＡが試合中のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
@@ -342,21 +342,23 @@ def test_get_url_11(get_html):
 
 @patch('crawler.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_url_12(get_html):
+def test_get_today_game_url_12(get_html):
     """
-    引数に's'を指定したとき、ResultNotFoundErrorがraiseされることを確認する。
+    get_today_game_url()：引数に's'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (東京ヤクルトが試合開始前のため)
     """
     get_html.return_value = RETURN_VALUE_FOR_GET_HTML
     baseball.get_today_game_url('s')
 
 
+@patch('crawler.baseball.get_html')
 @raises(InvalidTeamError)
-def test_get_url_13():
+def test_get_today_game_url_13(get_html):
     """
-    引数に無効なチーム名を指定したとき、InvalidTeamErrorがraiseされることを確認する。
+    get_today_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
     """
-    baseball.get_today_game_url('q')
+    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    baseball.get_today_game_url('err')
 
 
 def test_get_date_01():
