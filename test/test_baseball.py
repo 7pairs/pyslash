@@ -1280,3 +1280,11 @@ def test_create_score_line_05():
     """
     result = baseball.create_score_line(['3', '0', '0', '1', '2', '1', '0x'])
     tools.assert_equal('3 0 0  1 2 1  0x', result)
+
+
+def test_create_pitcher_line_01():
+    """
+    create_pitcher_line()：有効な引数を指定したとき、投手成績行を返すことを確認する。
+    """
+    result = baseball.create_pitcher_line('Ｓ', '高橋', (2, 1, 28))
+    tools.assert_equal('[Ｓ] 高橋 2勝1敗28Ｓ\n', result)
