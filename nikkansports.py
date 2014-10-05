@@ -33,8 +33,19 @@ if __name__ == '__main__':
 
     # スコアテーブルを出力する
     if args.get('-t'):
-        day_str = args.get('-d')
-        day = datetime.datetime.strptime(day_str, '%Y%m%d') if day_str else None
+        today = datetime.datetime.today()
+        day_str = args.get('-d') or ''
+        day_str_len = len(day_str)
+        if day_str_len == 8:
+            day = datetime.datetime.strptime(day_str, '%Y%m%d')
+        elif day_str_len == 4:
+            day = datetime.datetime.strptime(day_str, '%m%d')
+            day = day.replace(year=today.year)
+        elif day_str_len == 2:
+            day = datetime.datetime.strptime(day_str, '%d')
+            day = day.replace(year=today.year, month=today.month)
+        else:
+            day = None
         print(crawler.baseball.get_score_table(args['-t'], day))
     elif args.get('-u'):
         print(crawler.baseball.get_score_table_by_url(args['-u']))
