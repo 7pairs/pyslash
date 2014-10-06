@@ -27,7 +27,10 @@ from crawler import baseball
 __version__ = '1.0.0'
 
 
-if __name__ == '__main__':
+def main():
+    """
+    テーブルスコアを標準出力に書き出す。
+    """
     # 引数を取得する
     args = docopt(__doc__, version=__version__)
 
@@ -49,3 +52,7 @@ if __name__ == '__main__':
         print(baseball.get_score_table(args['-t'], day))
     elif args.get('-u'):
         print(baseball.get_score_table_by_url(args['-u']))
+
+
+if __name__ == '__main__':
+    main()
