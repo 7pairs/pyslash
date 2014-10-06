@@ -4,10 +4,10 @@
 Tools for parsing 'nikkansports.com'.
 
 Usage:
-nikkansports.py -t <team> [-d <day>]
-nikkansports.py -u <url>
-nikkansports.py -h | --help
-nikkansports.py -v | --version
+pyslash.py -t <team> [-d <day>]
+pyslash.py -u <url>
+pyslash.py -h | --help
+pyslash.py -v | --version
 
 Options:
 -d <day>      game day.
@@ -20,14 +20,22 @@ import datetime
 
 from docopt import docopt
 
-import crawler.baseball
+try:
+    # setup.py実行後
+    from pyslash.crawler import baseball
+except ImportError:
+    # 未インストール状態での動作確認時
+    from crawler import baseball
 
 
 # バージョン番号
 __version__ = '1.0.0'
 
 
-if __name__ == '__main__':
+def main():
+    """
+    テーブルスコアを標準出力に書き出す。
+    """
     # 引数を取得する
     args = docopt(__doc__, version=__version__)
 
@@ -46,6 +54,10 @@ if __name__ == '__main__':
             day = day.replace(year=today.year, month=today.month)
         else:
             day = None
-        print(crawler.baseball.get_score_table(args['-t'], day))
+        print(baseball.get_score_table(args['-t'], day))
     elif args.get('-u'):
-        print(crawler.baseball.get_score_table_by_url(args['-u']))
+        print(baseball.get_score_table_by_url(args['-u']))
+
+
+if __name__ == '__main__':
+    main()
