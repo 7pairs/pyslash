@@ -9,6 +9,7 @@ setup(
     author_email='7pairs@gmail.com',
     url='http://seven-pairs.hatenablog.jp/',
     packages=find_packages(),
+    install_requires=['docopt'],
     entry_points="""\
     [console_scripts]
     pyslash = pyslash.pyslash:main
