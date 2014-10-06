@@ -20,7 +20,7 @@ import datetime
 
 from docopt import docopt
 
-import crawler.baseball
+from crawler import baseball
 
 
 # バージョン番号
@@ -46,6 +46,6 @@ if __name__ == '__main__':
             day = day.replace(year=today.year, month=today.month)
         else:
             day = None
-        print(crawler.baseball.get_score_table(args['-t'], day))
+        print(baseball.get_score_table(args['-t'], day))
     elif args.get('-u'):
-        print(crawler.baseball.get_score_table_by_url(args['-u']))
+        print(baseball.get_score_table_by_url(args['-u']))
