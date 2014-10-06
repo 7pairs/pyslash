@@ -20,7 +20,12 @@ import datetime
 
 from docopt import docopt
 
-from crawler import baseball
+try:
+    # setup.py実行後
+    from pyslash.crawler import baseball
+except ImportError:
+    # 未インストール状態での動作確認時
+    from crawler import baseball
 
 
 # バージョン番号
