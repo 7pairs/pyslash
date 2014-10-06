@@ -8,8 +8,8 @@ from mock import patch
 from nose import tools
 from nose.tools import raises
 
-from nikkansports.crawler import baseball
-from nikkansports.crawler.exception import InvalidTeamError, ParseError, ResultNotFoundError
+from pyslash.crawler import baseball
+from pyslash.crawler.exception import InvalidTeamError, ParseError, ResultNotFoundError
 
 
 RETURN_VALUE_FOR_GET_HTML = """\
@@ -114,7 +114,7 @@ def test_get_score_table_01():
     tools.assert_equal(expected, result)
 
 
-@patch('nikkansports.crawler.baseball.get_today_game_url')
+@patch('pyslash.crawler.baseball.get_today_game_url')
 def test_get_score_table_02(get_today_game_url):
     """
     get_score_table()：試合日にNoneを指定したとき、当日の試合のスコアテーブルの文字列を返すことを確認する。
@@ -223,7 +223,7 @@ def test_get_html_02():
     baseball.get_html('えいちてぃーてぃーぴーころんすらっしゅすらっしゅ')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 def test_get_today_game_url_01(get_html):
     """
     get_today_game_url()：引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
@@ -233,7 +233,7 @@ def test_get_today_game_url_01(get_html):
     tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_02(get_html):
     """
@@ -244,7 +244,7 @@ def test_get_today_game_url_02(get_html):
     baseball.get_today_game_url('e')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_03(get_html):
     """
@@ -255,7 +255,7 @@ def test_get_today_game_url_03(get_html):
     baseball.get_today_game_url('m')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_04(get_html):
     """
@@ -266,7 +266,7 @@ def test_get_today_game_url_04(get_html):
     baseball.get_today_game_url('h')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 def test_get_today_game_url_05(get_html):
     """
     get_today_game_url()：引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
@@ -276,7 +276,7 @@ def test_get_today_game_url_05(get_html):
     tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_06(get_html):
     """
@@ -287,7 +287,7 @@ def test_get_today_game_url_06(get_html):
     baseball.get_today_game_url('f')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_07(get_html):
     """
@@ -298,7 +298,7 @@ def test_get_today_game_url_07(get_html):
     baseball.get_today_game_url('g')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 def test_get_today_game_url_08(get_html):
     """
     get_today_game_url()：引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
@@ -308,7 +308,7 @@ def test_get_today_game_url_08(get_html):
     tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_09(get_html):
     """
@@ -319,7 +319,7 @@ def test_get_today_game_url_09(get_html):
     baseball.get_today_game_url('c')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 def test_get_today_game_url_10(get_html):
     """
     get_today_game_url()：引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
@@ -329,7 +329,7 @@ def test_get_today_game_url_10(get_html):
     tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_11(get_html):
     """
@@ -340,7 +340,7 @@ def test_get_today_game_url_11(get_html):
     baseball.get_today_game_url('bs')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(ResultNotFoundError)
 def test_get_today_game_url_12(get_html):
     """
@@ -351,7 +351,7 @@ def test_get_today_game_url_12(get_html):
     baseball.get_today_game_url('s')
 
 
-@patch('nikkansports.crawler.baseball.get_html')
+@patch('pyslash.crawler.baseball.get_html')
 @raises(InvalidTeamError)
 def test_get_today_game_url_13(get_html):
     """

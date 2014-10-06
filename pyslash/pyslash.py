@@ -4,10 +4,10 @@
 Tools for parsing 'nikkansports.com'.
 
 Usage:
-nikkansports.py -t <team> [-d <day>]
-nikkansports.py -u <url>
-nikkansports.py -h | --help
-nikkansports.py -v | --version
+pyslash.py -t <team> [-d <day>]
+pyslash.py -u <url>
+pyslash.py -h | --help
+pyslash.py -v | --version
 
 Options:
 -d <day>      game day.
