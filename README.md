@@ -5,7 +5,7 @@
 
 ## 概要
 
-[nikkansports.com](http://www.nikkansports.com/)のプロ野球の試合結果を整形するツールです。[ねことくまとへび](http://seven-pairs.hatenablog.jp/)というブログで野球の戦評を書くときに使用しています。
+[nikkansports.com](http://www.nikkansports.com/)のプロ野球の試合結果を整形するツールです。[ねことくまとへび](http://seven-pairs.hatenablog.jp/)というブログで野球の戦評を書くときに使用しています。Pythonを使ってHTMLをslashし、テキストとして再構築することからpyslashという名前をつけました。それ以上の深い意味はありません。たぶん。
 
 ## インストール
 
@@ -21,12 +21,12 @@ pipを利用している場合は、GitHubから直接インストールする�
 pip install git+https://github.com/7pairs/pyslash.git
 ```
 
-## 使い方
+## 実行方法
 
 チーム、試合日（任意）を指定して実行してください。
 
 ```
-pyslash.py -t <team> [-d <day>]
+pyslash -t <team> [-d <day>]
 ```
 
 `<team>` には以下のいずれかを指定してください。オリックス、横浜DeNAの略号に違和感がありますが、これはnikkansports.com内の表記に準拠しているためです。
@@ -57,5 +57,5 @@ pyslash.py -t <team> [-d <day>]
 また、スコアテーブルのURLを直接指定して実行することもできます。
 
 ```
-pyslash.py -u <url>
+pyslash -u <url>
 ```
