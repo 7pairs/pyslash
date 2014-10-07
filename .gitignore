@@ -53,5 +53,5 @@ coverage.xml
 docs/_build/
 
 # IntelliJ IDEA
-nikkansports.iml
+pyslash.iml
 .idea
