@@ -568,7 +568,7 @@ def add_space(*args):
     """
     # スペースを付与する
     max_len = max(map(len, args))
-    ret_val = map(lambda x: x + ' ' * (max_len - len(x)), args)
+    ret_val = map(lambda x: x.ljust(max_len), args)
 
     # 編集結果を返す
     return tuple(ret_val)
