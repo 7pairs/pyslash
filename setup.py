@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='pyslash',
-    version='1.0.0',
+    version='1.0.1',
     description='Tools for parsing nikkansports.com',
     author='Jun-ya HASEBA',
     author_email='7pairs@gmail.com',
