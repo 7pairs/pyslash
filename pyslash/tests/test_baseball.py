@@ -475,7 +475,7 @@ def test_parse_score_table_06():
     """
     parse_score_table()：引数に無効なHTML文字列を指定したとき、ParseErrorが送出されることを確認する。
     """
-    baseball.parse_score_table("えいちてぃーえむえる")
+    baseball.parse_score_table('えいちてぃーえむえる')
 
 
 def test_get_champions_01():
