@@ -478,6 +478,22 @@ def test_parse_score_table_06():
     baseball.parse_score_table("えいちてぃーえむえる")
 
 
+def test_get_champions_01():
+    """
+    get_champions()：引数に2014年を指定したとき、2014年の優勝チームを返すことを確認する。
+    """
+    result = baseball.get_champions(datetime.datetime(2014, 11, 1))
+    tools.assert_equal(('ソフトバンク', '巨人'), result)
+
+
+def test_get_champions_02():
+    """
+    get_champions()：引数に2013年を指定したとき、2013年の優勝チームを返すことを確認する。
+    """
+    result = baseball.get_champions(datetime.datetime(2013, 4, 1))
+    tools.assert_equal(('楽天', '巨人'), result)
+
+
 def test_parse_pitcher_01():
     """
     parse_pitcher()：引数に有効なノードを指定したとき、投手成績のタプルを返すことを確認する。
