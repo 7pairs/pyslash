@@ -494,6 +494,22 @@ def test_get_champions_02():
     tools.assert_equal(('楽天', '巨人'), result)
 
 
+def test_get_champions_of_this_year_01():
+    """
+    get_champions_of_this_year()：2014年の優勝チームを返すことを確認する。
+    """
+    result = baseball.get_champions_of_this_year()
+    tools.assert_equal(('ソフトバンク', '巨人'), result)
+
+
+def test_get_champions_before_this_year():
+    """
+    get_champions_before_this_year()：引数に2008年を指定したとき、2008年の優勝チームを返すことを確認する。
+    """
+    result = baseball.get_champions_before_this_year(datetime.datetime(2008, 4, 1))
+    tools.assert_equal(('西武', '巨人'), result)
+
+
 def test_parse_pitcher_01():
     """
     parse_pitcher()：引数に有効なノードを指定したとき、投手成績のタプルを返すことを確認する。
