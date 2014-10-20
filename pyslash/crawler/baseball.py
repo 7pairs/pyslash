@@ -337,6 +337,46 @@ def parse_score_table(html):
     return ret_val
 
 
+def get_champions_of_this_year():
+    """
+    今年の両リーグの優勝チームをタプルで返す。
+
+    :return: パの優勝チーム、セの優勝チームを順に格納したタプル
+    :rtype: tuple
+    """
+    # 順位表のHTMLを取得する
+    html = get_html('http://www.nikkansports.com/baseball/professional/data/pf-standings.html')
+
+    # BeautifulSoupオブジェクトを構築する
+    soup = BeautifulSoup(html)
+
+    # ページ内のtable要素を取得する
+    tables = soup.find_all('table')
+
+    # 両リーグの優勝チームを返す
+    return parse_ranking(tables[1]), parse_ranking(tables[0])
+
+
+def parse_ranking(node):
+    """
+    指定された順位表を解析し、首位のチームを返す。
+
+    :param node: 順位表のノード
+    :type node: bs4.element.ResultSet
+    :return: 首位のチーム
+    :rtype: str
+    """
+    # 順位表を行ごとに解析する
+    rows = node.find_all('tr')
+    for row in rows:
+        # 首位の行を探索する
+        rank = row.find('td', {'class': 'rank'})
+        if rank and rank.string == '１':
+            # 首位のチーム名を返す
+            champion = row.find('td', {'class': 'team'})
+            return re.sub('\s', '', champion.string)
+
+
 def parse_pitcher(node):
     """
     投手成績を解析し、勝利数、敗北数、セーブ数を返す。
