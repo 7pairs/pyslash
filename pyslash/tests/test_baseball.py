@@ -502,7 +502,7 @@ def test_get_champions_of_this_year_01():
     tools.assert_equal(('ソフトバンク', '巨人'), result)
 
 
-def test_get_champions_before_this_year():
+def test_get_champions_before_this_year_01():
     """
     get_champions_before_this_year()：引数に2008年を指定したとき、2008年の優勝チームを返すことを確認する。
     """
