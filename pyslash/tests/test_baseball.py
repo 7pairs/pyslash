@@ -502,6 +502,254 @@ def test_get_champions_of_this_year_01():
     tools.assert_equal(('ソフトバンク', '巨人'), result)
 
 
+def test_parse_ranking_01():
+    """
+    parse_ranking()：引数に2014年のパ・リーグ順位表を指定したとき、優勝チームを返すことを確認する。
+    """
+    soup = BeautifulSoup("""\
+        <table border="0" cellpadding="0" cellspacing="0" summary="">
+            <tr>
+                <th>順位</th>
+                <th>チーム</th>
+                <th>試合</th>
+                <th>勝数</th>
+                <th>敗数</th>
+                <th>引分</th>
+                <th>勝率</th>
+                <th>勝差</th>
+                <th>得点</th>
+                <th>失点</th>
+                <th>本塁打</th>
+                <th>盗塁</th>
+                <th>打率</th>
+                <th>防御率</th>
+            </tr>
+            <tr>
+                <td class="rank">１</td>
+                <td class="team">ソフトバンク</td>
+                <td>144</td>
+                <td>78</td>
+                <td>60</td>
+                <td>6</td>
+                <td>.565</td>
+                <td>-</td>
+                <td>607</td>
+                <td>522</td>
+                <td>95</td>
+                <td>124</td>
+                <td>.280</td>
+                <td>3.25</td>
+            </tr>
+            <tr>
+                <td class="rank">２</td>
+                <td class="team">オリックス</td>
+                <td>144</td>
+                <td>80</td>
+                <td>62</td>
+                <td>2</td>
+                <td>.563</td>
+                <td>-</td>
+                <td>584</td>
+                <td>468</td>
+                <td>110</td>
+                <td>126</td>
+                <td>.258</td>
+                <td>2.89</td>
+            </tr>
+            <tr>
+                <td class="rank">３</td>
+                <td class="team">日本ハム</td>
+                <td>144</td>
+                <td>73</td>
+                <td>68</td>
+                <td>3</td>
+                <td>.518</td>
+                <td>6.5</td>
+                <td>593</td>
+                <td>569</td>
+                <td>119</td>
+                <td>134</td>
+                <td>.251</td>
+                <td>3.61</td>
+            </tr>
+            <tr>
+                <td class="rank">４</td>
+                <td class="team">ロッテ</td>
+                <td>144</td>
+                <td>66</td>
+                <td>76</td>
+                <td>2</td>
+                <td>.465</td>
+                <td>14</td>
+                <td>556</td>
+                <td>642</td>
+                <td>96</td>
+                <td>64</td>
+                <td>.251</td>
+                <td>4.14</td>
+            </tr>
+            <tr>
+                <td class="rank">５</td>
+                <td class="team">西&nbsp;&nbsp;武</td>
+                <td>144</td>
+                <td>63</td>
+                <td>77</td>
+                <td>4</td>
+                <td>.450</td>
+                <td>16</td>
+                <td>574</td>
+                <td>600</td>
+                <td>125</td>
+                <td>74</td>
+                <td>.248</td>
+                <td>3.77</td>
+            </tr>
+            <tr>
+                <td class="rank">６</td>
+                <td class="team">楽&nbsp;&nbsp;天</td>
+                <td>144</td>
+                <td>64</td>
+                <td>80</td>
+                <td>0</td>
+                <td>.444</td>
+                <td>17</td>
+                <td>549</td>
+                <td>604</td>
+                <td>78</td>
+                <td>64</td>
+                <td>.255</td>
+                <td>3.97</td>
+            </tr>
+        </table>
+    """)
+    result = baseball.parse_ranking(soup)
+    tools.assert_equal('ソフトバンク', result)
+
+
+def test_parse_ranking_02():
+    """
+    parse_ranking()：引数に2014年のセ・リーグ順位表を指定したとき、優勝チームを返すことを確認する。
+    """
+    soup = BeautifulSoup("""\
+        <table border="0" cellpadding="0" cellspacing="0" summary="">
+            <tr>
+                <th>順位</th>
+                <th>チーム</th>
+                <th>試合</th>
+                <th>勝数</th>
+                <th>敗数</th>
+                <th>引分</th>
+                <th>勝率</th>
+                <th>勝差</th>
+                <th>得点</th>
+                <th>失点</th>
+                <th>本塁打</th>
+                <th>盗塁</th>
+                <th>打率</th>
+                <th>防御率</th>
+            </tr>
+            <tr>
+                <td class="rank">１</td>
+                <td class="team">巨&nbsp;&nbsp;人</td>
+                <td>144</td>
+                <td>82</td>
+                <td>61</td>
+                <td>1</td>
+                <td>.573</td>
+                <td>-</td>
+                <td>596</td>
+                <td>552</td>
+                <td>144</td>
+                <td>102</td>
+                <td>.257</td>
+                <td>3.58</td>
+            </tr>
+            <tr>
+                <td class="rank">２</td>
+                <td class="team">阪&nbsp;&nbsp;神</td>
+                <td>144</td>
+                <td>75</td>
+                <td>68</td>
+                <td>1</td>
+                <td>.524</td>
+                <td>7</td>
+                <td>599</td>
+                <td>614</td>
+                <td>94</td>
+                <td>55</td>
+                <td>.264</td>
+                <td>3.88</td>
+            </tr>
+            <tr>
+                <td class="rank">３</td>
+                <td class="team">広&nbsp;&nbsp;島</td>
+                <td>144</td>
+                <td>74</td>
+                <td>68</td>
+                <td>2</td>
+                <td>.521</td>
+                <td>7.5</td>
+                <td>649</td>
+                <td>610</td>
+                <td>153</td>
+                <td>96</td>
+                <td>.272</td>
+                <td>3.79</td>
+            </tr>
+            <tr>
+                <td class="rank">４</td>
+                <td class="team">中&nbsp;&nbsp;日</td>
+                <td>144</td>
+                <td>67</td>
+                <td>73</td>
+                <td>4</td>
+                <td>.479</td>
+                <td>13.5</td>
+                <td>570</td>
+                <td>590</td>
+                <td>87</td>
+                <td>75</td>
+                <td>.258</td>
+                <td>3.69</td>
+            </tr>
+            <tr>
+                <td class="rank">５</td>
+                <td class="team">ＤｅＮＡ</td>
+                <td>144</td>
+                <td>67</td>
+                <td>75</td>
+                <td>2</td>
+                <td>.472</td>
+                <td>14.5</td>
+                <td>568</td>
+                <td>624</td>
+                <td>121</td>
+                <td>76</td>
+                <td>.253</td>
+                <td>3.76</td>
+            </tr>
+            <tr>
+                <td class="rank">６</td>
+                <td class="team">ヤクルト</td>
+                <td>144</td>
+                <td>60</td>
+                <td>81</td>
+                <td>3</td>
+                <td>.426</td>
+                <td>21</td>
+                <td>667</td>
+                <td>717</td>
+                <td>139</td>
+                <td>62</td>
+                <td>.279</td>
+                <td>4.62</td>
+            </tr>
+        </table>
+    """)
+    result = baseball.parse_ranking(soup)
+    tools.assert_equal('巨人', result)
+
+
 def test_get_champions_before_this_year_01():
     """
     get_champions_before_this_year()：引数に2008年を指定したとき、2008年の優勝チームを返すことを確認する。
