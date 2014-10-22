@@ -754,7 +754,7 @@ def test_get_champions_before_this_year_01():
     """
     get_champions_before_this_year()：引数に2008年を指定したとき、2008年の優勝チームを返すことを確認する。
     """
-    result = baseball.get_champions_before_this_year(datetime.datetime(2008, 4, 1))
+    result = baseball.get_champions_before_this_year(2008)
     tools.assert_equal(('西武', '巨人'), result)
 
 

@@ -377,6 +377,49 @@ def parse_ranking(node):
             return re.sub('\s', '', champion.string)
 
 
+def get_champions_before_this_year(year):
+    """
+    指定された年度の両リーグの優勝チームをタプルで返す。
+
+    :param year: 年度
+    :type year: int
+    :return: パの優勝チーム、セの優勝チームを順に格納したタプル
+    :rtype: tuple
+    """
+    # 順位表のHTMLを取得する
+    p_html = get_html('http://www.nikkansports.com/baseball/professional/data/pfdata/victory/pf-victory_pl.html')
+    c_html = get_html('http://www.nikkansports.com/baseball/professional/data/pfdata/victory/pf-victory_cl.html')
+
+    # 両リーグの優勝チームを返す
+    return parse_champion_list(p_html, year), parse_champion_list(c_html, year)
+
+
+def parse_champion_list(html, year):
+    """
+    HTMLを探索し、指定された年度の優勝チームを返す。
+
+    :param html: 歴代優勝チームのHTML
+    :type html: str
+    :param year: 年度
+    :type year: int
+    :return: 優勝チーム
+    :rtype: str
+    """
+    # BeautifulSoupオブジェクトを構築する
+    soup = BeautifulSoup(html)
+
+    # 歴代優勝チームのtable要素を取得する
+    table = find_or_error(soup, 'table', {'class': 'nsTable'})
+    rows = table.find_all('tr')
+
+    # 指定された年度の優勝チームを探索する
+    for row in rows:
+        cols = row.find_all('td')
+        if cols and int(cols[0].string) == year:
+            m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
+            return m.group(1)
+
+
 def parse_pitcher(node):
     """
     投手成績を解析し、勝利数、敗北数、セーブ数を返す。
