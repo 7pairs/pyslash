@@ -758,6 +758,106 @@ def test_get_champions_before_this_year_01():
     tools.assert_equal(('西武', '巨人'), result)
 
 
+def test_parse_champion_list_01():
+    """
+    parse_champion_list()：
+    """
+    html = """\
+        <table border="0" class="nsTable" summary="パ・リーグ 年度別優勝球団 一覧表">
+            <tr>
+                <th class="year">年</th>
+                <th>優勝チーム（監督）</th>
+                <th>勝</th>
+                <th>敗</th>
+                <th>分</th>
+                <th>勝率</th>
+            </tr>
+            <tr>
+                <td>2013</td>
+                <td>楽天（星野仙一）</td>
+                <td>82</td>
+                <td>59</td>
+                <td>3</td>
+                <td>.582</td>
+            </tr>
+            <tr>
+                <td>2012</td>
+                <td>日本ハム（栗山 英樹）</td>
+                <td>74</td>
+                <td>59</td>
+                <td>11</td>
+                <td>.556</td>
+            </tr>
+            <tr>
+                <td>2011</td>
+                <td>ソフトバンク（秋山 幸二）</td>
+                <td>88</td>
+                <td>46</td>
+                <td>10</td>
+                <td>.657</td>
+            </tr>
+            <tr>
+                <td>2010</td>
+                <td>ソフトバンク（秋山 幸二）</td>
+                <td>76</td>
+                <td>63</td>
+                <td>5</td>
+                <td>.547 </td>
+            </tr>
+            <tr>
+                <td>2009</td>
+                <td>日本ハム（梨田 昌孝）</td>
+                <td>82</td>
+                <td>60</td>
+                <td>2</td>
+                <td>.577 </td>
+            </tr>
+            <tr>
+                <td>2008</td>
+                <td>西武（渡辺 久信）</td>
+                <td>76</td>
+                <td>64</td>
+                <td>4</td>
+                <td>.543 </td>
+            </tr>
+            <tr>
+                <td>2007</td>
+                <td>日本ハム（ヒルマン）</td>
+                <td>79</td>
+                <td>60</td>
+                <td>5</td>
+                <td>.568 </td>
+            </tr>
+            <tr>
+                <td>2006</td>
+                <td>日本ハム（ヒルマン）</td>
+                <td>82</td>
+                <td>54</td>
+                <td>0</td>
+                <td>.603 </td>
+            </tr>
+            <tr>
+                <td>2005</td>
+                <td>ロッテ（バレンタイン）</td>
+                <td>84</td>
+                <td>49</td>
+                <td>3</td>
+                <td>.632 </td>
+            </tr>
+            <tr>
+                <td>2004</td>
+                <td>西武（伊東 勤）</td>
+                <td>74</td>
+                <td>58</td>
+                <td>1</td>
+                <td>.561 </td>
+            </tr>
+        </table>
+    """
+    result = baseball.parse_champion_list(html, 2008)
+    tools.assert_equal('西武', result)
+
+
 def test_parse_pitcher_01():
     """
     parse_pitcher()：引数に有効なノードを指定したとき、投手成績のタプルを返すことを確認する。
