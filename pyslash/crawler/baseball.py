@@ -337,6 +337,23 @@ def parse_score_table(html):
     return ret_val
 
 
+def get_champions(day):
+    """
+    指定された試合日が含まれる年度の両リーグの優勝チームをタプルで返す。
+
+    :param day: 試合日
+    :type day: datetime.datetime
+    :return: パの優勝チーム、セの優勝チームを順に格納したタプル
+    :rtype: tuple
+    """
+    # 今年かそれ以外かで処理を振り分ける
+    target_year = day.year
+    if target_year == datetime.datetime.today().year:
+        return get_champions_of_this_year()
+    else:
+        return get_champions_before_this_year(target_year)
+
+
 def get_champions_of_this_year():
     """
     今年の両リーグの優勝チームをタプルで返す。
