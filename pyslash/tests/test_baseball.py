@@ -369,6 +369,7 @@ def test_parse_score_table_01():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('西武', result['field_first'])
+    tools.assert_equal(GameType.Normal, result['game_type'])
     tools.assert_equal(4, result['match'])
     tools.assert_equal('西武ドーム', result['stadium'])
     tools.assert_equal([
@@ -391,6 +392,7 @@ def test_parse_score_table_02():
     result = baseball.parse_score_table(html)
     tools.assert_equal('西武', result['bat_first'])
     tools.assert_equal('ソフトバンク', result['field_first'])
+    tools.assert_equal(GameType.Normal, result['game_type'])
     tools.assert_equal(7, result['match'])
     tools.assert_equal('北九州', result['stadium'])
     tools.assert_equal([
@@ -416,6 +418,7 @@ def test_parse_score_table_03():
     result = baseball.parse_score_table(html)
     tools.assert_equal('オリックス', result['bat_first'])
     tools.assert_equal('日本ハム', result['field_first'])
+    tools.assert_equal(GameType.Normal, result['game_type'])
     tools.assert_equal(1, result['match'])
     tools.assert_equal('札幌ドーム', result['stadium'])
     tools.assert_equal([
@@ -437,6 +440,7 @@ def test_parse_score_table_04():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('西武', result['field_first'])
+    tools.assert_equal(GameType.Normal, result['game_type'])
     tools.assert_equal(15, result['match'])
     tools.assert_equal('西武ドーム', result['stadium'])
     tools.assert_equal([
@@ -460,6 +464,7 @@ def test_parse_score_table_05():
     result = baseball.parse_score_table(html)
     tools.assert_equal('西武', result['bat_first'])
     tools.assert_equal('ロッテ', result['field_first'])
+    tools.assert_equal(GameType.Normal, result['game_type'])
     tools.assert_equal(21, result['match'])
     tools.assert_equal('ＱＶＣマリン', result['stadium'])
     tools.assert_equal([
@@ -467,11 +472,81 @@ def test_parse_score_table_05():
         ['0', '0', '0', '0', '0', '0', ''],
     ], result['score'])
     tools.assert_equal([7, 0], result['total_score'])
+    tools.assert_equal(('岸', 11, 4, 0), result['win'])
+    tools.assert_equal(('藤岡', 6, 10, 0), result['lose'])
     tools.assert_equal([('1回表', '中村', 30, 'ソロ', '藤岡')], result['home_run'])
 
 
-@raises(ParseError)
 def test_parse_score_table_06():
+    """
+    parse_score_table()：引数に有効なHTML文字列(CSファーストステージ)を指定したとき、その内容を辞書として返すことを確認する。
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014101201.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('日本ハム', result['bat_first'])
+    tools.assert_equal('オリックス', result['field_first'])
+    tools.assert_equal(GameType.FirstStage, result['game_type'])
+    tools.assert_equal(2, result['match'])
+    tools.assert_equal('京セラドーム大阪', result['stadium'])
+    tools.assert_equal([
+        ['2', '0', '0', '0', '0', '0', '1', '1', '0'],
+        ['0', '0', '0', '0', '0', '1', '2', '3', 'x'],
+    ], result['score'])
+    tools.assert_equal([4, 6], result['total_score'])
+    tools.assert_equal(('馬原', 1, 0, 0), result['win'])
+    tools.assert_equal(('平野佳', 0, 0, 1), result['save'])
+    tools.assert_equal(('谷元', 0, 1, 0), result['lose'])
+    tools.assert_equal([
+        ('7回表', 'ミランダ', 1, 'ソロ', '佐藤達'),
+        ('8回裏', 'Ｔ－岡田', 1, '３ラン', '谷元'),
+    ], result['home_run'])
+
+
+def test_parse_score_table_07():
+    """
+    parse_score_table()：引数に有効なHTML文字列(CSファイナルステージ)を指定したとき、その内容を辞書として返すことを確認する。
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014101902.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('日本ハム', result['bat_first'])
+    tools.assert_equal('ソフトバンク', result['field_first'])
+    tools.assert_equal(GameType.FinalStage, result['game_type'])
+    tools.assert_equal(5, result['match'])
+    tools.assert_equal('ヤフオクドーム', result['stadium'])
+    tools.assert_equal([
+        ['0', '0', '0', '0', '0', '0', '3', '1', '0', '0', '2'],
+        ['0', '4', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+    ], result['score'])
+    tools.assert_equal([6, 4], result['total_score'])
+    tools.assert_equal(('鍵谷', 2, 0, 0), result['win'])
+    tools.assert_equal(('増井', 0, 0, 1), result['save'])
+    tools.assert_equal(('サファテ', 0, 1, 1), result['lose'])
+    tools.assert_equal([('8回表', '中田', 4, 'ソロ', '五十嵐')], result['home_run'])
+
+
+def test_parse_score_table_08():
+    """
+    parse_score_table()：引数に有効なHTML文字列(日本シリーズ)を指定したとき、その内容を辞書として返すことを確認する。
+    """
+    html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/ns2014102901.html')
+    result = baseball.parse_score_table(html)
+    tools.assert_equal('阪神', result['bat_first'])
+    tools.assert_equal('ソフトバンク', result['field_first'])
+    tools.assert_equal(GameType.NipponSeries, result['game_type'])
+    tools.assert_equal(4, result['match'])
+    tools.assert_equal('ヤフオクドーム', result['stadium'])
+    tools.assert_equal([
+        ['0', '0', '2', '0', '0', '0', '0', '0', '0', '0'],
+        ['2', '0', '0', '0', '0', '0', '0', '0', '0', '3x'],
+    ], result['score'])
+    tools.assert_equal([2, 5], result['total_score'])
+    tools.assert_equal(('サファテ', 1, 0, 1), result['win'])
+    tools.assert_equal(('安藤', 0, 1, 0), result['lose'])
+    tools.assert_equal([('10回裏', '中村', 1, '３ラン', '呉')], result['home_run'])
+
+
+@raises(ParseError)
+def test_parse_score_table_09():
     """
     parse_score_table()：引数に無効なHTML文字列を指定したとき、ParseErrorが送出されることを確認する。
     """
