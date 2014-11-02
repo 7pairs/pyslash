@@ -9,6 +9,7 @@ from nose import tools
 from nose.tools import raises
 
 from pyslash.crawler import baseball
+from pyslash.crawler.baseball import GameType
 from pyslash.crawler.exception import InvalidTeamError, ParseError, ResultNotFoundError
 
 
@@ -369,7 +370,7 @@ def test_parse_score_table_01():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('西武', result['field_first'])
-    tools.assert_equal(GameType.Normal, result['game_type'])
+    tools.assert_equal(GameType.normal, result['game_type'])
     tools.assert_equal(4, result['match'])
     tools.assert_equal('西武ドーム', result['stadium'])
     tools.assert_equal([
@@ -392,7 +393,7 @@ def test_parse_score_table_02():
     result = baseball.parse_score_table(html)
     tools.assert_equal('西武', result['bat_first'])
     tools.assert_equal('ソフトバンク', result['field_first'])
-    tools.assert_equal(GameType.Normal, result['game_type'])
+    tools.assert_equal(GameType.normal, result['game_type'])
     tools.assert_equal(7, result['match'])
     tools.assert_equal('北九州', result['stadium'])
     tools.assert_equal([
@@ -418,7 +419,7 @@ def test_parse_score_table_03():
     result = baseball.parse_score_table(html)
     tools.assert_equal('オリックス', result['bat_first'])
     tools.assert_equal('日本ハム', result['field_first'])
-    tools.assert_equal(GameType.Normal, result['game_type'])
+    tools.assert_equal(GameType.normal, result['game_type'])
     tools.assert_equal(1, result['match'])
     tools.assert_equal('札幌ドーム', result['stadium'])
     tools.assert_equal([
@@ -440,7 +441,7 @@ def test_parse_score_table_04():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('西武', result['field_first'])
-    tools.assert_equal(GameType.Normal, result['game_type'])
+    tools.assert_equal(GameType.normal, result['game_type'])
     tools.assert_equal(15, result['match'])
     tools.assert_equal('西武ドーム', result['stadium'])
     tools.assert_equal([
@@ -464,7 +465,7 @@ def test_parse_score_table_05():
     result = baseball.parse_score_table(html)
     tools.assert_equal('西武', result['bat_first'])
     tools.assert_equal('ロッテ', result['field_first'])
-    tools.assert_equal(GameType.Normal, result['game_type'])
+    tools.assert_equal(GameType.normal, result['game_type'])
     tools.assert_equal(21, result['match'])
     tools.assert_equal('ＱＶＣマリン', result['stadium'])
     tools.assert_equal([
@@ -485,7 +486,7 @@ def test_parse_score_table_06():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('オリックス', result['field_first'])
-    tools.assert_equal(GameType.FirstStage, result['game_type'])
+    tools.assert_equal(GameType.first_stage, result['game_type'])
     tools.assert_equal(2, result['match'])
     tools.assert_equal('京セラドーム大阪', result['stadium'])
     tools.assert_equal([
@@ -510,7 +511,7 @@ def test_parse_score_table_07():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('ソフトバンク', result['field_first'])
-    tools.assert_equal(GameType.FinalStage, result['game_type'])
+    tools.assert_equal(GameType.final_stage, result['game_type'])
     tools.assert_equal(5, result['match'])
     tools.assert_equal('ヤフオクドーム', result['stadium'])
     tools.assert_equal([
@@ -532,7 +533,7 @@ def test_parse_score_table_08():
     result = baseball.parse_score_table(html)
     tools.assert_equal('阪神', result['bat_first'])
     tools.assert_equal('ソフトバンク', result['field_first'])
-    tools.assert_equal(GameType.NipponSeries, result['game_type'])
+    tools.assert_equal(GameType.nippon_series, result['game_type'])
     tools.assert_equal(4, result['match'])
     tools.assert_equal('ヤフオクドーム', result['stadium'])
     tools.assert_equal([

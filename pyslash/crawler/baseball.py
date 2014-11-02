@@ -6,8 +6,26 @@ import re
 import urllib.request
 
 from bs4 import BeautifulSoup
+from enum import Enum
 
 from .exception import InvalidTeamError, ParseError, ResultNotFoundError
+
+
+class GameType(Enum):
+    """
+    試合の種類を表す列挙型。
+    """
+    normal = 0
+    """ペナントレース"""
+
+    first_stage = 1
+    """クライマックスシリーズファーストステージ"""
+
+    final_stage = 2
+    """クライマックスシリーズファイナルステージ"""
+
+    nippon_series = 3
+    """日本シリーズ"""
 
 
 # チーム短縮名変換テーブル
