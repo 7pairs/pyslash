@@ -1015,6 +1015,7 @@ def test_create_score_table_01():
     data = {
         'bat_first': '北海道日本ハム',
         'field_first': '埼玉西武',
+        'game_type': GameType.normal,
         'match': 4,
         'stadium': '西武ドーム',
         'score': [
@@ -1053,6 +1054,7 @@ def test_create_score_table_02():
     data = {
         'bat_first': '埼玉西武',
         'field_first': '千葉ロッテ',
+        'game_type': GameType.normal,
         'match': 1,
         'stadium': 'QVCマリンフィールド',
         'score': [
@@ -1093,6 +1095,7 @@ def test_create_score_table_03():
     data = {
         'bat_first': 'オリックス',
         'field_first': '北海道日本ハム',
+        'game_type': GameType.normal,
         'match': 1,
         'stadium': '札幌ドーム',
         'score': [
@@ -1129,6 +1132,7 @@ def test_create_score_table_04():
     data = {
         'bat_first': '埼玉西武',
         'field_first': '東北楽天',
+        'game_type': GameType.normal,
         'match': 10,
         'stadium': '岩手県営野球場',
         'score': [
@@ -1171,6 +1175,7 @@ def test_create_score_table_05():
     data = {
         'bat_first': '埼玉西武',
         'field_first': '横浜ＤｅＮＡ',
+        'game_type': GameType.normal,
         'match': 3,
         'stadium': '横浜スタジアム',
         'score': [
@@ -1219,6 +1224,7 @@ def test_create_score_table_06():
     data = {
         'bat_first': '北海道日本ハム',
         'field_first': '埼玉西武',
+        'game_type': GameType.normal,
         'match': 15,
         'stadium': '西武ドーム',
         'score': [
@@ -1245,6 +1251,135 @@ def test_create_score_table_06():
           10回裏 森　  3号 ソロ　 （増井）
     """)
     result = baseball.create_score_table(data, datetime.datetime(2014, 8, 16))
+    tools.assert_equal(expected, result)
+
+
+def test_create_score_table_07():
+    """
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （クライマックスシリーズ／日本シリーズ対応 #62）
+    """
+    data = {
+        'bat_first': '埼玉西武',
+        'field_first': '北海道日本ハム',
+        'game_type': GameType.first_stage,
+        'match': 2,
+        'stadium': '札幌ドーム',
+        'score': [
+            ['0', '0', '0', '0', '1', '0', '0', '1', '6'],
+            ['0', '0', '0', '1', '0', '0', '0', '0', '0'],
+        ],
+        'total_score': [8, 1],
+        'win': ('西口', 1, 0, 0),
+        'lose': ('石井', 0, 1, 0),
+        'home_run': [
+            ('4回裏', 'ホフパワー', 1, 'ソロ', '西口'),
+            ('9回表', '中村', 1, '３ラン', '宮西'),
+        ],
+    }
+    expected = textwrap.dedent("""\
+        【北海道日本ハム vs 埼玉西武 CSファーストステージ第2戦】
+        （2011年10月30日：札幌ドーム）
+
+        埼玉西武　　　  0 0 0  0 1 0  0 1 6  8
+        北海道日本ハム  0 0 0  1 0 0  0 0 0  1
+
+        [勝] 西口 1勝0敗0Ｓ
+        [敗] 石井 0勝1敗0Ｓ
+
+        [本塁打]
+          4回裏 ホフパワー  1号 ソロ　 （西口）
+          9回表 中村　　　  1号 ３ラン （宮西）
+    """)
+    result = baseball.create_score_table(data, datetime.datetime(2011, 10, 30))
+    tools.assert_equal(expected, result)
+
+
+def test_create_score_table_08():
+    """
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （クライマックスシリーズ／日本シリーズ対応 #62）
+    """
+    data = {
+        'bat_first': '千葉ロッテ',
+        'field_first': '東北楽天',
+        'game_type': GameType.final_stage,
+        'match': 4,
+        'stadium': '日本製紙クリネックススタジアム宮城',
+        'score': [
+            ['0', '0', '0', '4', '0', '0', '1', '0', '0'],
+            ['1', '2', '0', '2', '0', '0', '1', '2', 'x'],
+        ],
+        'total_score': [5, 8],
+        'win': ('斎藤', 1, 0, 0),
+        'save': ('田中', 1, 0, 1),
+        'lose': ('ロサ', 0, 1, 0),
+        'home_run': [
+            ('4回表', 'Ｇ．Ｇ．佐藤', 1, '３ラン', '辛島'),
+            ('4回裏', 'ジョーンズ', 2, '２ラン', '西野'),
+            ('7回裏', 'マギー', 1, 'ソロ', 'ロサ'),
+        ],
+    }
+    expected = textwrap.dedent("""\
+        【東北楽天 vs 千葉ロッテ CSファイナルステージ第4戦】
+        （2013年10月21日：日本製紙クリネックススタジアム宮城）
+
+        千葉ロッテ  0 0 0  4 0 0  1 0 0  5
+        東北楽天　  1 2 0  2 0 0  1 2 x  8
+
+        [勝] 斎藤 1勝0敗0Ｓ
+        [Ｓ] 田中 1勝0敗1Ｓ
+        [敗] ロサ 0勝1敗0Ｓ
+
+        [本塁打]
+          4回表 Ｇ．Ｇ．佐藤  1号 ３ラン （辛島）
+          4回裏 ジョーンズ　  2号 ２ラン （西野）
+          7回裏 マギー　　　  1号 ソロ　 （ロサ）
+    """)
+    result = baseball.create_score_table(data, datetime.datetime(2013, 10, 21))
+    tools.assert_equal(expected, result)
+
+
+def test_create_score_table_09():
+    """
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （クライマックスシリーズ／日本シリーズ対応 #62）
+    """
+    data = {
+        'bat_first': '埼玉西武',
+        'field_first': '読売',
+        'game_type': GameType.nippon_series,
+        'match': 7,
+        'stadium': '東京ドーム',
+        'score': [
+            ['0', '0', '0', '0', '1', '0', '0', '2', '0'],
+            ['1', '1', '0', '0', '0', '0', '0', '0', '0'],
+        ],
+        'total_score': [3, 2],
+        'win': ('星野', 1, 0, 0),
+        'save': ('グラマン', 0, 0, 2),
+        'lose': ('越智', 1, 1, 0),
+        'home_run': [
+            ('2回裏', '坂本', 1, 'ソロ', '西口'),
+            ('5回表', 'ボカチカ', 1, 'ソロ', '内海'),
+        ],
+    }
+    expected = textwrap.dedent("""\
+        【読売 vs 埼玉西武 日本シリーズ第7戦】
+        （2008年11月9日：東京ドーム）
+
+        埼玉西武  0 0 0  0 1 0  0 2 0  3
+        読売　　  1 1 0  0 0 0  0 0 0  2
+
+        [勝] 星野　　 1勝0敗0Ｓ
+        [Ｓ] グラマン 0勝0敗2Ｓ
+        [敗] 越智　　 1勝1敗0Ｓ
+
+        [本塁打]
+          2回裏 坂本　　  1号 ソロ （西口）
+          5回表 ボカチカ  1号 ソロ （内海）
+    """)
+    result = baseball.create_score_table(data, datetime.datetime(2008, 11, 9))
     tools.assert_equal(expected, result)
 
 
