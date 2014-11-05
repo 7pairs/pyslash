@@ -6,8 +6,26 @@ import re
 import urllib.request
 
 from bs4 import BeautifulSoup
+from enum import Enum
 
 from .exception import InvalidTeamError, ParseError, ResultNotFoundError
+
+
+class GameType(Enum):
+    """
+    試合の種類を表す列挙型。
+    """
+    normal = 0
+    """ペナントレース"""
+
+    first_stage = 1
+    """クライマックスシリーズファーストステージ"""
+
+    final_stage = 2
+    """クライマックスシリーズファイナルステージ"""
+
+    nippon_series = 3
+    """日本シリーズ"""
 
 
 # チーム短縮名変換テーブル
@@ -249,15 +267,33 @@ def parse_score_table(html):
     ret_val['bat_first'] = m.group(2)
     ret_val['field_first'] = m.group(1)
 
+    # 試合日
+    date = find_or_error(soup, 'p', {'id': 'upDate'})
+    m = search_or_error(r'(\d+)年(\d+)月(\d+)日', date.span.string)
+    day = datetime.datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+
+    # 球場／試合種別
+    stadium = find_or_error(soup, 'p', {'class': 'data'})
+    m = search_or_error(r'◇([^◇]+)◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
+    ret_val['stadium'] = m.group(2)
+    if m.group(1) == '日本シリーズ':
+        ret_val['game_type'] = GameType.nippon_series
+    elif m.group(1) == 'クライマックスシリーズ':
+        if ret_val['field_first'] in get_champions(day):
+            ret_val['game_type'] = GameType.final_stage
+        else:
+            ret_val['game_type'] = GameType.first_stage
+    else:
+        ret_val['game_type'] = GameType.normal
+
     # 回戦
     match = find_or_error(soup, 'p', {'id': 'time'})
     m = search_or_error(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
-    ret_val['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
-
-    # 球場
-    stadium = find_or_error(soup, 'p', {'class': 'data'})
-    m = search_or_error(r'◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
-    ret_val['stadium'] = m.group(1)
+    if ret_val['game_type'] == GameType.final_stage:
+        # アドバンテージの1勝ぶんを差し引く
+        ret_val['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3)) - 1
+    else:
+        ret_val['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
 
     # スコア
     ret_val['score'] = []
