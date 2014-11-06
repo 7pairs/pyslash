@@ -1254,6 +1254,92 @@ def test_create_score_table_06():
     tools.assert_equal(expected, result)
 
 
+def test_create_score_table_07():
+    """
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （クライマックスシリーズ見出し対応 #58）
+    """
+    data = {
+        'bat_first': '埼玉西武',
+        'field_first': '北海道日本ハム',
+        'game_type': GameType.first_stage,
+        'match': 2,
+        'stadium': '札幌ドーム',
+        'score': [
+            ['0', '0', '0', '0', '1', '0', '0', '1', '6'],
+            ['0', '0', '0', '1', '0', '0', '0', '0', '0'],
+            ],
+        'total_score': [8, 1],
+        'win': ('西口', 1, 0, 0),
+        'lose': ('石井', 0, 1, 0),
+        'home_run': [
+            ('4回裏', 'ホフパワー', 1, 'ソロ', '西口'),
+            ('9回表', '中村', 1, '３ラン', '宮西'),
+            ],
+        }
+    expected = textwrap.dedent("""\
+        【北海道日本ハム vs 埼玉西武 CSファーストステージ第2戦】
+        （2011年10月30日：札幌ドーム）
+
+        埼玉西武　　　  0 0 0  0 1 0  0 1 6  8
+        北海道日本ハム  0 0 0  1 0 0  0 0 0  1
+
+        [勝] 西口 1勝0敗0Ｓ
+        [敗] 石井 0勝1敗0Ｓ
+
+        [本塁打]
+          4回裏 ホフパワー  1号 ソロ　 （西口）
+          9回表 中村　　　  1号 ３ラン （宮西）
+    """)
+    result = baseball.create_score_table(data, datetime.datetime(2011, 10, 30))
+    tools.assert_equal(expected, result)
+
+
+def test_create_score_table_08():
+    """
+    create_score_table()：引数に有効な辞書を指定したとき、スコアテーブルの文字列を返すことを確認する。
+    （クライマックスシリーズ見出し対応 #58）
+    """
+    data = {
+        'bat_first': '千葉ロッテ',
+        'field_first': '東北楽天',
+        'game_type': GameType.final_stage,
+        'match': 4,
+        'stadium': '日本製紙クリネックススタジアム宮城',
+        'score': [
+            ['0', '0', '0', '4', '0', '0', '1', '0', '0'],
+            ['1', '2', '0', '2', '0', '0', '1', '2', 'x'],
+            ],
+        'total_score': [5, 8],
+        'win': ('斎藤', 1, 0, 0),
+        'save': ('田中', 1, 0, 1),
+        'lose': ('ロサ', 0, 1, 0),
+        'home_run': [
+            ('4回表', 'Ｇ．Ｇ．佐藤', 1, '３ラン', '辛島'),
+            ('4回裏', 'ジョーンズ', 2, '２ラン', '西野'),
+            ('7回裏', 'マギー', 1, 'ソロ', 'ロサ'),
+            ],
+        }
+    expected = textwrap.dedent("""\
+        【東北楽天 vs 千葉ロッテ CSファイナルステージ第4戦】
+        （2013年10月21日：日本製紙クリネックススタジアム宮城）
+
+        千葉ロッテ  0 0 0  4 0 0  1 0 0  5
+        東北楽天　  1 2 0  2 0 0  1 2 x  8
+
+        [勝] 斎藤 1勝0敗0Ｓ
+        [Ｓ] 田中 1勝0敗1Ｓ
+        [敗] ロサ 0勝1敗0Ｓ
+
+        [本塁打]
+          4回表 Ｇ．Ｇ．佐藤  1号 ３ラン （辛島）
+          4回裏 ジョーンズ　  2号 ２ラン （西野）
+          7回裏 マギー　　　  1号 ソロ　 （ロサ）
+    """)
+    result = baseball.create_score_table(data, datetime.datetime(2013, 10, 21))
+    tools.assert_equal(expected, result)
+
+
 def test_get_long_team_name_01():
     """
     get_long_team_name()：引数に'西武'を指定したとき、'埼玉西武'を返すことを確認する。
