@@ -518,7 +518,9 @@ def create_score_table(score_data, day):
     # ヘッダ欄を構築する
     field_first = get_long_team_name(score_data['field_first'])
     bat_first = get_long_team_name(score_data['bat_first'])
-    if score_data['game_type'] == GameType.first_stage:
+    if score_data['game_type'] == GameType.nippon_series:
+        match = '日本シリーズ第%d戦' % score_data['match']
+    elif score_data['game_type'] == GameType.first_stage:
         match = 'CSファーストステージ第%d戦' % score_data['match']
     elif score_data['game_type'] == GameType.final_stage:
         match = 'CSファイナルステージ第%d戦' % score_data['match']
