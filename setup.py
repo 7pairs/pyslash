@@ -1,9 +1,11 @@
 from setuptools import find_packages, setup
 
+from pyslash import __version__
+
 
 setup(
     name='pyslash',
-    version='1.0.1',
+    version=__version__,
     description='Tools for parsing nikkansports.com',
     author='Jun-ya HASEBA',
     author_email='7pairs@gmail.com',
