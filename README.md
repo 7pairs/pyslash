@@ -5,7 +5,11 @@
 
 ## 概要
 
-[nikkansports.com](http://www.nikkansports.com/)のプロ野球の試合結果を整形するツールです。[ねことくまとへび](http://seven-pairs.hatenablog.jp/)というブログで野球の戦評を書くときに使用しています。Pythonを使ってHTMLをslashし、テキストとして再構築することからpyslashという名前をつけました。それ以上の深い意味はありません。たぶん。
+[nikkansports.com](http://www.nikkansports.com/) からプロ野球の試合結果を取得し、プレーンテキストで見やすいように整形するツールです。 [ねことくまとへび](http://seven-pairs.hatenablog.jp/) というブログでライオンズ戦の戦評を書くときに使用しています。Pythonを用いてHTMLをslashし、テキストとして再構築することからpyslashという名前をつけました。それ以上の深い意味はありません。たぶん。
+
+## バージョン
+
+Python3.4での動作を確認しています。また、3.2、3.3でもユニットテストを行っていますので、おそらく両バージョンでも動作するものと思われます。なお、Python2系には対応しておりません。ご了承ください。
 
 ## インストール
 
@@ -15,7 +19,7 @@
 python setup.py install
 ```
 
-pipを利用している場合は、GitHubから直接インストールすることもできます。
+pipを導入している方は、GitHubから直接インストールすることもできます。
 
 ```
 pip install git+https://github.com/7pairs/pyslash.git
@@ -29,7 +33,7 @@ pip install git+https://github.com/7pairs/pyslash.git
 pyslash -t <team> [-d <day>]
 ```
 
-`<team>` には以下のいずれかを指定してください。オリックス、横浜DeNAの略号に違和感がありますが、これはnikkansports.com内の表記に準拠しているためです。
+`<team>` には以下のいずれかの略号を指定してください。オリックス、横浜DeNAの略号に違和感があるかもしれませんが、これはnikkansports.com内での表記に準拠しているためです。
 
 |略号|チーム|
 |---|---|
@@ -52,7 +56,7 @@ pyslash -t <team> [-d <day>]
 * `MMDD` の4桁。今年のMM月DD日として扱われます。
 * `DD` の2桁。今月のDD日として扱われます。
 
-`<day>` を指定しなかった場合、実行日（実行した環境のシステム日付）が入力されたものとして扱われます。
+`<day>` を指定しなかった場合、実行した環境のシステム日付が入力されたものとして扱われます。
 
 また、スコアテーブルのURLを直接指定して実行することもできます。
 
