@@ -6,7 +6,9 @@ import re
 import urllib.request
 
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from enum import Enum
+from typing import Dict, Iterable, Tuple
 
 from .exception import InvalidTeamError, ParseError, ResultNotFoundError
 
@@ -103,7 +105,7 @@ LONG_STADIUM_NAMES = {
 }
 
 
-def get_score_table(team, day):
+def get_score_table(team: str, day: datetime.datetime) -> str:
     """
     指定されたチーム、試合日のスコアテーブルを文字列として返す。
 
@@ -121,7 +123,7 @@ def get_score_table(team, day):
     return get_score_table_by_url(url)
 
 
-def get_score_table_by_url(url):
+def get_score_table_by_url(url: str) -> str:
     """
     指定されたURLのスコアテーブルを文字列として返す。
 
@@ -139,7 +141,7 @@ def get_score_table_by_url(url):
     return ret_val
 
 
-def get_game_url(team, day):
+def get_game_url(team: str, day: datetime.datetime) -> str:
     """
     指定されたチーム、試合日のスコアテーブルのURLを返す。
 
@@ -167,7 +169,7 @@ def get_game_url(team, day):
     return 'http://www.nikkansports.com' + m.group(0)
 
 
-def get_calendar_url(team, day):
+def get_calendar_url(team: str, day: datetime.datetime) -> str:
     """
     指定されたチーム、日付のカレンダーのURLを返す。
 
@@ -194,7 +196,7 @@ def get_calendar_url(team, day):
     return url
 
 
-def get_html(url):
+def get_html(url: str) -> str:
     """
     指定されたURLのHTMLを文字列として返す。
 
@@ -209,7 +211,7 @@ def get_html(url):
         return response.read().decode(encoding)
 
 
-def get_today_game_url(team):
+def get_today_game_url(team: str) -> str:
     """
     指定されたチームの今日の試合スコアテーブルのURLを返す。
 
@@ -246,14 +248,14 @@ def get_today_game_url(team):
                 return score.a.get('href')
 
 
-def parse_score_table(html):
+def parse_score_table(html: str) -> Dict[str, object]:
     """
     指定されたHTML文字列を解析し、スコアに関連する情報を格納した辞書を返す。
 
     :param html: HTML文字列
     :type html: str
     :return: スコア情報
-    :rtype: dict
+    :rtype: Dict[str, object]
     """
     # 戻り値用の辞書
     ret_val = {}
@@ -373,14 +375,14 @@ def parse_score_table(html):
     return ret_val
 
 
-def get_champions(day):
+def get_champions(day: datetime.datetime) -> Tuple[str, str]:
     """
     指定された試合日が含まれる年度の両リーグの優勝チームをタプルで返す。
 
     :param day: 試合日
     :type day: datetime.datetime
     :return: パの優勝チーム、セの優勝チームを順に格納したタプル
-    :rtype: tuple
+    :rtype: Tuple[str, str]
     """
     # 今年かそれ以外かで処理を振り分ける
     target_year = day.year
@@ -390,12 +392,12 @@ def get_champions(day):
         return get_champions_before_this_year(target_year)
 
 
-def get_champions_of_this_year():
+def get_champions_of_this_year() -> Tuple[str, str]:
     """
     今年の両リーグの優勝チームをタプルで返す。
 
     :return: パの優勝チーム、セの優勝チームを順に格納したタプル
-    :rtype: tuple
+    :rtype: Tuple[str, str]
     """
     # 順位表のHTMLを取得する
     html = get_html('http://www.nikkansports.com/baseball/professional/data/pf-standings.html')
@@ -410,12 +412,12 @@ def get_champions_of_this_year():
     return parse_ranking(tables[1]), parse_ranking(tables[0])
 
 
-def parse_ranking(node):
+def parse_ranking(node: BeautifulSoup) -> str:
     """
     指定された順位表を解析し、首位のチームを返す。
 
     :param node: 順位表のノード
-    :type node: bs4.element.ResultSet
+    :type node: BeautifulSoup
     :return: 首位のチーム
     :rtype: str
     """
@@ -430,14 +432,14 @@ def parse_ranking(node):
             return re.sub('\s', '', champion.string)
 
 
-def get_champions_before_this_year(year):
+def get_champions_before_this_year(year: int) -> Tuple[str, str]:
     """
     指定された年度の両リーグの優勝チームをタプルで返す。
 
     :param year: 年度
     :type year: int
     :return: パの優勝チーム、セの優勝チームを順に格納したタプル
-    :rtype: tuple
+    :rtype: Tuple[str, str]
     """
     # 順位表のHTMLを取得する
     p_html = get_html('http://www.nikkansports.com/baseball/professional/data/pfdata/victory/pf-victory_pl.html')
@@ -447,7 +449,7 @@ def get_champions_before_this_year(year):
     return parse_champion_list(p_html, year), parse_champion_list(c_html, year)
 
 
-def parse_champion_list(html, year):
+def parse_champion_list(html: str, year: int) -> str:
     """
     HTMLを探索し、指定された年度の優勝チームを返す。
 
@@ -473,14 +475,14 @@ def parse_champion_list(html, year):
             return m.group(1)
 
 
-def parse_pitcher(node):
+def parse_pitcher(node: BeautifulSoup) -> Tuple[str, int, int, int]:
     """
     投手成績を解析し、勝利数、敗北数、セーブ数を返す。
 
     :param node: 投手成績のHTMLノード
-    :type node: bs4.element.ResultSet
+    :type node: BeautifulSoup
     :return: 解析結果
-    :rtype: tuple
+    :rtype: Tuple[str, int, int, int]
     """
     # 投手の名前を切り出す
     m = search_or_error(r'([^\s]+)\s（[^）]+）', node[1].string)
@@ -489,7 +491,7 @@ def parse_pitcher(node):
     return m.group(1), int(node[2].string), int(node[3].string), int(node[4].string)
 
 
-def parse_date(url):
+def parse_date(url: str) -> datetime.datetime:
     """
     指定されたURLを解析し、試合日を返す。
 
@@ -506,12 +508,14 @@ def parse_date(url):
     return datetime.datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
 
-def create_score_table(score_data, day):
+def create_score_table(score_data: Dict[str, object], day: datetime.datetime) -> str:
     """
     スコア情報の格納された辞書をもとにスコアテーブルを構築する。
 
     :param score_data: スコア情報
-    :type score_data: dict
+    :type score_data: Dict[str, object]
+    :param day: 試合日
+    :type day: datetime.datetime
     :return: スコアテーブル
     :rtype: str
     """
@@ -594,7 +598,7 @@ def create_score_table(score_data, day):
     return ret_val
 
 
-def get_long_team_name(team_name):
+def get_long_team_name(team_name: str) -> str:
     """
     指定されたチーム名を正式名称に変換する。
 
@@ -607,7 +611,7 @@ def get_long_team_name(team_name):
     return LONG_TEAM_NAMES.get(team_name, team_name)
 
 
-def get_long_stadium_name(stadium_name):
+def get_long_stadium_name(stadium_name: str) -> str:
     """
     指定された球場名を正式名称に変換する。
 
@@ -620,12 +624,12 @@ def get_long_stadium_name(stadium_name):
     return LONG_STADIUM_NAMES.get(stadium_name, stadium_name)
 
 
-def create_score_line(scores):
+def create_score_line(scores: Iterable[int]) -> str:
     """
     スコア行(先攻のみ、もしくは後攻のみ)を構築する。
 
     :param scores: 各イニングのスコア
-    :type scores: list
+    :type scores: Iterable[int]
     :return: スコア行
     :rtype: str
     """
@@ -644,7 +648,7 @@ def create_score_line(scores):
     return ret_val
 
 
-def create_pitcher_line(caption, name, result):
+def create_pitcher_line(caption: str, name: str, result: Iterable[int, int, int]) -> str:
     """
     投手成績(1行)を構築する。
 
@@ -653,7 +657,7 @@ def create_pitcher_line(caption, name, result):
     :param name: 投手名
     :type name: str
     :param result: 成績
-    :type result: tuple
+    :type result: Iterable[int, int, int]
     :return: 投手成績
     :rtype: str
     """
@@ -661,7 +665,7 @@ def create_pitcher_line(caption, name, result):
     return '[{0}] {1} {2}勝{3}敗{4}Ｓ\n'.format(caption, name, *result) if result else ''
 
 
-def search_or_error(pattern, string):
+def search_or_error(pattern: str, string: str):
     """
     re.search() を実行し、その結果を返す。
     ただし、結果がNoneだった場合はParseErrorを送出する。
@@ -671,7 +675,7 @@ def search_or_error(pattern, string):
     :param string: 走査対象文字列
     :type string: str
     :return: マッチング結果
-    :rtype: pre.MatchObject
+    :rtype: re.__Match
     """
     # re.search() の結果を返す
     m = re.search(pattern, string)
@@ -681,17 +685,17 @@ def search_or_error(pattern, string):
         raise ParseError()
 
 
-def find_or_error(bs, *args):
+def find_or_error(bs: BeautifulSoup, *args: Iterable[object]) -> Tag:
     """
     bs4.BeautifulSoup.find() を実行し、その結果を返す。
     ただし、結果がNoneだった場合はParseErrorを送出する。
 
     :param bs: findメソッドを実行するBeautifulSoupオブジェクト
-    :type bs: bs4.BeautifulSoup
+    :type bs: BeautifulSoup
     :param args: findメソッドに渡す引数群
-    :type args: list
+    :type args: Iterable[object]
     :return: 探索結果
-    :rtype: bs4.element.Tag
+    :rtype: Tag
     """
     # bs4.BeautifulSoup.find() の結果を返す
     result = bs.find(*args)
@@ -701,14 +705,14 @@ def find_or_error(bs, *args):
         raise ParseError()
 
 
-def add_space(*args):
+def add_space(*args: Iterable[str]) -> Iterable[str]:
     """
     指定された文字列のうち、最大長に満たなかった文字列の末尾に半角スペースを付与する。
 
     :param args: 対象の文字列群
-    :type args: list
+    :type args: Iterable[str]
     :return: 編集後の文字列群
-    :rtype: tuple
+    :rtype: Iterable[str]
     """
     # スペースを付与する
     max_len = max(map(len, args))
@@ -718,14 +722,14 @@ def add_space(*args):
     return tuple(ret_val)
 
 
-def add_em_space(*args):
+def add_em_space(*args: Iterable[str]) -> Iterable[str]:
     """
     指定された文字列のうち、最大長に満たなかった文字列の末尾に全角スペースを付与する。
 
     :param args: 対象の文字列群
-    :type args: list
+    :type args: Iterable[str]
     :return: 編集後の文字列群
-    :rtype: tuple
+    :rtype: Iterable[str]
     """
     # スペースを付与する
     max_len = max(map(len, args))
@@ -735,14 +739,14 @@ def add_em_space(*args):
     return tuple(ret_val)
 
 
-def space_padding(*args):
+def space_padding(*args: Iterable[str]) -> Iterable[str]:
     """
     指定された文字列のうち、最大長に満たなかった文字列の先頭に半角スペースを付与する。
 
     :param args: 対象の文字列群
-    :type args: list
+    :type args: Iterable[str]
     :return: 編集後の文字列群
-    :rtype: tuple
+    :rtype: Iterable[str]
     """
     # スペースを付与する
     max_len = max(map(len, args))
