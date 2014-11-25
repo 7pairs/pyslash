@@ -9,8 +9,7 @@ from nose import tools
 from nose.tools import raises
 
 from pyslash.crawler import baseball
-from pyslash.crawler.baseball import GameType
-from pyslash.crawler.exception import InvalidTeamError, ParseError, ResultNotFoundError
+from pyslash.crawler.baseball import GameType, InvalidTeamError, ParseError, ResultNotFoundError
 
 
 RETURN_VALUE_FOR_GET_HTML = """\
