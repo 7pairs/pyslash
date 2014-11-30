@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from setuptools import find_packages, setup
 
 from pyslash import __version__
