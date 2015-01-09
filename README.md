@@ -1,7 +1,7 @@
 # pyslash
 
 [![Build Status](https://travis-ci.org/7pairs/pyslash.svg?branch=master)](https://travis-ci.org/7pairs/pyslash)
-[![Coverage Status](https://coveralls.io/repos/7pairs/pyslash/badge.png?branch=master)](https://coveralls.io/r/7pairs/pyslash?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/7pairs/pyslash.svg)](https://coveralls.io/r/7pairs/pyslash?branch=master)
 
 ## 概要
 
