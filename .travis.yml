@@ -10,7 +10,7 @@ install:
     - pip install coveralls
 
 script:
-    - nosetests --with-coverage --cover-package=pyslash.crawler
+    - nosetests --with-coverage --cover-package=pyslash
 
 after_success:
     - coveralls

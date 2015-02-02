@@ -18,22 +18,19 @@ Options:
 """
 import datetime
 import os
+import sys
 
 from docopt import docopt
 
 try:
     # setup.py実行後
-    from pyslash.crawler import baseball
+    from pyslash import baseball
     from pyslash import __version__
 except ImportError:
     # 未インストール状態での動作確認時
-    from crawler import baseball
-    dir_path = os.path.dirname(os.path.abspath(__file__))
-    __version__ = [
-        line.split('=')[1].strip().replace("'", '')
-        for line in open(os.path.join(dir_path, '__init__.py'))
-        if line.startswith('__version__ = ')
-    ][0]
+    sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+    from pyslash import baseball
+    from pyslash import __version__
 
 
 def main():
