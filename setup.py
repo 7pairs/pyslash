@@ -12,10 +12,10 @@ setup(
     author='Jun-ya HASEBA',
     author_email='7pairs@gmail.com',
     url='http://seven-pairs.hatenablog.jp/',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     install_requires=['beautifulsoup4', 'docopt'],
     entry_points="""\
     [console_scripts]
-    pyslash = pyslash.pyslash:main
+    pyslash = pyslash.executor:main
     """
 )
