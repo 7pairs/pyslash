@@ -17,11 +17,20 @@ Options:
 -v --version  print the version number and exit.
 """
 import datetime
+import os
+import sys
 
 from docopt import docopt
 
-from pyslash import baseball
-from pyslash import __version__
+try:
+    # setup.py実行後
+    from pyslash import baseball
+    from pyslash import __version__
+except ImportError:
+    # 未インストール状態での動作確認時
+    sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+    from pyslash import baseball
+    from pyslash import __version__
 
 
 def main():
