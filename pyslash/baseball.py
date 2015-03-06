@@ -223,7 +223,7 @@ def get_html(url):
     # 指定されたURLのHTMLを返す
     with urllib.request.urlopen(url) as response:
         encoding = response.headers.get_content_charset() or 'utf-8'
-        return response.read().decode(encoding)
+        return response.read().decode(encoding, 'ignore')
 
 
 def get_today_game_url(team):
