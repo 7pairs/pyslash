@@ -32,16 +32,19 @@ class GameType(Enum):
     """
     試合の種類を表す列挙型。
     """
-    normal = 0
+    pre_season_game = 0
+    """オープン戦"""
+
+    pennant_race = 1
     """ペナントレース"""
 
-    first_stage = 1
+    first_stage = 2
     """クライマックスシリーズファーストステージ"""
 
-    final_stage = 2
+    final_stage = 3
     """クライマックスシリーズファイナルステージ"""
 
-    nippon_series = 3
+    nippon_series = 4
     """日本シリーズ"""
 
 
@@ -300,8 +303,10 @@ def parse_score_table(html):
             ret_val['game_type'] = GameType.final_stage
         else:
             ret_val['game_type'] = GameType.first_stage
+    elif m.group(1) == 'オープン戦':
+        ret_val['game_type'] = GameType.pre_season_game
     else:
-        ret_val['game_type'] = GameType.normal
+        ret_val['game_type'] = GameType.pennant_race
 
     # 回戦
     match = find_or_error(soup, 'p', {'id': 'time'})
@@ -539,10 +544,12 @@ def create_score_table(score_data, day):
     bat_first = get_long_team_name(score_data['bat_first'])
     if score_data['game_type'] == GameType.nippon_series:
         match = '日本シリーズ第%d戦' % score_data['match']
-    elif score_data['game_type'] == GameType.first_stage:
-        match = 'CSファーストステージ第%d戦' % score_data['match']
     elif score_data['game_type'] == GameType.final_stage:
         match = 'CSファイナルステージ第%d戦' % score_data['match']
+    elif score_data['game_type'] == GameType.first_stage:
+        match = 'CSファーストステージ第%d戦' % score_data['match']
+    elif score_data['game_type'] == GameType.pre_season_game:
+        match = 'オープン戦'
     else:
         match = '第%d回戦' % score_data['match']
     ret_val = '【%s vs %s %s】\n' % (field_first, bat_first, match)
