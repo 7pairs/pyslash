@@ -369,7 +369,7 @@ def test_parse_score_table_01():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('西武', result['field_first'])
-    tools.assert_equal(GameType.normal, result['game_type'])
+    tools.assert_equal(GameType.pennant_race, result['game_type'])
     tools.assert_equal(4, result['match'])
     tools.assert_equal('西武ドーム', result['stadium'])
     tools.assert_equal([
@@ -392,7 +392,7 @@ def test_parse_score_table_02():
     result = baseball.parse_score_table(html)
     tools.assert_equal('西武', result['bat_first'])
     tools.assert_equal('ソフトバンク', result['field_first'])
-    tools.assert_equal(GameType.normal, result['game_type'])
+    tools.assert_equal(GameType.pennant_race, result['game_type'])
     tools.assert_equal(7, result['match'])
     tools.assert_equal('北九州', result['stadium'])
     tools.assert_equal([
@@ -418,7 +418,7 @@ def test_parse_score_table_03():
     result = baseball.parse_score_table(html)
     tools.assert_equal('オリックス', result['bat_first'])
     tools.assert_equal('日本ハム', result['field_first'])
-    tools.assert_equal(GameType.normal, result['game_type'])
+    tools.assert_equal(GameType.pennant_race, result['game_type'])
     tools.assert_equal(1, result['match'])
     tools.assert_equal('札幌ドーム', result['stadium'])
     tools.assert_equal([
@@ -440,7 +440,7 @@ def test_parse_score_table_04():
     result = baseball.parse_score_table(html)
     tools.assert_equal('日本ハム', result['bat_first'])
     tools.assert_equal('西武', result['field_first'])
-    tools.assert_equal(GameType.normal, result['game_type'])
+    tools.assert_equal(GameType.pennant_race, result['game_type'])
     tools.assert_equal(15, result['match'])
     tools.assert_equal('西武ドーム', result['stadium'])
     tools.assert_equal([
@@ -464,7 +464,7 @@ def test_parse_score_table_05():
     result = baseball.parse_score_table(html)
     tools.assert_equal('西武', result['bat_first'])
     tools.assert_equal('ロッテ', result['field_first'])
-    tools.assert_equal(GameType.normal, result['game_type'])
+    tools.assert_equal(GameType.pennant_race, result['game_type'])
     tools.assert_equal(21, result['match'])
     tools.assert_equal('ＱＶＣマリン', result['stadium'])
     tools.assert_equal([
@@ -1039,7 +1039,7 @@ def test_create_score_table_01():
     data = {
         'bat_first': '北海道日本ハム',
         'field_first': '埼玉西武',
-        'game_type': GameType.normal,
+        'game_type': GameType.pennant_race,
         'match': 4,
         'stadium': '西武ドーム',
         'score': [
@@ -1078,7 +1078,7 @@ def test_create_score_table_02():
     data = {
         'bat_first': '埼玉西武',
         'field_first': '千葉ロッテ',
-        'game_type': GameType.normal,
+        'game_type': GameType.pennant_race,
         'match': 1,
         'stadium': 'QVCマリンフィールド',
         'score': [
@@ -1119,7 +1119,7 @@ def test_create_score_table_03():
     data = {
         'bat_first': 'オリックス',
         'field_first': '北海道日本ハム',
-        'game_type': GameType.normal,
+        'game_type': GameType.pennant_race,
         'match': 1,
         'stadium': '札幌ドーム',
         'score': [
@@ -1156,7 +1156,7 @@ def test_create_score_table_04():
     data = {
         'bat_first': '埼玉西武',
         'field_first': '東北楽天',
-        'game_type': GameType.normal,
+        'game_type': GameType.pennant_race,
         'match': 10,
         'stadium': '岩手県営野球場',
         'score': [
@@ -1199,7 +1199,7 @@ def test_create_score_table_05():
     data = {
         'bat_first': '埼玉西武',
         'field_first': '横浜ＤｅＮＡ',
-        'game_type': GameType.normal,
+        'game_type': GameType.pennant_race,
         'match': 3,
         'stadium': '横浜スタジアム',
         'score': [
@@ -1248,7 +1248,7 @@ def test_create_score_table_06():
     data = {
         'bat_first': '北海道日本ハム',
         'field_first': '埼玉西武',
-        'game_type': GameType.normal,
+        'game_type': GameType.pennant_race,
         'match': 15,
         'stadium': '西武ドーム',
         'score': [
@@ -1431,7 +1431,7 @@ def test_create_score_table_10():
         ],
     }
     expected = textwrap.dedent("""\
-        【埼玉西武 vs オリックス オープン戦】
+        【オリックス vs 埼玉西武 オープン戦】
         （2015年3月8日：わかさ京都）
 
         埼玉西武　  2 4 0  0 5 0  0 3 0  14
