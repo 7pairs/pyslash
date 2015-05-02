@@ -11,7 +11,7 @@ setup(
     description='Tools for parsing nikkansports.com',
     author='Jun-ya HASEBA',
     author_email='7pairs@gmail.com',
-    url='http://seven-pairs.hatenablog.jp/',
+    url='https://github.com/7pairs/pyslash',
     packages=find_packages(exclude=['tests']),
     install_requires=['beautifulsoup4', 'docopt'],
     entry_points="""\
