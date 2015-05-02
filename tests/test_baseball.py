@@ -12,90 +12,6 @@ from pyslash import baseball
 from pyslash.baseball import GameType, InvalidTeamError, ParseError, ResultNotFoundError
 
 
-RETURN_VALUE_FOR_GET_HTML = """\
-<div class="dataContents">
-    <table border="1" summary="プロ野球の対戦表">
-        <tr>
-            <th colspan="3" class="bg">対戦</th>
-            <th>開始</th>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/fighters/top-fighters.html">日本ハム</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com">－</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/swallows/top-swallows.html">ヤクルト</a>
-            </td>
-            <td class="num">18:00</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/eagles/top-eagles.html">楽天</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061402.html">0－3</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/giants/top-giants.html">巨人</a>
-            </td>
-            <td class="num">8回裏</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/lions/top-lions.html">西武</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html">3－2</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/tigers/top-tigers.html">阪神</a>
-            </td>
-            <td class="num">終了</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/marines/top-marines.html">ロッテ</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061404.html">6－4</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/carp/top-carp.html">広島</a>
-            </td>
-            <td class="num">8回裏</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/buffaloes/top-buffaloes.html">オリック</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html">7－4</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/dragons/top-dragons.html">中日</a>
-            </td>
-            <td class="num">終了</td>
-        </tr>
-        <tr>
-            <td class="line home">
-                <a href="http://www.nikkansports.com/baseball/professional/team/hawks/top-hawks.html">ソフトバ</a>
-            </td>
-            <td class="line score">
-                <a href="http://www.nikkansports.com/baseball/professional/score/2014/il2014061406.html">4－2</a>
-            </td>
-            <td class="line away">
-                <a href="http://www.nikkansports.com/baseball/professional/team/baystars/top-baystars.html">ＤｅＮＡ</a>
-            </td>
-            <td class="num">8回裏</td>
-        </tr>
-    </table>
-</div>
-"""
-
-
 def test_get_score_table_01():
     """
     get_score_table()：引数に有効なチーム、試合日を指定したとき、スコアテーブルの文字列を返すことを確認する。
@@ -223,141 +139,38 @@ def test_get_html_02():
     baseball.get_html('えいちてぃーてぃーぴーころんすらっしゅすらっしゅ')
 
 
-@patch('pyslash.baseball.get_html')
-def test_get_today_game_url_01(get_html):
+def test_get_today_game_url_01():
     """
     get_today_game_url()：引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
     """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    today_result_url_org = baseball.TODAY_RESULT_URL
+    baseball.TODAY_RESULT_URL = 'http://www.nikkansports.com/baseball/professional/score/2015/pf-score-20150416.html'
+
     result = baseball.get_today_game_url('l')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
+    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2015/pl2015041603.html', result)
+
+    baseball.TODAY_RESULT_URL = today_result_url_org
 
 
-@patch('pyslash.baseball.get_html')
 @raises(ResultNotFoundError)
-def test_get_today_game_url_02(get_html):
-    """
-    get_today_game_url()：引数に'e'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
-    (東北楽天が試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    baseball.get_today_game_url('e')
-
-
-@patch('pyslash.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_today_game_url_03(get_html):
+def test_get_today_game_url_02():
     """
     get_today_game_url()：引数に'm'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
     (千葉ロッテが試合中のため)
     """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
+    today_result_url_org = baseball.TODAY_RESULT_URL
+    baseball.TODAY_RESULT_URL = 'http://www.nikkansports.com/baseball/professional/score/2015/pf-score-20150416.html'
+
     baseball.get_today_game_url('m')
 
-
-@patch('pyslash.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_today_game_url_04(get_html):
-    """
-    get_today_game_url()：引数に'h'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
-    (福岡ソフトバンクが試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    baseball.get_today_game_url('h')
+    baseball.TODAY_RESULT_URL = today_result_url_org
 
 
-@patch('pyslash.baseball.get_html')
-def test_get_today_game_url_05(get_html):
-    """
-    get_today_game_url()：引数に'bu'を指定したとき、オリックスの試合のURLを返すことを確認する。
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    result = baseball.get_today_game_url('bu')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
-
-
-@patch('pyslash.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_today_game_url_06(get_html):
-    """
-    get_today_game_url()：引数に'f'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
-    (北海道日本ハムが試合開始前のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    baseball.get_today_game_url('f')
-
-
-@patch('pyslash.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_today_game_url_07(get_html):
-    """
-    get_today_game_url()：引数に'g'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
-    (読売が試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    baseball.get_today_game_url('g')
-
-
-@patch('pyslash.baseball.get_html')
-def test_get_today_game_url_08(get_html):
-    """
-    get_today_game_url()：引数に't'を指定したとき、阪神の試合のURLを返すことを確認する。
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    result = baseball.get_today_game_url('t')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html', result)
-
-
-@patch('pyslash.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_today_game_url_09(get_html):
-    """
-    get_today_game_url()：引数に'c'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
-    (広島東洋が試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    baseball.get_today_game_url('c')
-
-
-@patch('pyslash.baseball.get_html')
-def test_get_today_game_url_10(get_html):
-    """
-    get_today_game_url()：引数に'd'を指定したとき、中日の試合のURLを返すことを確認する。
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    result = baseball.get_today_game_url('d')
-    tools.assert_equal('http://www.nikkansports.com/baseball/professional/score/2014/il2014061405.html', result)
-
-
-@patch('pyslash.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_today_game_url_11(get_html):
-    """
-    get_today_game_url()：引数に'bs'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
-    (横浜ＤｅＮＡが試合中のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    baseball.get_today_game_url('bs')
-
-
-@patch('pyslash.baseball.get_html')
-@raises(ResultNotFoundError)
-def test_get_today_game_url_12(get_html):
-    """
-    get_today_game_url()：引数に's'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
-    (東京ヤクルトが試合開始前のため)
-    """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
-    baseball.get_today_game_url('s')
-
-
-@patch('pyslash.baseball.get_html')
 @raises(InvalidTeamError)
-def test_get_today_game_url_13(get_html):
+def test_get_today_game_url_03():
     """
     get_today_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
     """
-    get_html.return_value = RETURN_VALUE_FOR_GET_HTML
     baseball.get_today_game_url('err')
 
 
