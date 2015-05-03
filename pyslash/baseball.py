@@ -48,20 +48,24 @@ class GameType(Enum):
     """日本シリーズ"""
 
 
+# 本日の試合結果の取得元
+TODAY_RESULT_URL = "http://www.nikkansports.com/baseball/professional/score/"
+
+
 # チーム短縮名変換テーブル
 SHORT_TEAM_NAMES = {
-    'l': '西武',
-    'e': '楽天',
-    'm': 'ロッテ',
-    'h': 'ソフトバ',
-    'bu': 'オリック',
-    'f': '日本ハム',
-    'g': '巨人',
-    't': '阪神',
+    'bs': 'ＤｅＮＡ',
+    'bu': 'オリックス',
     'c': '広島',
     'd': '中日',
-    'bs': 'ＤｅＮＡ',
+    'e': '楽天',
+    'f': '日本ハム',
+    'g': '巨人',
+    'h': 'ソフトバンク',
+    'l': '西武',
+    'm': 'ロッテ',
     's': 'ヤクルト',
+    't': '阪神',
 }
 
 
@@ -245,25 +249,21 @@ def get_today_game_url(team):
         raise InvalidTeamError()
 
     # 全カードのスコアテーブルのURLを取得する
-    html = get_html('http://www.nikkansports.com/')
+    html = get_html(TODAY_RESULT_URL)
     soup = BeautifulSoup(html)
-    table = find_or_error(soup, 'table', {'summary': 'プロ野球の対戦表'})
-    cards = table.find_all('tr')
+    tables = soup.find_all('table', {'class': 'scoreTable'})
 
     # 当該チームのスコアを探索する
-    for card in cards:
-        links = card.find_all('a')
-        for link in links:
-            m = re.search(short_name, link.string)
-            if m:
-                # 試合中/中止の場合はエラーとする
-                inning = card.find('td', {'class': 'num'})
-                if inning.string != '終了':
-                    raise ResultNotFoundError()
+    for i, table in enumerate(tables):
+        teams = table.find_all('td', {'class': 'team'})
+        for team in teams:
+            if short_name == re.sub(r'\s', '', team.string):
+                target_link = soup.find_all('p', {'class': 'nScore'})[i]
+                url = find_or_error(target_link, 'a').get('href')
+                return 'http://www.nikkansports.com' + url
 
-                # スコアテーブルのURLを返す
-                score = card.find('td', {'class': 'score'})
-                return score.a.get('href')
+    # 結果が見つからなかった
+    raise ResultNotFoundError()
 
 
 def parse_score_table(html):
