@@ -58,22 +58,22 @@ def main():
 
     # スコアテーブルを出力する
     if args.get('-t'):
-        today = datetime.datetime.today()
+        today = datetime.date.today()
         day_str = args.get('-d') or ''
         day_str_len = len(day_str)
         if day_str_len == 8:
-            day = datetime.datetime.strptime(day_str, '%Y%m%d')
+            day = datetime.datetime.strptime(day_str, '%Y%m%d').date()
         elif day_str_len == 4:
-            day = datetime.datetime.strptime(day_str, '%m%d')
+            day = datetime.datetime.strptime(day_str, '%m%d').date()
             day = day.replace(year=today.year)
         elif day_str_len == 2:
-            day = datetime.datetime.strptime(day_str, '%d')
+            day = datetime.datetime.strptime(day_str, '%d').date()
             day = day.replace(year=today.year, month=today.month)
         else:
             day = None
-        print(baseball.get_score_table(args['-t'], day))
+        print(baseball.create_result(args['-t'], day))
     elif args.get('-u'):
-        print(baseball.get_score_table_by_url(args['-u']))
+        print(baseball.create_result_by_url(args['-u']))
 
 
 if __name__ == '__main__':
