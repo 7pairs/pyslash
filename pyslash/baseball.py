@@ -22,25 +22,12 @@ import re
 import urllib.request
 
 from bs4 import BeautifulSoup
-from bs4.element import Tag
 from enum import Enum
 
 
-class InvalidTeamError(Exception):
+class PyslashError(Exception):
     """
-    指定されたチーム名が不正であることを示す例外。
-    """
-
-
-class ResultNotFoundError(Exception):
-    """
-    指定された条件の試合が見つからないことを示す例外。
-    """
-
-
-class ParseError(Exception):
-    """
-    文字列の解析に失敗したことを示す例外。
+    当ライブラリで想定していない入出力があったことを示す例外。
     """
 
 
@@ -64,12 +51,32 @@ class GameType(Enum):
     """日本シリーズ"""
 
 
-# 本日の試合結果の取得元
-TODAY_RESULT_URL = "http://www.nikkansports.com/baseball/professional/score/"
+# nikkansports.comのURL
+NIKKANSPORTS_URL = 'http://www.nikkansports.com'
 
+# 本日の試合結果のURL
+TODAY_URL = '/baseball/professional/score/'
 
-# チーム短縮名変換テーブル
-SHORT_TEAM_NAMES = {
+# 順位表のURL
+STANDINGS_URL = '/baseball/professional/data/pf-standings.html'
+
+# パ・リーグ優勝チームのURL
+VICTORY_P_URL = '/baseball/professional/data/pfdata/victory/pf-victory_pl.html'
+
+# セ・リーグ優勝チームのURL
+VICTORY_C_URL = '/baseball/professional/data/pfdata/victory/pf-victory_cl.html'
+
+# テーブルスコアのURLテンプレート
+TABLE_SCORE_URL_TEMPLATE = r'/baseball/professional/score/%04d/\D+%04d%02d%02d\d+\.html'
+
+# 試合日程のURLテンプレート
+CALENDAR_URL_TEMPLATE = '/baseball/professional/schedule/%04d/%s%04d%02d.html'
+
+# テーブルスコアの正規表現パターン
+TABLE_SCORE_URL_PATTERN = r'/baseball/professional/score/\d{4}/\D+(\d{4})(\d{2})(\d{2})\d+\.html'
+
+# チーム名変換テーブル
+TEAM_NAMES = {
     'bs': 'ＤｅＮＡ',
     'bu': 'オリックス',
     'c': '広島',
@@ -84,30 +91,28 @@ SHORT_TEAM_NAMES = {
     't': '阪神',
 }
 
-
-# チーム名変換テーブル
+# チーム正式名称変換テーブル
 LONG_TEAM_NAMES = {
-    '西武': '埼玉西武',
+    'ＤｅＮＡ': '横浜ＤｅＮＡ',
+    '広島': '広島東洋',
     '楽天': '東北楽天',
-    'ロッテ': '千葉ロッテ',
-    'ソフトバンク': '福岡ソフトバンク',
     '日本ハム': '北海道日本ハム',
     '巨人': '読売',
-    '広島': '広島東洋',
-    'ＤｅＮＡ': '横浜ＤｅＮＡ',
+    'ソフトバンク': '福岡ソフトバンク',
+    '西武': '埼玉西武',
+    'ロッテ': '千葉ロッテ',
     'ヤクルト': '東京ヤクルト',
 }
 
-
-# 球場名変換テーブル
+# 球場正式名称変換テーブル
 LONG_STADIUM_NAMES = {
-    'コボスタ宮城': '楽天Koboスタジアム宮城',
-    'ＱＶＣマリン': 'QVCマリンフィールド',
-    'ヤフオクドーム': '福岡 ヤフオク!ドーム',
-    '甲子園': '阪神甲子園球場',
-    'マツダスタジアム': 'Mazda Zoom-Zoomスタジアム広島',
     '横浜': '横浜スタジアム',
+    'マツダスタジアム': 'Mazda Zoom-Zoomスタジアム広島',
+    'コボスタ宮城': '楽天Koboスタジアム宮城',
+    'ヤフオクドーム': '福岡 ヤフオク!ドーム',
+    'ＱＶＣマリン': 'QVCマリンフィールド',
     '神宮': '明治神宮野球場',
+    '甲子園': '阪神甲子園球場',
     'ほっともっと神戸': 'ほっともっとフィールド神戸',
     '大宮': '埼玉県営大宮公園野球場',
     '静岡': '静岡県草薙総合運動場硬式野球場',
@@ -143,226 +148,209 @@ LONG_STADIUM_NAMES = {
 }
 
 
-def get_score_table(team, day):
+def create_result(team, day):
     """
-    指定されたチーム、試合日のスコアテーブルを文字列として返す。
+    指定されたチーム、日付の試合結果を文字列として取得する。
 
     :param team: チーム略称
     :type team: str
     :param day: 試合日
-    :type day: datetime.datetime
-    :return: スコアテーブル
+    :type day: datetime.date
+    :return: 試合結果
     :rtype: str
     """
-    # スコアテーブルのURLを取得する
-    url = get_game_url(team, day) if day else get_today_game_url(team)
+    # テーブルスコアのURLを取得する
+    url = _get_table_score_url(team, day) if day else _get_today_table_score_url(team)
 
-    # スコアテーブルを返す
-    return get_score_table_by_url(url)
+    # 試合結果を返す
+    return create_result_by_url(url)
 
 
-def get_score_table_by_url(url):
+def create_result_by_url(url):
     """
-    指定されたURLのスコアテーブルを文字列として返す。
+    指定されたURLのテーブルスコアを解析し、試合結果を文字列として取得する。
 
     :param url: URL
     :type url: str
-    :return: スコアテーブル
+    :return: 試合結果
     :rtype: str
     """
-    # スコアテーブルを構築する
-    html = get_html(url)
-    score_data = parse_score_table(html)
-    ret_val = create_score_table(score_data, parse_date(url))
-
-    # スコアテーブルを返す
-    return ret_val
+    # 試合結果を構築する
+    html = _get_html(url)
+    score_data = _parse_table_score(html)
+    day = _parse_day(url)
+    return _format_result(score_data, day)
 
 
-def get_game_url(team, day):
+def _get_table_score_url(team, day):
     """
-    指定されたチーム、試合日のスコアテーブルのURLを返す。
+    指定されたチーム、日付のテーブルスコアのURLを取得する。
 
     :param team: チーム略称
     :type team: str
     :param day: 試合日
-    :type day: datetime.datetime
-    :return: スコアテーブルのURL
+    :type day: datetime.date
+    :return: URL
     :rtype: str
     """
-    # カレンダーのHTMLを取得する
-    url = get_calendar_url(team, day)
-    html = get_html(url)
+    # 当該チームの試合日程のHTMLを取得する
+    url = _get_calendar_url(team, day)
+    html = _get_html(url)
 
-    # スコアテーブルのURLを取得する
-    pattern = r'/baseball/professional/score/%04d/\D+%04d%02d%02d\d+\.html' % (
-        day.year,
-        day.year,
-        day.month,
-        day.day
-    )
-    m = search_or_error(pattern, html)
-
-    # 取得したURLを返す
-    return 'http://www.nikkansports.com' + m.group(0)
+    # テーブルスコアのURLを取得する
+    pattern = TABLE_SCORE_URL_TEMPLATE % (day.year, day.year, day.month, day.day)
+    m = _search_or_error(pattern, html)
+    return NIKKANSPORTS_URL + m.group(0)
 
 
-def get_calendar_url(team, day):
+def _get_calendar_url(team, day):
     """
-    指定されたチーム、日付のカレンダーのURLを返す。
+    指定されたチーム、年月の試合日程のURLを取得する。
 
     :param team: チーム略称
     :type team: str
-    :param day: 日付
-    :type day: datetime.datetime
-    :return: カレンダーのURL
+    :param day: 日付(年月のフィールドのみ参照)
+    :type day: datetime.date
+    :return: URL
     :rtype: str
     """
     # チーム名をチェックする
-    if team not in SHORT_TEAM_NAMES:
-        raise InvalidTeamError()
+    if team not in TEAM_NAMES:
+        raise PyslashError('Invalid team name: ' + team)
 
-    # URLを構築する
-    url = 'http://www.nikkansports.com/baseball/professional/schedule/%04d/%s%04d%02d.html' % (
-        day.year,
-        team,
-        day.year,
-        day.month
-    )
-
-    # 構築したURLを返す
-    return url
+    # 試合日程のURLを取得する
+    return NIKKANSPORTS_URL + CALENDAR_URL_TEMPLATE % (day.year, team, day.year, day.month)
 
 
-def get_html(url):
+def _get_html(url):
     """
-    指定されたURLのHTMLを文字列として返す。
+    指定されたURLのHTMLを文字列として取得する。
 
     :param url: URL
     :type url: str
     :return: HTML
     :rtype: str
     """
-    # 指定されたURLのHTMLを返す
+    # 指定されたURLのHTMLを取得する
     with urllib.request.urlopen(url) as response:
         encoding = response.headers.get_content_charset() or 'utf-8'
         return response.read().decode(encoding, 'ignore')
 
 
-def get_today_game_url(team):
+def _get_today_table_score_url(team):
     """
-    指定されたチームの今日の試合スコアテーブルのURLを返す。
+    指定されたチームの今日の試合のテーブルスコアのURLを取得する。
 
     :param team: チーム略称
     :type team: str
-    :return: スコアテーブルのURL
+    :return: URL
     :rtype: str
     """
-    # チームの短縮名を取得する
+    # チーム名を取得する
     try:
-        short_name = SHORT_TEAM_NAMES[team]
+        team_name = TEAM_NAMES[team]
     except KeyError:
-        raise InvalidTeamError()
+        raise PyslashError('Invalid team name: ' + team)
 
-    # 全カードのスコアテーブルのURLを取得する
-    html = get_html(TODAY_RESULT_URL)
+    # 全カードのテーブルスコアのURLを取得する
+    html = _get_html(NIKKANSPORTS_URL + TODAY_URL)
     soup = BeautifulSoup(html)
-    tables = soup.find_all('table', {'class': 'scoreTable'})
+    score_tables = soup.find_all('table', {'class': 'scoreTable'})
 
     # 当該チームのスコアを探索する
-    for i, table in enumerate(tables):
-        teams = table.find_all('td', {'class': 'team'})
-        for team in teams:
-            if short_name == re.sub(r'\s', '', team.string):
-                target_link = soup.find_all('p', {'class': 'nScore'})[i]
-                url = find_or_error(target_link, 'a').get('href')
-                return 'http://www.nikkansports.com' + url
+    for i, table in enumerate(score_tables):
+        team_in_tables = table.find_all('td', {'class': 'team'})
+        for team_in_table in team_in_tables:
+            if re.sub(r'\s', '', team_in_table.string) == team_name:
+                target_paragraph = soup.find_all('p', {'class': 'nScore'})[i]
+                url = _find_or_error(target_paragraph, 'a').get('href')
+                return NIKKANSPORTS_URL + url
 
-    # 結果が見つからなかった
-    raise ResultNotFoundError()
+    # 結果が見つからない場合は例外とする
+    raise PyslashError('Result not found.')
 
 
-def parse_score_table(html):
+def _parse_table_score(html):
     """
-    指定されたHTML文字列を解析し、スコアに関連する情報を格納した辞書を返す。
+    指定されたテーブルスコアの文字列を解析し、スコア情報を格納した辞書に変換する。
 
-    :param html: HTML文字列
+    :param html: テーブルスコア
     :type html: str
     :return: スコア情報
-    :rtype: Dict[str, object]
+    :rtype: dict
     """
     # 戻り値用の辞書
-    ret_val = {}
+    score_data = {}
 
     # BeautifulSoupオブジェクトを構築する
     soup = BeautifulSoup(html)
 
-    # 先攻チーム/後攻チーム
-    card = find_or_error(soup, 'h4', {'id': 'cardTitle'})
-    m = search_or_error(r'([^\s]+)\s対\s([^\s]+)', card.string)
-    ret_val['bat_first'] = m.group(2)
-    ret_val['field_first'] = m.group(1)
+    # 先攻チーム／後攻チーム
+    card_title = _find_or_error(soup, 'h4', {'id': 'cardTitle'})
+    m = _search_or_error(r'([^\s]+)\s対\s([^\s]+)', card_title.string)
+    score_data['bat_first'] = m.group(2)
+    score_data['field_first'] = m.group(1)
 
     # 試合日
-    date = find_or_error(soup, 'p', {'id': 'upDate'})
-    m = search_or_error(r'(\d+)年(\d+)月(\d+)日', date.span.string)
-    day = datetime.datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    up_date = _find_or_error(soup, 'p', {'id': 'upDate'})
+    m = _search_or_error(r'(\d+)年(\d+)月(\d+)日', up_date.span.string)
+    day = datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
     # 球場／試合種別
-    stadium = find_or_error(soup, 'p', {'class': 'data'})
-    m = search_or_error(r'◇([^◇]+)◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', stadium.string)
-    ret_val['stadium'] = m.group(2)
+    data = _find_or_error(soup, 'p', {'class': 'data'})
+    m = _search_or_error(r'◇([^◇]+)◇開始\d+時\d+分◇([^◇]+)◇観衆\d+人', data.string)
+    score_data['stadium'] = m.group(2)
     if m.group(1) == '日本シリーズ':
-        ret_val['game_type'] = GameType.nippon_series
+        score_data['game_type'] = GameType.nippon_series
     elif m.group(1) == 'クライマックスシリーズ':
-        if ret_val['field_first'] in get_champions(day):
-            ret_val['game_type'] = GameType.final_stage
+        if score_data['field_first'] in _get_champions(day.year):
+            score_data['game_type'] = GameType.final_stage
         else:
-            ret_val['game_type'] = GameType.first_stage
+            score_data['game_type'] = GameType.first_stage
     elif m.group(1) == 'オープン戦':
-        ret_val['game_type'] = GameType.pre_season_game
+        score_data['game_type'] = GameType.pre_season_game
     else:
-        ret_val['game_type'] = GameType.pennant_race
+        score_data['game_type'] = GameType.pennant_race
 
     # 回戦
-    match = find_or_error(soup, 'p', {'id': 'time'})
-    m = search_or_error(r'(\d+)勝(\d+)敗(\d+)分け', match.string)
-    if ret_val['game_type'] == GameType.final_stage:
+    time = _find_or_error(soup, 'p', {'id': 'time'})
+    m = _search_or_error(r'(\d+)勝(\d+)敗(\d+)分け', time.string)
+    score_data['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
+    if score_data['game_type'] == GameType.final_stage:
         # アドバンテージの1勝ぶんを差し引く
-        ret_val['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3)) - 1
-    else:
-        ret_val['match'] = int(m.group(1)) + int(m.group(2)) + int(m.group(3))
+        score_data['match'] -= 1
 
     # スコア
-    ret_val['score'] = []
-    ret_val['total_score'] = []
-    score = find_or_error(soup, 'table', {'class': 'scoreTable'})
-    rows = score.find_all('tr')
+    score_data['score'] = []
+    score_data['total_score'] = []
+    score_table = _find_or_error(soup, 'table', {'class': 'scoreTable'})
+    rows = score_table.find_all('tr')
     for row in rows[1:]:
         cols = row.find_all('td')
-        ret_val['score'].append([x.string.strip().lower() for x in cols[1:-1]])
-        ret_val['total_score'].append(int(cols[-1].string))
-    for i, (top, bottom) in enumerate(zip(ret_val['score'][0], ret_val['score'][1])):
-        # コールドゲームの場合に最終回以降の無駄な空白を除去する
+        score_data['score'].append([x.string.strip().lower() for x in cols[1:-1]])
+        score_data['total_score'].append(int(cols[-1].string))
+    for i, (top, bottom) in enumerate(zip(score_data['score'][0], score_data['score'][1])):
+        # コールドゲームの最終回以降の余分な空白を除去する
         if top == '' and bottom == '':
-            ret_val['score'][0] = ret_val['score'][0][:i]
-            ret_val['score'][1] = ret_val['score'][1][:i]
+            score_data['score'][0] = score_data['score'][0][:i]
+            score_data['score'][1] = score_data['score'][1][:i]
+            break
 
-    # 勝利投手/セーブ投手/敗戦投手
-    pitcher = find_or_error(soup, 'table', {'class': 'pitcher'})
+    # 勝利投手／セーブ投手／敗戦投手
+    pitcher = _find_or_error(soup, 'table', {'class': 'pitcher'})
     rows = pitcher.find_all('tr')
     for row in rows[1:]:
         cols = row.find_all('td')
         status = cols[0].string
         if status == '○':
-            ret_val['win'] = parse_pitcher(cols)
+            score_data['win'] = _parse_pitcher(cols)
         elif status == 'Ｓ':
-            ret_val['save'] = parse_pitcher(cols)
+            score_data['save'] = _parse_pitcher(cols)
         elif status == '●':
-            ret_val['lose'] = parse_pitcher(cols)
+            score_data['lose'] = _parse_pitcher(cols)
 
     # 本塁打
-    ret_val['home_run'] = []
+    score_data['home_run'] = []
     footnotes = soup.find_all('dl', {'class': 'data'})
     for footnote in footnotes:
         if footnote.dt.string == '◇本塁打':
@@ -372,7 +360,7 @@ def parse_score_table(html):
             for i, table in enumerate(tables):
                 rows = table.find_all('tr')
 
-                # イニングを収集する
+                # イニングの見出しを収集する
                 inning_numbers = []
                 cols = rows[0].find_all('th')
                 for col in cols[8:]:
@@ -380,7 +368,7 @@ def parse_score_table(html):
                     if inning:
                         inning_numbers.append(int(inning))
                     else:
-                        # 打者2巡目は見出しが空欄になっているため……
+                        # 打者2巡目は見出しが空欄になっているため
                         inning_numbers.append(inning_numbers[-1])
 
                 # 本塁打を収集する
@@ -389,14 +377,14 @@ def parse_score_table(html):
                     for j, col in enumerate(cols[8:]):
                         m = re.search(r'.本', col.string)
                         if m:
-                            m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
+                            m = _search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
                             home_run_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
 
             # 末尾の本塁打欄を解析する
             lines = footnote.find_all('dd')
             for line in lines:
-                m = search_or_error(r'([^\d]+)(\d+)号（(ソロ|２ラン|３ラン|満塁)\d+m=([^）]+)）', line.string)
-                ret_val['home_run'].append((
+                m = _search_or_error(r'([^\d]+)(\d+)号（(ソロ|２ラン|３ラン|満塁)\d+m=([^）]+)）', line.string)
+                score_data['home_run'].append((
                     home_run_innings[m.group(1)].pop(0),
                     m.group(1),
                     int(m.group(2)),
@@ -408,52 +396,49 @@ def parse_score_table(html):
             break
 
     # 構築した辞書を返す
-    return ret_val
+    return score_data
 
 
-def get_champions(day):
+def _get_champions(year):
     """
-    指定された試合日が含まれる年度の両リーグの優勝チームをタプルで返す。
+    指定された年度の両リーグの優勝チームを取得する。
 
-    :param day: 試合日
-    :type day: datetime.datetime
-    :return: パの優勝チーム、セの優勝チームを順に格納したタプル
-    :rtype: Tuple[str, str]
+    :param year: 年度
+    :type year: int
+    :return: パの優勝チーム、セの優勝チーム
+    :rtype: tuple
     """
     # 今年かそれ以外かで処理を振り分ける
-    target_year = day.year
-    if target_year == datetime.datetime.today().year:
-        return get_champions_of_this_year()
+    if year == datetime.date.today().year:
+        return _get_champions_of_this_year()
     else:
-        return get_champions_before_this_year(target_year)
+        return _get_champions_before_this_year(year)
 
 
-def get_champions_of_this_year():
+def _get_champions_of_this_year():
     """
-    今年の両リーグの優勝チームをタプルで返す。
+    今年の両リーグの優勝チームを取得する。
 
-    :return: パの優勝チーム、セの優勝チームを順に格納したタプル
-    :rtype: Tuple[str, str]
+    :return: パの優勝チーム、セの優勝チーム
+    :rtype: tuple
     """
     # 順位表のHTMLを取得する
-    html = get_html('http://www.nikkansports.com/baseball/professional/data/pf-standings.html')
+    html = _get_html(NIKKANSPORTS_URL + STANDINGS_URL)
 
     # BeautifulSoupオブジェクトを構築する
     soup = BeautifulSoup(html)
 
-    # ページ内のtable要素を取得する
+    # 両リーグの優勝チームを取得する
     tables = soup.find_all('table')
-
-    # 両リーグの優勝チームを返す
-    return parse_ranking(tables[1]), parse_ranking(tables[0])
+    return _get_top(tables[1]), _get_top(tables[0])
 
 
-def parse_ranking(node):
+def _get_top(node):
     """
-    指定された順位表を解析し、首位のチームを返す。
+    指定された順位表を解析し、首位のチームを取得する。
 
     :param node: 順位表のノード
-    :type node: BeautifulSoup
+    :type node: bs4.element.Tag
     :return: 首位のチーム
     :rtype: str
     """
@@ -468,28 +453,28 @@ def parse_ranking(node):
             return re.sub('\s', '', champion.string)
 
 
-def get_champions_before_this_year(year):
+def _get_champions_before_this_year(year):
     """
-    指定された年度の両リーグの優勝チームをタプルで返す。
+    指定された年度の両リーグの優勝チームを取得する。
 
     :param year: 年度
     :type year: int
-    :return: パの優勝チーム、セの優勝チームを順に格納したタプル
-    :rtype: Tuple[str, str]
+    :return: パの優勝チーム、セの優勝チーム
+    :rtype: tuple
     """
-    # 順位表のHTMLを取得する
-    p_html = get_html('http://www.nikkansports.com/baseball/professional/data/pfdata/victory/pf-victory_pl.html')
-    c_html = get_html('http://www.nikkansports.com/baseball/professional/data/pfdata/victory/pf-victory_cl.html')
+    # 歴代優勝チームのHTMLを取得する
+    p_html = _get_html(NIKKANSPORTS_URL + VICTORY_P_URL)
+    c_html = _get_html(NIKKANSPORTS_URL + VICTORY_C_URL)
 
-    # 両リーグの優勝チームを返す
-    return parse_champion_list(p_html, year), parse_champion_list(c_html, year)
+    # 両リーグの優勝チームを取得する
+    return _get_champion(p_html, year), _get_champion(c_html, year)
 
 
-def parse_champion_list(html, year):
+def _get_champion(html, year):
     """
-    HTMLを探索し、指定された年度の優勝チームを返す。
+    歴代優勝チームのHTMLを探索し、指定された年度の優勝チームを取得する。
 
-    :param html: 歴代優勝チームのHTML
+    :param html: HTML
     :type html: str
     :param year: 年度
     :type year: int
@@ -500,64 +485,61 @@ def parse_champion_list(html, year):
     soup = BeautifulSoup(html)
 
     # 歴代優勝チームのtable要素を取得する
-    table = find_or_error(soup, 'table', {'class': 'nsTable'})
+    table = _find_or_error(soup, 'table', {'class': 'nsTable'})
     rows = table.find_all('tr')
 
     # 指定された年度の優勝チームを探索する
     for row in rows:
         cols = row.find_all('td')
         if cols and int(cols[0].string) == year:
-            m = search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
+            m = _search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
             return m.group(1)
 
 
-def parse_pitcher(node):
+def _parse_pitcher(node):
     """
-    投手成績を解析し、勝利数、敗北数、セーブ数を返す。
+    投手成績のノードを解析し、タプルに変換する。
 
-    :param node: 投手成績のHTMLノード
-    :type node: BeautifulSoup
-    :return: 解析結果
-    :rtype: Tuple[str, int, int, int]
+    :param node: 投手成績のノード
+    :type node: bs4.element.Tag
+    :return: 投手名、勝利数、敗北数、セーブ数
+    :rtype: tuple
     """
-    # 投手の名前を切り出す
-    m = search_or_error(r'([^\s]+)\s（[^）]+）', node[1].string)
+    # 投手名を切り出す
+    m = _search_or_error(r'([^\s]+)\s（[^）]+）', node[1].string)
 
-    # 解析結果を返す
+    # タプルに変換する
     return m.group(1), int(node[2].string), int(node[3].string), int(node[4].string)
 
 
-def parse_date(url):
+def _parse_day(url):
     """
-    指定されたURLを解析し、試合日を返す。
+    指定されたURLから試合日を抽出する。
 
     :param url: URL
     :type url: str
     :return 試合日
-    :rtype datetime.datetime
+    :rtype datetime.date
     """
     # URLから試合日を抽出する
-    pattern = r'http://www\.nikkansports\.com/baseball/professional/score/\d{4}/\D+(\d{4})(\d{2})(\d{2})\d+\.html'
-    m = search_or_error(pattern, url)
-
-    # 抽出した日付を返す
-    return datetime.datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    m = _search_or_error(TABLE_SCORE_URL_PATTERN, url)
+    return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
 
-def create_score_table(score_data, day):
+def _format_result(score_data, day):
     """
-    スコア情報の格納された辞書をもとにスコアテーブルを構築する。
+    スコア情報をもとに試合結果を構築する。
 
     :param score_data: スコア情報
-    :type score_data: Dict[str, object]
+    :type score_data: dict
     :param day: 試合日
-    :type day: datetime.datetime
-    :return: スコアテーブル
+    :type day: datetime.date
+    :return: 試合結果
     :rtype: str
     """
     # ヘッダ欄を構築する
-    field_first = get_long_team_name(score_data['field_first'])
-    bat_first = get_long_team_name(score_data['bat_first'])
+    field_first = _get_long_team_name(score_data['field_first'])
+    bat_first = _get_long_team_name(score_data['bat_first'])
     if score_data['game_type'] == GameType.nippon_series:
         match = '日本シリーズ第%d戦' % score_data['match']
     elif score_data['game_type'] == GameType.final_stage:
@@ -568,50 +550,50 @@ def create_score_table(score_data, day):
         match = 'オープン戦'
     else:
         match = '第%d回戦' % score_data['match']
-    ret_val = '【%s vs %s %s】\n' % (field_first, bat_first, match)
-    ret_val += '（%d年%d月%d日：%s）\n' % (
+    result = '【%s vs %s %s】\n' % (field_first, bat_first, match)
+    result += '（%d年%d月%d日：%s）\n' % (
         day.year,
         day.month,
         day.day,
-        get_long_stadium_name(score_data['stadium'])
+        _get_long_stadium_name(score_data['stadium'])
     )
-    ret_val += '\n'
+    result += '\n'
 
     # スコア欄を構築する
-    bat_first, field_first = add_em_space(bat_first, field_first)
-    top_score, bottom_score = add_space(
-        create_score_line(score_data['score'][0]),
-        create_score_line(score_data['score'][1])
+    bat_first, field_first = _add_em_space(bat_first, field_first)
+    top_score, bottom_score = _add_space(
+        _format_score(score_data['score'][0]),
+        _format_score(score_data['score'][1])
     )
-    top_total_score, bottom_total_score = space_padding(
+    top_total_score, bottom_total_score = _space_padding(
         str(score_data['total_score'][0]),
         str(score_data['total_score'][1])
     )
-    ret_val += '%s  %s  %s\n' % (bat_first, top_score, top_total_score)
-    ret_val += '%s  %s  %s\n' % (field_first, bottom_score, bottom_total_score)
+    result += '%s  %s  %s\n' % (bat_first, top_score, top_total_score)
+    result += '%s  %s  %s\n' % (field_first, bottom_score, bottom_total_score)
 
     # 投手成績欄を構築する
     win = score_data.get('win')
     save = score_data.get('save')
     lose = score_data.get('lose')
-    win_player, save_player, lose_player = add_em_space(
+    win_player, save_player, lose_player = _add_em_space(
         win[0] if win else '',
         save[0] if save else '',
         lose[0] if lose else ''
     )
     pitcher = (
-        create_pitcher_line('勝', win_player, win[1:] if win else None) +
-        create_pitcher_line('Ｓ', save_player, save[1:] if save else None) +
-        create_pitcher_line('敗', lose_player, lose[1:] if lose else None)
+        _format_pitcher('勝', win_player, win[1:] if win else None) +
+        _format_pitcher('Ｓ', save_player, save[1:] if save else None) +
+        _format_pitcher('敗', lose_player, lose[1:] if lose else None)
     )
     if pitcher:
-        ret_val += '\n' + pitcher
+        result += '\n' + pitcher
 
     # 本塁打欄を構築する
     home_run = score_data.get('home_run')
     if home_run:
-        ret_val += '\n'
-        ret_val += '[本塁打]\n'
+        result += '\n'
+        result += '[本塁打]\n'
 
         # 各項目の最大長を取得する
         max_inning_len = 0
@@ -624,7 +606,7 @@ def create_score_table(score_data, day):
 
         # 桁揃えのスペースを付与しながら本塁打欄を構築する
         for line in home_run:
-            ret_val += '  %s %s %2d号 %s （%s）\n' % (
+            result += '  %s %s %2d号 %s （%s）\n' % (
                 ' ' * (max_inning_len - len(line[0])) + line[0],
                 line[1] + '　' * (max_player_len - len(line[1])),
                 line[2],
@@ -633,80 +615,80 @@ def create_score_table(score_data, day):
             )
 
     # 構築したスコアを返す
-    return ret_val
+    return result
 
 
-def get_long_team_name(team_name):
+def _get_long_team_name(team_name):
     """
     指定されたチーム名を正式名称に変換する。
 
     :param team_name: チーム名
     :type team_name: str
-    :return: チームの正式名称
+    :return: 正式名称
     :rtype: str
     """
     # 変換テーブルを探索する
     return LONG_TEAM_NAMES.get(team_name, team_name)
 
 
-def get_long_stadium_name(stadium_name):
+def _get_long_stadium_name(stadium_name):
     """
     指定された球場名を正式名称に変換する。
 
     :param stadium_name: 球場名
     :type stadium_name: str
-    :return: 球場の正式名称
+    :return: 正式名称
     :rtype: str
     """
     # 変換テーブルを探索する
     return LONG_STADIUM_NAMES.get(stadium_name, stadium_name)
 
 
-def create_score_line(scores):
+def _format_score(scores):
     """
     スコア行(先攻のみ、もしくは後攻のみ)を構築する。
 
     :param scores: 各イニングのスコア
-    :type scores: Iterable[int]
+    :type scores: list
     :return: スコア行
     :rtype: str
     """
     # 各イニングのスコアを連結する
-    ret_val = ''
+    line = ''
     for i, score in enumerate(scores):
         if i != 0:
             # 3イニングごとに広めに区切る
             if i % 3 == 0:
-                ret_val += '  '
+                line += '  '
             else:
-                ret_val += ' '
-        ret_val += score
+                line += ' '
+        line += score
 
     # 構築したスコア行を返す
-    return ret_val
+    return line
 
 
-def create_pitcher_line(caption, name, result):
+def _format_pitcher(caption, name, result):
     """
-    投手成績(1行)を構築する。
+    投手成績を構築する。
 
     :param caption: 見出し
     :type caption: str
     :param name: 投手名
     :type name: str
     :param result: 成績
-    :type result: Iterable[int, int, int]
+    :type result: tuple
     :return: 投手成績
     :rtype: str
     """
-    # 投手成績を編集して返す
+    # 投手成績を構築する
     return '[{0}] {1} {2}勝{3}敗{4}Ｓ\n'.format(caption, name, *result) if result else ''
 
 
-def search_or_error(pattern, string):
+def _search_or_error(pattern, string):
     """
     re.search() を実行し、その結果を返す。
-    ただし、結果がNoneだった場合はParseErrorを送出する。
+    ただし、結果がNoneだった場合はPyslashErrorを送出する。
 
     :param pattern: 正規表現パターン
     :type pattern: str
@@ -720,37 +702,37 @@ def search_or_error(pattern, string):
     if m:
         return m
     else:
-        raise ParseError()
+        raise PyslashError('Pattern not found: %s %s' % (pattern, string))
 
 
-def find_or_error(bs, *args):
+def _find_or_error(bs, *args):
     """
     bs4.BeautifulSoup.find() を実行し、その結果を返す。
-    ただし、結果がNoneだった場合はParseErrorを送出する。
+    ただし、結果がNoneだった場合はPyslashErrorを送出する。
 
     :param bs: findメソッドを実行するBeautifulSoupオブジェクト
     :type bs: BeautifulSoup
     :param args: findメソッドに渡す引数群
-    :type args: Iterable[object]
+    :type args: list
     :return: 探索結果
-    :rtype: Tag
+    :rtype: bs4.element.Tag
     """
     # bs4.BeautifulSoup.find() の結果を返す
     result = bs.find(*args)
     if result:
         return result
     else:
-        raise ParseError()
+        raise PyslashError()
 
 
-def add_space(*args):
+def _add_space(*args):
     """
     指定された文字列のうち、最大長に満たなかった文字列の末尾に半角スペースを付与する。
 
     :param args: 対象の文字列群
-    :type args: Iterable[str]
+    :type args: tuple
     :return: 編集後の文字列群
-    :rtype: Iterable[str]
+    :rtype: tuple
     """
     # スペースを付与する
     max_len = max(map(len, args))
@@ -760,14 +742,14 @@ def add_space(*args):
     return tuple(ret_val)
 
 
-def add_em_space(*args):
+def _add_em_space(*args):
     """
     指定された文字列のうち、最大長に満たなかった文字列の末尾に全角スペースを付与する。
 
     :param args: 対象の文字列群
-    :type args: Iterable[str]
+    :type args: tuple
     :return: 編集後の文字列群
-    :rtype: Iterable[str]
+    :rtype: tuple
     """
     # スペースを付与する
     max_len = max(map(len, args))
@@ -777,14 +759,14 @@ def add_em_space(*args):
     return tuple(ret_val)
 
 
-def space_padding(*args):
+def _space_padding(*args):
     """
     指定された文字列のうち、最大長に満たなかった文字列の先頭に半角スペースを付与する。
 
     :param args: 対象の文字列群
-    :type args: Iterable[str]
+    :type args: tuple
     :return: 編集後の文字列群
-    :rtype: Iterable[str]
+    :rtype: tuple
     """
     # スペースを付与する
     max_len = max(map(len, args))

@@ -24,7 +24,7 @@ from bs4 import BeautifulSoup
 from mock import patch
 
 from pyslash import baseball
-from pyslash.baseball import GameType, InvalidTeamError, ParseError, ResultNotFoundError
+from pyslash.baseball import GameType, PyslashError
 
 
 class BaseballTest(TestCase):
@@ -43,15 +43,15 @@ class BaseballTest(TestCase):
             [勝] 岸　 3勝2敗0Ｓ
             [敗] 成瀬 3勝2敗0Ｓ
         """)
-        result = baseball.get_score_table('l', datetime.datetime(2014, 5, 2))
+        result = baseball.create_result('l', datetime.datetime(2014, 5, 2))
         self.assertEqual(expected, result)
 
-    @patch('pyslash.baseball.get_today_game_url')
-    def test_get_score_table_02(self, get_today_game_url):
+    @patch('pyslash.baseball._get_today_table_score_url')
+    def test_get_score_table_02(self, get_today_table_score_url):
         """
         get_score_table()：試合日にNoneを指定したとき、当日の試合のスコアテーブルの文字列を返すことを確認する。
         """
-        get_today_game_url.return_value = 'http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html'
+        get_today_table_score_url.return_value = 'http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html'
         expected = textwrap.dedent("""\
             【埼玉西武 vs 阪神 第3回戦】
             （2014年6月14日：西武ドーム）
@@ -67,23 +67,22 @@ class BaseballTest(TestCase):
               2回裏 木村　　  6号 ２ラン （能見）
               6回表 マートン  8号 ソロ　 （菊池）
         """)
-        result = baseball.get_score_table('l', None)
+        result = baseball.create_result('l', None)
         self.assertEqual(expected, result)
 
     def test_get_score_table_03(self):
         """
         get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
-        with self.assertRaises(InvalidTeamError):
-            baseball.get_score_table('err', datetime.datetime(2014, 5, 2))
-
+        with self.assertRaises(PyslashError):
+            baseball.create_result('err', datetime.datetime(2014, 5, 2))
 
     def test_get_score_table_04(self):
         """
         get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
-        with self.assertRaises(InvalidTeamError):
-            baseball.get_score_table('err', None)
+        with self.assertRaises(PyslashError):
+            baseball.create_result('err', None)
 
     def test_get_score_table_by_url_01(self):
         """
@@ -99,7 +98,7 @@ class BaseballTest(TestCase):
             [勝] 岸　 3勝2敗0Ｓ
             [敗] 成瀬 3勝2敗0Ｓ
         """)
-        result = baseball.get_score_table_by_url(
+        result = baseball.create_result_by_url(
             'http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html'
         )
         self.assertEqual(expected, result)
@@ -108,35 +107,35 @@ class BaseballTest(TestCase):
         """
         get_game_url()：引数に有効なチーム、試合日を指定したとき、スコアテーブルのURLを返すことを確認する。
         """
-        result = baseball.get_game_url('l', datetime.datetime(2014, 5, 2))
+        result = baseball._get_table_score_url('l', datetime.datetime(2014, 5, 2))
         self.assertEqual('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', result)
 
     def test_get_game_url_02(self):
         """
         get_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
-        with self.assertRaises(InvalidTeamError):
-            baseball.get_calendar_url('err', datetime.datetime(2014, 5, 2))
+        with self.assertRaises(PyslashError):
+            baseball._get_calendar_url('err', datetime.datetime(2014, 5, 2))
 
     def test_get_calendar_url_01(self):
         """
         get_calendar_url()：引数に有効なチーム、試合日を指定したとき、カレンダーのURLを返すことを確認する。
         """
-        result = baseball.get_calendar_url('l', datetime.datetime(2014, 4, 1))
+        result = baseball._get_calendar_url('l', datetime.datetime(2014, 4, 1))
         self.assertEqual('http://www.nikkansports.com/baseball/professional/schedule/2014/l201404.html', result)
 
     def test_get_calender_url_02(self):
         """
         get_calendar_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
-        with self.assertRaises(InvalidTeamError):
-            baseball.get_calendar_url('err', datetime.datetime(2014, 4, 1))
+        with self.assertRaises(PyslashError):
+            baseball._get_calendar_url('err', datetime.datetime(2014, 4, 1))
 
     def test_get_html_01(self):
         """
         get_html()：引数に有効なURLを指定したとき、HTMLの内容を文字列として返すことを確認する。
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
         self.assertEqual(True, '<title>プロ野球スコア速報 ロッテ対西武 : nikkansports.com</title>' in html)
 
     def test_get_html_02(self):
@@ -144,46 +143,46 @@ class BaseballTest(TestCase):
         get_html()：引数に無効なURLを指定したとき、ValueErrorが送出されることを確認する。
         """
         with self.assertRaises(ValueError):
-            baseball.get_html('えいちてぃーてぃーぴーころんすらっしゅすらっしゅ')
+            baseball._get_html('えいちてぃーてぃーぴーころんすらっしゅすらっしゅ')
 
     def test_get_today_game_url_01(self):
         """
         get_today_game_url()：引数に'l'を指定したとき、埼玉西武の試合のURLを返すことを確認する。
         """
-        today_result_url_org = baseball.TODAY_RESULT_URL
-        baseball.TODAY_RESULT_URL = 'http://www.nikkansports.com/baseball/professional/score/2015/pf-score-20150416.html'
+        today_result_url_org = baseball.TODAY_URL
+        baseball.TODAY_URL = '/baseball/professional/score/2015/pf-score-20150416.html'
 
-        result = baseball.get_today_game_url('l')
+        result = baseball._get_today_table_score_url('l')
         self.assertEqual('http://www.nikkansports.com/baseball/professional/score/2015/pl2015041603.html', result)
 
-        baseball.TODAY_RESULT_URL = today_result_url_org
+        baseball.TODAY_URL = today_result_url_org
 
     def test_get_today_game_url_02(self):
         """
         get_today_game_url()：引数に'm'を指定したとき、ResultNotFoundErrorが送出されることを確認する。
         (千葉ロッテが試合中のため)
         """
-        today_result_url_org = baseball.TODAY_RESULT_URL
-        baseball.TODAY_RESULT_URL = 'http://www.nikkansports.com/baseball/professional/score/2015/pf-score-20150416.html'
+        today_result_url_org = baseball.TODAY_URL
+        baseball.TODAY_URL = '/baseball/professional/score/2015/pf-score-20150416.html'
 
-        with self.assertRaises(ResultNotFoundError):
-            baseball.get_today_game_url('m')
+        with self.assertRaises(PyslashError):
+            baseball._get_today_table_score_url('m')
 
-        baseball.TODAY_RESULT_URL = today_result_url_org
+        baseball.TODAY_URL = today_result_url_org
 
     def test_get_today_game_url_03(self):
         """
         get_today_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
-        with self.assertRaises(InvalidTeamError):
-            baseball.get_today_game_url('err')
+        with self.assertRaises(PyslashError):
+            baseball._get_today_table_score_url('err')
 
     def test_parse_score_table_01(self):
         """
         parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014042905.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('日本ハム', result['bat_first'])
         self.assertEqual('西武', result['field_first'])
         self.assertEqual(GameType.pennant_race, result['game_type'])
@@ -204,8 +203,8 @@ class BaseballTest(TestCase):
         parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
         （2ラン、3ラン解析時の不具合対応 #13）
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050906.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050906.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('西武', result['bat_first'])
         self.assertEqual('ソフトバンク', result['field_first'])
         self.assertEqual(GameType.pennant_race, result['game_type'])
@@ -229,8 +228,8 @@ class BaseballTest(TestCase):
         parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
         （サヨナラゲーム解析時の不具合対応 #11）
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014032804.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014032804.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('オリックス', result['bat_first'])
         self.assertEqual('日本ハム', result['field_first'])
         self.assertEqual(GameType.pennant_race, result['game_type'])
@@ -250,8 +249,8 @@ class BaseballTest(TestCase):
         parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
         （打者一巡があった試合の本塁打解析時の不具合対応 #45）
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014081605.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014081605.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('日本ハム', result['bat_first'])
         self.assertEqual('西武', result['field_first'])
         self.assertEqual(GameType.pennant_race, result['game_type'])
@@ -273,8 +272,8 @@ class BaseballTest(TestCase):
         parse_score_table()：引数に有効なHTML文字列を指定したとき、その内容を辞書として返すことを確認する。
         （コールドゲーム解析時の不具合対応 #50）
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014090802.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014090802.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('西武', result['bat_first'])
         self.assertEqual('ロッテ', result['field_first'])
         self.assertEqual(GameType.pennant_race, result['game_type'])
@@ -293,8 +292,8 @@ class BaseballTest(TestCase):
         """
         parse_score_table()：引数に有効なHTML文字列(CSファーストステージ)を指定したとき、その内容を辞書として返すことを確認する。
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014101201.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014101201.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('日本ハム', result['bat_first'])
         self.assertEqual('オリックス', result['field_first'])
         self.assertEqual(GameType.first_stage, result['game_type'])
@@ -317,8 +316,8 @@ class BaseballTest(TestCase):
         """
         parse_score_table()：引数に有効なHTML文字列(CSファイナルステージ)を指定したとき、その内容を辞書として返すことを確認する。
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014101902.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/pl2014101902.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('日本ハム', result['bat_first'])
         self.assertEqual('ソフトバンク', result['field_first'])
         self.assertEqual(GameType.final_stage, result['game_type'])
@@ -338,8 +337,8 @@ class BaseballTest(TestCase):
         """
         parse_score_table()：引数に有効なHTML文字列(日本シリーズ)を指定したとき、その内容を辞書として返すことを確認する。
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2014/ns2014102901.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2014/ns2014102901.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('阪神', result['bat_first'])
         self.assertEqual('ソフトバンク', result['field_first'])
         self.assertEqual(GameType.nippon_series, result['game_type'])
@@ -359,8 +358,8 @@ class BaseballTest(TestCase):
         parse_score_table()：引数に有効なHTML文字列(オープン戦)を指定したとき、その内容を辞書として返すことを確認する。
         （オープン戦対応 #81）
         """
-        html = baseball.get_html('http://www.nikkansports.com/baseball/professional/score/2015/pg2015030803.html')
-        result = baseball.parse_score_table(html)
+        html = baseball._get_html('http://www.nikkansports.com/baseball/professional/score/2015/pg2015030803.html')
+        result = baseball._parse_table_score(html)
         self.assertEqual('西武', result['bat_first'])
         self.assertEqual('オリックス', result['field_first'])
         self.assertEqual(GameType.pre_season_game, result['game_type'])
@@ -382,21 +381,21 @@ class BaseballTest(TestCase):
         """
         parse_score_table()：引数に無効なHTML文字列を指定したとき、ParseErrorが送出されることを確認する。
         """
-        with self.assertRaises(ParseError):
-            baseball.parse_score_table('えいちてぃーえむえる')
+        with self.assertRaises(PyslashError):
+            baseball._parse_table_score('えいちてぃーえむえる')
 
     def test_get_champions_01(self):
         """
         get_champions()：引数に2014年を指定したとき、2014年の優勝チームを返すことを確認する。
         """
-        result = baseball.get_champions(datetime.datetime(2014, 11, 1))
+        result = baseball._get_champions(2014)
         self.assertEqual(('ソフトバンク', '巨人'), result)
 
     def test_get_champions_02(self):
         """
         get_champions()：引数に2013年を指定したとき、2013年の優勝チームを返すことを確認する。
         """
-        result = baseball.get_champions(datetime.datetime(2013, 4, 1))
+        result = baseball._get_champions(2013)
         self.assertEqual(('楽天', '巨人'), result)
 
     # def test_get_champions_of_this_year_01():
@@ -526,7 +525,7 @@ class BaseballTest(TestCase):
                 </tr>
             </table>
         """)
-        result = baseball.parse_ranking(soup)
+        result = baseball._get_top(soup)
         self.assertEqual('ソフトバンク', result)
 
     def test_parse_ranking_02(self):
@@ -649,14 +648,14 @@ class BaseballTest(TestCase):
                 </tr>
             </table>
         """)
-        result = baseball.parse_ranking(soup)
+        result = baseball._get_top(soup)
         self.assertEqual('巨人', result)
 
     def test_get_champions_before_this_year_01(self):
         """
         get_champions_before_this_year()：引数に2008年を指定したとき、2008年の優勝チームを返すことを確認する。
         """
-        result = baseball.get_champions_before_this_year(2008)
+        result = baseball._get_champions_before_this_year(2008)
         self.assertEqual(('西武', '巨人'), result)
 
     def test_parse_champion_list_01(self):
@@ -755,7 +754,7 @@ class BaseballTest(TestCase):
                 </tr>
             </table>
         """
-        result = baseball.parse_champion_list(html, 2008)
+        result = baseball._get_champion(html, 2008)
         self.assertEqual('西武', result)
 
     def test_parse_pitcher_01(self):
@@ -783,7 +782,7 @@ class BaseballTest(TestCase):
             </tr>
         """)
         node = soup.find_all('td')
-        result = baseball.parse_pitcher(node)
+        result = baseball._parse_pitcher(node)
         self.assertEqual(('高橋', 2, 1, 28), result)
 
     def test_parse_pitcher_02(self):
@@ -811,22 +810,22 @@ class BaseballTest(TestCase):
             </tr>
         """)
         node = soup.find_all('td')
-        result = baseball.parse_pitcher(node)
+        result = baseball._parse_pitcher(node)
         self.assertEqual(('レイノルズ', 3, 5, 0), result)
 
     def test_parse_date_01(self):
         """
         parse_date()：引数に有効なURLを指定したとき、試合日を返すことを確認する。
         """
-        result = baseball.parse_date('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
-        self.assertEqual(datetime.datetime(2014, 5, 2), result)
+        result = baseball._parse_day('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html')
+        self.assertEqual(datetime.date(2014, 5, 2), result)
 
     def test_parse_date_02(self):
         """
         parse_date()：引数に無効なURLを指定したとき、ParseErrorが送出されることを確認する。
         """
-        with self.assertRaises(ParseError):
-            baseball.parse_date('http://www.konami.jp/am/qma/character_s/')
+        with self.assertRaises(PyslashError):
+            baseball._parse_day('http://www.konami.jp/am/qma/character_s/')
 
     def test_create_score_table_01(self):
         """
@@ -862,7 +861,7 @@ class BaseballTest(TestCase):
             [本塁打]
               7回表 佐藤賢  3号 ソロ （牧田）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2014, 4, 29))
+        result = baseball._format_result(data, datetime.datetime(2014, 4, 29))
         self.assertEqual(expected, result)
 
     def test_create_score_table_02(self):
@@ -902,7 +901,7 @@ class BaseballTest(TestCase):
               8回表 ランサム  1号 ソロ　 （吉原）
               9回表 浅村　　  2号 ２ラン （吉原）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2014, 4, 1))
+        result = baseball._format_result(data, datetime.datetime(2014, 4, 1))
         self.assertEqual(expected, result)
 
     def test_create_score_table_03(self):
@@ -938,7 +937,7 @@ class BaseballTest(TestCase):
             [本塁打]
               10回表 ペーニャ  1号 ソロ （宮西）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2014, 3, 28))
+        result = baseball._format_result(data, datetime.datetime(2014, 3, 28))
         self.assertEqual(expected, result)
 
     def test_create_score_table_04(self):
@@ -980,7 +979,7 @@ class BaseballTest(TestCase):
               3回表 浅村  7号 ソロ　 （塩見）
               4回表 山崎  1号 ２ラン （塩見）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2014, 5, 18))
+        result = baseball._format_result(data, datetime.datetime(2014, 5, 18))
         self.assertEqual(expected, result)
 
     def test_create_score_table_05(self):
@@ -1028,7 +1027,7 @@ class BaseballTest(TestCase):
                8回表 木村　　  8号 ３ラン （ソーサ）
               10回表 脇谷　　  1号 ソロ　 （加賀）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2014, 6, 21))
+        result = baseball._format_result(data, datetime.datetime(2014, 6, 21))
         self.assertEqual(expected, result)
 
     def test_create_score_table_06(self):
@@ -1065,7 +1064,7 @@ class BaseballTest(TestCase):
               10回表 陽　 16号 ソロ　 （中郷）
               10回裏 森　  3号 ソロ　 （増井）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2014, 8, 16))
+        result = baseball._format_result(data, datetime.datetime(2014, 8, 16))
         self.assertEqual(expected, result)
 
     def test_create_score_table_07(self):
@@ -1105,7 +1104,7 @@ class BaseballTest(TestCase):
               4回裏 ホフパワー  1号 ソロ　 （西口）
               9回表 中村　　　  1号 ３ラン （宮西）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2011, 10, 30))
+        result = baseball._format_result(data, datetime.datetime(2011, 10, 30))
         self.assertEqual(expected, result)
 
     def test_create_score_table_08(self):
@@ -1149,7 +1148,7 @@ class BaseballTest(TestCase):
               4回裏 ジョーンズ　  2号 ２ラン （西野）
               7回裏 マギー　　　  1号 ソロ　 （ロサ）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2013, 10, 21))
+        result = baseball._format_result(data, datetime.datetime(2013, 10, 21))
         self.assertEqual(expected, result)
 
     def test_create_score_table_09(self):
@@ -1191,7 +1190,7 @@ class BaseballTest(TestCase):
               2回裏 坂本　　  1号 ソロ （西口）
               5回表 ボカチカ  1号 ソロ （内海）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2008, 11, 9))
+        result = baseball._format_result(data, datetime.datetime(2008, 11, 9))
         self.assertEqual(expected, result)
 
     def test_create_score_table_10(self):
@@ -1231,448 +1230,448 @@ class BaseballTest(TestCase):
               1回表 中村　　  1号 ２ラン （東明）
               7回裏 Ｔ－岡田  1号 ソロ　 （バスケス）
         """)
-        result = baseball.create_score_table(data, datetime.datetime(2015, 3, 8))
+        result = baseball._format_result(data, datetime.datetime(2015, 3, 8))
         self.assertEqual(expected, result)
 
     def test_get_long_team_name_01(self):
         """
         get_long_team_name()：引数に'西武'を指定したとき、'埼玉西武'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('西武')
+        result = baseball._get_long_team_name('西武')
         self.assertEqual('埼玉西武', result)
 
     def test_get_long_team_name_02(self):
         """
         get_long_team_name()：引数に'楽天'を指定したとき、'東北楽天'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('楽天')
+        result = baseball._get_long_team_name('楽天')
         self.assertEqual('東北楽天', result)
 
     def test_get_long_team_name_03(self):
         """
         get_long_team_name()：引数に'ロッテ'を指定したとき、'千葉ロッテ'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('ロッテ')
+        result = baseball._get_long_team_name('ロッテ')
         self.assertEqual('千葉ロッテ', result)
 
     def test_get_long_team_name_04(self):
         """
         get_long_team_name()：引数に'ソフトバンク'を指定したとき、'福岡ソフトバンク'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('ソフトバンク')
+        result = baseball._get_long_team_name('ソフトバンク')
         self.assertEqual('福岡ソフトバンク', result)
 
     def test_get_long_team_name_05(self):
         """
         get_long_team_name()：引数に'オリックス'を指定したとき、'オリックス'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('オリックス')
+        result = baseball._get_long_team_name('オリックス')
         self.assertEqual('オリックス', result)
 
     def test_get_long_team_name_06(self):
         """
         get_long_team_name()：引数に'日本ハム'を指定したとき、'北海道日本ハム'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('日本ハム')
+        result = baseball._get_long_team_name('日本ハム')
         self.assertEqual('北海道日本ハム', result)
 
     def test_get_long_team_name_07(self):
         """
         get_long_team_name()：引数に'巨人'を指定したとき、'読売'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('巨人')
+        result = baseball._get_long_team_name('巨人')
         self.assertEqual('読売', result)
 
     def test_get_long_team_name_08(self):
         """
         get_long_team_name()：引数に'阪神'を指定したとき、'阪神'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('阪神')
+        result = baseball._get_long_team_name('阪神')
         self.assertEqual('阪神', result)
 
     def test_get_long_team_name_09(self):
         """
         get_long_team_name()：引数に'広島'を指定したとき、'広島東洋'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('広島')
+        result = baseball._get_long_team_name('広島')
         self.assertEqual('広島東洋', result)
 
     def test_get_long_team_name_10(self):
         """
         get_long_team_name()：引数に'中日'を指定したとき、'中日'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('中日')
+        result = baseball._get_long_team_name('中日')
         self.assertEqual('中日', result)
 
     def test_get_long_team_name_11(self):
         """
         get_long_team_name()：引数に'ＤｅＮＡ'を指定したとき、'横浜ＤｅＮＡ'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('ＤｅＮＡ')
+        result = baseball._get_long_team_name('ＤｅＮＡ')
         self.assertEqual('横浜ＤｅＮＡ', result)
 
     def test_get_long_team_name_12(self):
         """
         get_long_team_name()：引数に'ヤクルト'を指定したとき、'東京ヤクルト'を返すことを確認する。
         """
-        result = baseball.get_long_team_name('ヤクルト')
+        result = baseball._get_long_team_name('ヤクルト')
         self.assertEqual('東京ヤクルト', result)
 
     def test_get_long_stadium_name_01(self):
         """
         get_long_stadium_name()：引数に'西武ドーム'を指定したとき、'西武ドーム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('西武ドーム')
+        result = baseball._get_long_stadium_name('西武ドーム')
         self.assertEqual('西武ドーム', result)
 
     def test_get_long_stadium_name_02(self):
         """
         get_long_stadium_name()：引数に'コボスタ宮城'を指定したとき、'楽天Koboスタジアム宮城'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('コボスタ宮城')
+        result = baseball._get_long_stadium_name('コボスタ宮城')
         self.assertEqual('楽天Koboスタジアム宮城', result)
 
     def test_get_long_stadium_name_03(self):
         """
         get_long_stadium_name()：引数に'ＱＶＣマリン'を指定したとき、'QVCマリンフィールド'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('ＱＶＣマリン')
+        result = baseball._get_long_stadium_name('ＱＶＣマリン')
         self.assertEqual('QVCマリンフィールド', result)
 
     def test_get_long_stadium_name_04(self):
         """
         get_long_stadium_name()：引数に'ヤフオクドーム'を指定したとき、'福岡 ヤフオク!ドーム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('ヤフオクドーム')
+        result = baseball._get_long_stadium_name('ヤフオクドーム')
         self.assertEqual('福岡 ヤフオク!ドーム', result)
 
     def test_get_long_stadium_name_05(self):
         """
         get_long_stadium_name()：引数に'京セラドーム大阪'を指定したとき、'京セラドーム大阪'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('京セラドーム大阪')
+        result = baseball._get_long_stadium_name('京セラドーム大阪')
         self.assertEqual('京セラドーム大阪', result)
 
     def test_get_long_stadium_name_06(self):
         """
         get_long_stadium_name()：引数に'札幌ドーム'を指定したとき、'札幌ドーム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('札幌ドーム')
+        result = baseball._get_long_stadium_name('札幌ドーム')
         self.assertEqual('札幌ドーム', result)
 
     def test_get_long_stadium_name_07(self):
         """
         get_long_stadium_name()：引数に'東京ドーム'を指定したとき、'東京ドーム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('東京ドーム')
+        result = baseball._get_long_stadium_name('東京ドーム')
         self.assertEqual('東京ドーム', result)
 
     def test_get_long_stadium_name_08(self):
         """
         get_long_stadium_name()：引数に'甲子園'を指定したとき、'阪神甲子園球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('甲子園')
+        result = baseball._get_long_stadium_name('甲子園')
         self.assertEqual('阪神甲子園球場', result)
 
     def test_get_long_stadium_name_09(self):
         """
         get_long_stadium_name()：引数に'マツダスタジアム'を指定したとき、'Mazda Zoom-Zoomスタジアム広島'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('マツダスタジアム')
+        result = baseball._get_long_stadium_name('マツダスタジアム')
         self.assertEqual('Mazda Zoom-Zoomスタジアム広島', result)
 
     def test_get_long_stadium_name_10(self):
         """
         get_long_stadium_name()：引数に'ナゴヤドーム'を指定したとき、'ナゴヤドーム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('ナゴヤドーム')
+        result = baseball._get_long_stadium_name('ナゴヤドーム')
         self.assertEqual('ナゴヤドーム', result)
 
     def test_get_long_stadium_name_11(self):
         """
         get_long_stadium_name()：引数に'横浜'を指定したとき、'横浜スタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('横浜')
+        result = baseball._get_long_stadium_name('横浜')
         self.assertEqual('横浜スタジアム', result)
 
     def test_get_long_stadium_name_12(self):
         """
         get_long_stadium_name()：引数に'神宮'を指定したとき、'明治神宮野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('神宮')
+        result = baseball._get_long_stadium_name('神宮')
         self.assertEqual('明治神宮野球場', result)
 
     def test_get_long_stadium_name_13(self):
         """
         get_long_stadium_name()：引数に'ほっともっと神戸'を指定したとき、'ほっともっとフィールド神戸'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('ほっともっと神戸')
+        result = baseball._get_long_stadium_name('ほっともっと神戸')
         self.assertEqual('ほっともっとフィールド神戸', result)
 
     def test_get_long_stadium_name_14(self):
         """
         get_long_stadium_name()：引数に'大宮'を指定したとき、'埼玉県営大宮公園野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('大宮')
+        result = baseball._get_long_stadium_name('大宮')
         self.assertEqual('埼玉県営大宮公園野球場', result)
 
     def test_get_long_stadium_name_15(self):
         """
         get_long_stadium_name()：引数に'静岡'を指定したとき、'静岡県草薙総合運動場硬式野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('静岡')
+        result = baseball._get_long_stadium_name('静岡')
         self.assertEqual('静岡県草薙総合運動場硬式野球場', result)
 
     def test_get_long_stadium_name_16(self):
         """
         get_long_stadium_name()：引数に'サンマリン宮崎'を指定したとき、'サンマリンスタジアム宮崎'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('サンマリン宮崎')
+        result = baseball._get_long_stadium_name('サンマリン宮崎')
         self.assertEqual('サンマリンスタジアム宮崎', result)
 
     def test_get_long_stadium_name_17(self):
         """
         get_long_stadium_name()：引数に'鹿児島'を指定したとき、'鹿児島県立鴨池野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('鹿児島')
+        result = baseball._get_long_stadium_name('鹿児島')
         self.assertEqual('鹿児島県立鴨池野球場', result)
 
     def test_get_long_stadium_name_18(self):
         """
         get_long_stadium_name()：引数に'北九州'を指定したとき、'北九州市民球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('北九州')
+        result = baseball._get_long_stadium_name('北九州')
         self.assertEqual('北九州市民球場', result)
 
     def test_get_long_stadium_name_19(self):
         """
         get_long_stadium_name()：引数に'函館'を指定したとき、'オーシャンスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('函館')
+        result = baseball._get_long_stadium_name('函館')
         self.assertEqual('オーシャンスタジアム', result)
 
     def test_get_long_stadium_name_20(self):
         """
         get_long_stadium_name()：引数に'いわき'を指定したとき、'いわきグリーンスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('いわき')
+        result = baseball._get_long_stadium_name('いわき')
         self.assertEqual('いわきグリーンスタジアム', result)
 
     def test_get_long_stadium_name_21(self):
         """
         get_long_stadium_name()：引数に'どらドラパーク米子'を指定したとき、'どらドラパーク米子市民球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('どらドラパーク米子')
+        result = baseball._get_long_stadium_name('どらドラパーク米子')
         self.assertEqual('どらドラパーク米子市民球場', result)
 
     def test_get_long_stadium_name_22(self):
         """
         get_long_stadium_name()：引数に'バッティングパレス相石ひらつか'を指定したとき、'バッティングパレス相石スタジアムひらつか'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('バッティングパレス相石ひらつか')
+        result = baseball._get_long_stadium_name('バッティングパレス相石ひらつか')
         self.assertEqual('バッティングパレス相石スタジアムひらつか', result)
 
     def test_get_long_stadium_name_23(self):
         """
         get_long_stadium_name()：引数に'ひたちなか'を指定したとき、'ひたちなか市民球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('ひたちなか')
+        result = baseball._get_long_stadium_name('ひたちなか')
         self.assertEqual('ひたちなか市民球場', result)
 
     def test_get_long_stadium_name_24(self):
         """
         get_long_stadium_name()：引数に'秋田'を指定したとき、'こまちスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('秋田')
+        result = baseball._get_long_stadium_name('秋田')
         self.assertEqual('こまちスタジアム', result)
 
     def test_get_long_stadium_name_25(self):
         """
         get_long_stadium_name()：引数に'盛岡'を指定したとき、'岩手県営野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('盛岡')
+        result = baseball._get_long_stadium_name('盛岡')
         self.assertEqual('岩手県営野球場', result)
 
     def test_get_long_stadium_name_26(self):
         """
         get_long_stadium_name()：引数に'三次'を指定したとき、'三次きんさいスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('三次')
+        result = baseball._get_long_stadium_name('三次')
         self.assertEqual('三次きんさいスタジアム', result)
 
     def test_get_long_stadium_name_27(self):
         """
         get_long_stadium_name()：引数に'呉'を指定したとき、'呉市二河野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('呉')
+        result = baseball._get_long_stadium_name('呉')
         self.assertEqual('呉市二河野球場', result)
 
     def test_get_long_stadium_name_28(self):
         """
         get_long_stadium_name()：引数に'郡山'を指定したとき、'郡山総合運動場開成山野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('郡山')
+        result = baseball._get_long_stadium_name('郡山')
         self.assertEqual('郡山総合運動場開成山野球場', result)
 
     def test_get_long_stadium_name_29(self):
         """
         get_long_stadium_name()：引数に'浜松'を指定したとき、'浜松球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('浜松')
+        result = baseball._get_long_stadium_name('浜松')
         self.assertEqual('浜松球場', result)
 
     def test_get_long_stadium_name_30(self):
         """
         get_long_stadium_name()：引数に'倉敷'を指定したとき、'マスカットスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('倉敷')
+        result = baseball._get_long_stadium_name('倉敷')
         self.assertEqual('マスカットスタジアム', result)
 
     def test_get_long_stadium_name_31(self):
         """
         get_long_stadium_name()：引数に'金沢'を指定したとき、'石川県立野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('金沢')
+        result = baseball._get_long_stadium_name('金沢')
         self.assertEqual('石川県立野球場', result)
 
     def test_get_long_stadium_name_32(self):
         """
         get_long_stadium_name()：引数に'富山'を指定したとき、'富山市民球場アルペンスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('富山')
+        result = baseball._get_long_stadium_name('富山')
         self.assertEqual('富山市民球場アルペンスタジアム', result)
 
     def test_get_long_stadium_name_33(self):
         """
         get_long_stadium_name()：引数に'沖縄セルラー那覇'を指定したとき、'沖縄セルラースタジアム那覇'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('沖縄セルラー那覇')
+        result = baseball._get_long_stadium_name('沖縄セルラー那覇')
         self.assertEqual('沖縄セルラースタジアム那覇', result)
 
     def test_get_long_stadium_name_34(self):
         """
         get_long_stadium_name()：引数に'旭川'を指定したとき、'スタルヒン球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('旭川')
+        result = baseball._get_long_stadium_name('旭川')
         self.assertEqual('スタルヒン球場', result)
 
     def test_get_long_stadium_name_35(self):
         """
         get_long_stadium_name()：引数に'荘内銀行・日新製薬スタジアム'を指定したとき、'荘内銀行・日新製薬スタジアムやまがた'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('荘内銀行・日新製薬スタジアム')
+        result = baseball._get_long_stadium_name('荘内銀行・日新製薬スタジアム')
         self.assertEqual('荘内銀行・日新製薬スタジアムやまがた', result)
 
     def test_get_long_stadium_name_36(self):
         """
         get_long_stadium_name()：引数に'帯広'を指定したとき、'帯広の森野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('帯広')
+        result = baseball._get_long_stadium_name('帯広')
         self.assertEqual('帯広の森野球場', result)
 
     def test_get_long_stadium_name_37(self):
         """
         get_long_stadium_name()：引数に'豊橋'を指定したとき、'豊橋市民球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('豊橋')
+        result = baseball._get_long_stadium_name('豊橋')
         self.assertEqual('豊橋市民球場', result)
 
     def test_get_long_stadium_name_38(self):
         """
         get_long_stadium_name()：引数に'ハードオフ新潟'を指定したとき、'HARD OFF ECOスタジアム新潟'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('ハードオフ新潟')
+        result = baseball._get_long_stadium_name('ハードオフ新潟')
         self.assertEqual('HARD OFF ECOスタジアム新潟', result)
 
     def test_get_long_stadium_name_39(self):
         """
         get_long_stadium_name()：引数に'熊本'を指定したとき、'藤崎台県営野球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('熊本')
+        result = baseball._get_long_stadium_name('熊本')
         self.assertEqual('藤崎台県営野球場', result)
 
     def test_get_long_stadium_name_40(self):
         """
         get_long_stadium_name()：引数に'岐阜'を指定したとき、'長良川球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('岐阜')
+        result = baseball._get_long_stadium_name('岐阜')
         self.assertEqual('長良川球場', result)
 
     def test_get_long_stadium_name_41(self):
         """
         get_long_stadium_name()：引数に'松山'を指定したとき、'坊っちゃんスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('松山')
+        result = baseball._get_long_stadium_name('松山')
         self.assertEqual('坊っちゃんスタジアム', result)
 
     def test_get_long_stadium_name_42(self):
         """
         get_long_stadium_name()：引数に'長野'を指定したとき、'長野オリンピックスタジアム'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('長野')
+        result = baseball._get_long_stadium_name('長野')
         self.assertEqual('長野オリンピックスタジアム', result)
 
     def test_get_long_stadium_name_43(self):
         """
         get_long_stadium_name()：引数に'上毛敷島'を指定したとき、'上毛新聞敷島球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('上毛敷島')
+        result = baseball._get_long_stadium_name('上毛敷島')
         self.assertEqual('上毛新聞敷島球場', result)
 
     def test_get_long_stadium_name_44(self):
         """
         get_long_stadium_name()：引数に'宇都宮'を指定したとき、'宇都宮清原球場'を返すことを確認する。
         """
-        result = baseball.get_long_stadium_name('宇都宮')
+        result = baseball._get_long_stadium_name('宇都宮')
         self.assertEqual('宇都宮清原球場', result)
 
     def test_create_score_line_01(self):
         """
         create_score_line()：引数に有効な配列を指定したとき、スコア行を返すことを確認する。
         """
-        result = baseball.create_score_line(['0', '0', '0', '0', '0', '0', '1', '0', '0'])
+        result = baseball._format_score(['0', '0', '0', '0', '0', '0', '1', '0', '0'])
         self.assertEqual('0 0 0  0 0 0  1 0 0', result)
 
     def test_create_score_line_02(self):
         """
         create_score_line()：引数に有効な配列(9回裏なし)を指定したとき、スコア行を返すことを確認する。
         """
-        result = baseball.create_score_line(['0', '0', '1', '0', '2', '0', '0', '1', 'x'])
+        result = baseball._format_score(['0', '0', '1', '0', '2', '0', '0', '1', 'x'])
         self.assertEqual('0 0 1  0 2 0  0 1 x', result)
 
     def test_create_score_line_03(self):
         """
         create_score_line()：引数に有効な配列(サヨナラ)を指定したとき、スコア行を返すことを確認する。
         """
-        result = baseball.create_score_line(['0', '1', '0', '1', '1', '0', '1', '0', '1x'])
+        result = baseball._format_score(['0', '1', '0', '1', '1', '0', '1', '0', '1x'])
         self.assertEqual('0 1 0  1 1 0  1 0 1x', result)
 
     def test_create_score_line_04(self):
         """
         create_score_line()：引数に有効な配列(延長戦)を指定したとき、スコア行を返すことを確認する。
         """
-        result = baseball.create_score_line(['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'])
+        result = baseball._format_score(['2', '1', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0'])
         self.assertEqual('2 1 0  0 0 0  0 0 1  1 0 0', result)
 
     def test_create_score_line_05(self):
         """
         create_score_line()：引数に有効な配列(コールド)を指定したとき、スコア行を返すことを確認する。
         """
-        result = baseball.create_score_line(['3', '0', '0', '1', '2', '1', '0x'])
+        result = baseball._format_score(['3', '0', '0', '1', '2', '1', '0x'])
         self.assertEqual('3 0 0  1 2 1  0x', result)
 
     def test_create_pitcher_line_01(self):
         """
         create_pitcher_line()：有効な引数を指定したとき、投手成績行を返すことを確認する。
         """
-        result = baseball.create_pitcher_line('Ｓ', '高橋', (2, 1, 28))
+        result = baseball._format_pitcher('Ｓ', '高橋', (2, 1, 28))
         self.assertEqual('[Ｓ] 高橋 2勝1敗28Ｓ\n', result)
 
     def test_search_or_error_01(self):
         """
         search_or_error()：マッチする条件を引数として指定したとき、マッチングオブジェクトを返すことを確認する。
         """
-        result = baseball.search_or_error(r'(\D+)(\d+)', 'マッチ123')
+        result = baseball._search_or_error(r'(\D+)(\d+)', 'マッチ123')
         self.assertEqual(result.group(0), 'マッチ123')
         self.assertEqual(result.group(1), 'マッチ')
         self.assertEqual(result.group(2), '123')
@@ -1681,15 +1680,15 @@ class BaseballTest(TestCase):
         """
         search_or_error()：マッチしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
         """
-        with self.assertRaises(ParseError):
-            baseball.search_or_error(r'(\d+)(\D+)', 'アンマッチ123')
+        with self.assertRaises(PyslashError):
+            baseball._search_or_error(r'(\d+)(\D+)', 'アンマッチ123')
 
     def test_find_or_error_01(self):
         """
         find_or_error()：検索にヒットする条件を引数として指定したとき、ヒットしたノードを返すことを確認する。
         """
         soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
-        result = baseball.find_or_error(soup, 'span')
+        result = baseball._find_or_error(soup, 'span')
         self.assertEqual(result.string, 'テスト')
 
     def test_find_or_error_02(self):
@@ -1697,28 +1696,28 @@ class BaseballTest(TestCase):
         find_or_error()：検索にしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
         """
         soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
-        with self.assertRaises(ParseError):
-            baseball.find_or_error(soup, 'a')
+        with self.assertRaises(PyslashError):
+            baseball._find_or_error(soup, 'a')
 
     def test_add_space_01(self):
         """
         add_space()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の末尾にスペースが付与されていることを確認する。
         """
-        result = baseball.add_space('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
+        result = baseball._add_space('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
         self.assertEqual(('yui    ', 'mio    ', 'ritsu  ', 'tsumugi', 'azusa  '), result)
 
     def test_add_space_02(self):
         """
         add_space()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
         """
-        result = baseball.add_space('Python', 'Erlang', 'Groovy', 'Pascal')
+        result = baseball._add_space('Python', 'Erlang', 'Groovy', 'Pascal')
         self.assertEqual(('Python', 'Erlang', 'Groovy', 'Pascal'), result)
 
     def test_add_em_space_01(self):
         """
         add_em_space()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の末尾にスペースが付与されていることを確認する。
         """
-        result = baseball.add_em_space(
+        result = baseball._add_em_space(
             '埼玉西武',
             '東北楽天',
             '千葉ロッテ',
@@ -1739,19 +1738,19 @@ class BaseballTest(TestCase):
         """
         add_em_space()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
         """
-        result = baseball.add_em_space('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ')
+        result = baseball._add_em_space('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ')
         self.assertEqual(('トレンティーノ', 'パグリアルーロ', 'シアンフロッコ'), result)
 
     def test_space_padding_01(self):
         """
         space_padding()：引数に文字列長の異なる配列を指定したとき、最大長の要素以外の先頭にスペースが付与されていることを確認する。
         """
-        result = baseball.space_padding('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
+        result = baseball._space_padding('yui', 'mio', 'ritsu', 'tsumugi', 'azusa')
         self.assertEqual(('    yui', '    mio', '  ritsu', 'tsumugi', '  azusa'), result)
 
     def test_space_padding_02(self):
         """
         space_padding()：引数に文字列長の等しい配列を指定したとき、スペースが付与されないことを確認する。
         """
-        result = baseball.space_padding('Python', 'Erlang', 'Groovy', 'Pascal')
+        result = baseball._space_padding('Python', 'Erlang', 'Groovy', 'Pascal')
         self.assertEqual(('Python', 'Erlang', 'Groovy', 'Pascal'), result)
