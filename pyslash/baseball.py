@@ -254,7 +254,7 @@ def _get_today_table_score_url(team):
 
     # 全カードのテーブルスコアのURLを取得する
     html = _get_html(NIKKANSPORTS_URL + TODAY_URL)
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, 'html.parser')
     score_tables = soup.find_all('table', {'class': 'scoreTable'})
 
     # 当該チームのスコアを探索する
@@ -283,7 +283,7 @@ def _parse_table_score(html):
     score_data = {}
 
     # BeautifulSoupオブジェクトを構築する
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, 'html.parser')
 
     # 先攻チーム／後攻チーム
     card_title = _find_or_error(soup, 'h4', {'id': 'cardTitle'})
@@ -426,7 +426,7 @@ def _get_champions_of_this_year():
     html = _get_html(NIKKANSPORTS_URL + STANDINGS_URL)
 
     # BeautifulSoupオブジェクトを構築する
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, 'html.parser')
 
     # 両リーグの優勝チームを取得する
     tables = soup.find_all('table')
@@ -482,7 +482,7 @@ def _get_champion(html, year):
     :rtype: str
     """
     # BeautifulSoupオブジェクトを構築する
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, 'html.parser')
 
     # 歴代優勝チームのtable要素を取得する
     table = _find_or_error(soup, 'table', {'class': 'nsTable'})
