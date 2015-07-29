@@ -524,7 +524,7 @@ class BaseballTest(TestCase):
                     <td>3.97</td>
                 </tr>
             </table>
-        """)
+        """, 'html.parser')
         result = baseball._get_top(soup)
         self.assertEqual('ソフトバンク', result)
 
@@ -647,7 +647,7 @@ class BaseballTest(TestCase):
                     <td>4.62</td>
                 </tr>
             </table>
-        """)
+        """, 'html.parser')
         result = baseball._get_top(soup)
         self.assertEqual('巨人', result)
 
@@ -780,7 +780,7 @@ class BaseballTest(TestCase):
                 <td class="line">０</td>
                 <td class="line">2.04</td>
             </tr>
-        """)
+        """, 'html.parser')
         node = soup.find_all('td')
         result = baseball._parse_pitcher(node)
         self.assertEqual(('高橋', 2, 1, 28), result)
@@ -808,7 +808,7 @@ class BaseballTest(TestCase):
                 <td>５</td>
                 <td>4.47</td>
             </tr>
-        """)
+        """, 'html.parser')
         node = soup.find_all('td')
         result = baseball._parse_pitcher(node)
         self.assertEqual(('レイノルズ', 3, 5, 0), result)
@@ -1694,7 +1694,7 @@ class BaseballTest(TestCase):
         """
         find_or_error()：検索にヒットする条件を引数として指定したとき、ヒットしたノードを返すことを確認する。
         """
-        soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
+        soup = BeautifulSoup('<div><p><span>テスト</span></p></div>', 'html.parser')
         result = baseball._find_or_error(soup, 'span')
         self.assertEqual(result.string, 'テスト')
 
@@ -1702,7 +1702,7 @@ class BaseballTest(TestCase):
         """
         find_or_error()：検索にしない条件を引数として指定したとき、ParseErrorが送出されることを確認する。
         """
-        soup = BeautifulSoup('<div><p><span>テスト</span></p></div>')
+        soup = BeautifulSoup('<div><p><span>テスト</span></p></div>', 'html.parser')
         with self.assertRaises(PyslashError):
             baseball._find_or_error(soup, 'a')
 
