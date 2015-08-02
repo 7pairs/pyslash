@@ -1203,7 +1203,7 @@ class BaseballTest(TestCase):
             'field_first': 'オリックス',
             'game_type': GameType.pre_season_game,
             'match': 1,
-            'stadium': 'わかさ京都',
+            'stadium': 'わかさスタジアム京都',
             'score': [
                 ['2', '4', '0', '0', '5', '0', '0', '3', '0'],
                 ['0', '0', '0', '0', '0', '0', '1', '0', '1'],
@@ -1218,7 +1218,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【オリックス vs 埼玉西武 オープン戦】
-            （2015年3月8日：わかさ京都）
+            （2015年3月8日：わかさスタジアム京都）
 
             埼玉西武　  2 4 0  0 5 0  0 3 0  14
             オリックス  0 0 0  0 0 0  1 0 1   2
