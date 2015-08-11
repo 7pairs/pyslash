@@ -1639,6 +1639,13 @@ class BaseballTest(TestCase):
         result = baseball._get_long_stadium_name('わかさ京都')
         self.assertEqual('わかさスタジアム京都', result)
 
+    def test_get_long_stadium_name_47(self):
+        """
+        get_long_stadium_name()：引数に'福島'を指定したとき、'福島県営あづま球場'を返すことを確認する。
+        """
+        result = baseball._get_long_stadium_name('福島')
+        self.assertEqual('福島県営あづま球場', result)
+
     def test_create_score_line_01(self):
         """
         create_score_line()：引数に有効な配列を指定したとき、スコア行を返すことを確認する。
