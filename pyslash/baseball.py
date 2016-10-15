@@ -58,7 +58,7 @@ NIKKANSPORTS_URL = 'http://www.nikkansports.com'
 TODAY_URL = '/baseball/professional/score/'
 
 # 順位表のURL
-STANDINGS_URL = '/baseball/professional/data/pf-standings.html'
+STANDINGS_URL = '/baseball/professional/data/standings/'
 
 # パ・リーグ優勝チームのURL
 VICTORY_P_URL = '/baseball/professional/data/pfdata/victory/pf-victory_pl.html'
