@@ -35,7 +35,7 @@ class BaseballTest(TestCase):
         """
         expected = textwrap.dedent("""\
             【千葉ロッテ vs 埼玉西武 第6回戦】
-            （2014年5月2日：QVCマリンフィールド）
+            （2014年5月2日／QVCマリンフィールド）
 
             埼玉西武　  0 2 0  0 0 0  0 0 0  2
             千葉ロッテ  0 0 0  0 0 0  0 0 0  0
@@ -54,7 +54,7 @@ class BaseballTest(TestCase):
         get_today_table_score_url.return_value = 'http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html'
         expected = textwrap.dedent("""\
             【埼玉西武 vs 阪神 第3回戦】
-            （2014年6月14日：西武ドーム）
+            （2014年6月14日／西武ドーム）
 
             阪神　　  1 0 0  0 0 1  0 0 0  2
             埼玉西武  0 2 0  0 0 1  0 0 x  3
@@ -90,7 +90,7 @@ class BaseballTest(TestCase):
         """
         expected = textwrap.dedent("""\
             【千葉ロッテ vs 埼玉西武 第6回戦】
-            （2014年5月2日：QVCマリンフィールド）
+            （2014年5月2日／QVCマリンフィールド）
 
             埼玉西武　  0 2 0  0 0 0  0 0 0  2
             千葉ロッテ  0 0 0  0 0 0  0 0 0  0
@@ -849,7 +849,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【埼玉西武 vs 北海道日本ハム 第4回戦】
-            （2014年4月29日：西武ドーム）
+            （2014年4月29日／西武ドーム）
 
             北海道日本ハム  0 0 0  0 0 0  1 0 0  1
             埼玉西武　　　  0 0 1  0 2 0  0 1 x  4
@@ -889,7 +889,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【千葉ロッテ vs 埼玉西武 第1回戦】
-            （2014年4月1日：QVCマリンフィールド）
+            （2014年4月1日／QVCマリンフィールド）
 
             埼玉西武　  0 0 2  0 0 1  0 1 2  6
             千葉ロッテ  1 0 0  0 0 0  0 1 0  2
@@ -926,7 +926,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【北海道日本ハム vs オリックス 第1回戦】
-            （2014年3月28日：札幌ドーム）
+            （2014年3月28日／札幌ドーム）
 
             オリックス　　  2 1 0  0 0 0  0 0 1  1 0 0   5
             北海道日本ハム  0 1 0  0 1 0  1 1 0  1 0 1x  6
@@ -966,7 +966,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【東北楽天 vs 埼玉西武 第10回戦】
-            （2014年5月18日：岩手県営野球場）
+            （2014年5月18日／岩手県営野球場）
 
             埼玉西武  1 4 1  2 0 1  0 3 0  12
             東北楽天  1 0 0  0 0 0  1 0 0   2
@@ -1011,7 +1011,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【横浜ＤｅＮＡ vs 埼玉西武 第3回戦】
-            （2014年6月21日：横浜スタジアム）
+            （2014年6月21日／横浜スタジアム）
 
             埼玉西武　　  2 0 0  0 0 0  0 3 1  1   7
             横浜ＤｅＮＡ  0 0 0  1 0 4  0 1 0  2x  8
@@ -1054,7 +1054,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【埼玉西武 vs 北海道日本ハム 第15回戦】
-            （2014年8月16日：西武ドーム）
+            （2014年8月16日／西武ドーム）
 
             北海道日本ハム  0 0 0  0 1 4  0 1 1  1 0 0  8
             埼玉西武　　　  0 0 0  0 6 0  0 1 0  1 0 0  8
@@ -1092,7 +1092,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【北海道日本ハム vs 埼玉西武 CSファーストステージ第2戦】
-            （2011年10月30日：札幌ドーム）
+            （2011年10月30日／札幌ドーム）
 
             埼玉西武　　　  0 0 0  0 1 0  0 1 6  8
             北海道日本ハム  0 0 0  1 0 0  0 0 0  1
@@ -1134,7 +1134,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【東北楽天 vs 千葉ロッテ CSファイナルステージ第4戦】
-            （2013年10月21日：日本製紙クリネックススタジアム宮城）
+            （2013年10月21日／日本製紙クリネックススタジアム宮城）
 
             千葉ロッテ  0 0 0  4 0 0  1 0 0  5
             東北楽天　  1 2 0  2 0 0  1 2 x  8
@@ -1177,7 +1177,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【読売 vs 埼玉西武 日本シリーズ第7戦】
-            （2008年11月9日：東京ドーム）
+            （2008年11月9日／東京ドーム）
 
             埼玉西武  0 0 0  0 1 0  0 2 0  3
             読売　　  1 1 0  0 0 0  0 0 0  2
@@ -1218,7 +1218,7 @@ class BaseballTest(TestCase):
         }
         expected = textwrap.dedent("""\
             【オリックス vs 埼玉西武 オープン戦】
-            （2015年3月8日：わかさスタジアム京都）
+            （2015年3月8日／わかさスタジアム京都）
 
             埼玉西武　  2 4 0  0 5 0  0 3 0  14
             オリックス  0 0 0  0 0 0  1 0 1   2

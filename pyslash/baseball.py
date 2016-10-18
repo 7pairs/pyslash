@@ -554,7 +554,7 @@ def _format_result(score_data, day):
     else:
         match = '第%d回戦' % score_data['match']
     result = '【%s vs %s %s】\n' % (field_first, bat_first, match)
-    result += '（%d年%d月%d日：%s）\n' % (
+    result += '（%d年%d月%d日／%s）\n' % (
         day.year,
         day.month,
         day.day,
