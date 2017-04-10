@@ -366,7 +366,8 @@ def _parse_table_score(html):
                 # イニングの見出しを収集する
                 inning_numbers = []
                 cols = rows[0].find_all('th')
-                for col in cols[8:]:
+#                for col in cols[8:]:
+                for col in cols[9:]:
                     inning = col.string.strip()
                     if inning:
                         inning_numbers.append(int(inning))
@@ -377,11 +378,13 @@ def _parse_table_score(html):
                 # 本塁打を収集する
                 for row in rows[1:]:
                     cols = row.find_all('td')
-                    for j, col in enumerate(cols[8:]):
+#                    for j, col in enumerate(cols[8:]):
+                    for j, col in enumerate(cols[9:]):
                         m = re.search(r'.本', col.string)
                         if m:
-                            m = _search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
-                            home_run_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
+#                            m = _search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
+#                            home_run_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
+                            home_run_innings[cols[1].string].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
 
             # 末尾の本塁打欄を解析する
             lines = footnote.find_all('dd')
@@ -508,6 +511,8 @@ def _parse_pitcher(node):
     :return: 投手名、勝利数、敗北数、セーブ数
     :rtype: tuple
     """
+    return node[1].string, int(node[3].string), int(node[4].string), int(node[5].string)
+
     # 投手名を切り出す
     m = _search_or_error(r'([^\s]+)\s（[^）]+）', node[1].string)
 
