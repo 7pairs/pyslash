@@ -25,6 +25,11 @@ from bs4 import BeautifulSoup
 from enum import Enum
 
 
+# 試合日が2017年以降か否か
+# ToDo: グローバル変数ではなくきちんとした処理にする
+after17 = True
+
+
 class PyslashError(Exception):
     """
     当ライブラリで想定していない入出力があったことを示す例外。
@@ -165,6 +170,9 @@ def create_result(team, day):
     # テーブルスコアのURLを取得する
     url = _get_table_score_url(team, day) if day else _get_today_table_score_url(team)
 
+    nonlocal after17
+    after17 = True if not day else day >= datetime.date(2017, 1, 1)
+
     # 試合結果を返す
     return create_result_by_url(url)
 
@@ -182,6 +190,10 @@ def create_result_by_url(url):
     html = _get_html(url)
     score_data = _parse_table_score(html)
     day = _parse_day(url)
+
+    nonlocal after17
+    after17 = day >= datetime.date(2017, 1, 1)
+
     return _format_result(score_data, day)
 
 
@@ -366,8 +378,7 @@ def _parse_table_score(html):
                 # イニングの見出しを収集する
                 inning_numbers = []
                 cols = rows[0].find_all('th')
-#                for col in cols[8:]:
-                for col in cols[9:]:
+                for col in cols[9 if after17 else 8:]:
                     inning = col.string.strip()
                     if inning:
                         inning_numbers.append(int(inning))
@@ -378,13 +389,14 @@ def _parse_table_score(html):
                 # 本塁打を収集する
                 for row in rows[1:]:
                     cols = row.find_all('td')
-#                    for j, col in enumerate(cols[8:]):
-                    for j, col in enumerate(cols[9:]):
+                    for j, col in enumerate(cols[9 if after17 else 8:]):
                         m = re.search(r'.本', col.string)
                         if m:
-#                            m = _search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
-#                            home_run_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
-                            home_run_innings[cols[1].string].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
+                            if after17:
+                                home_run_innings[cols[1].string].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
+                            else:
+                                m = _search_or_error(r'([^（]+)（[^）]+）', cols[1].string)
+                                home_run_innings[m.group(1)].append(str(inning_numbers[j]) + '回' + ['表', '裏'][i])
 
             # 末尾の本塁打欄を解析する
             lines = footnote.find_all('dd')
@@ -511,13 +523,14 @@ def _parse_pitcher(node):
     :return: 投手名、勝利数、敗北数、セーブ数
     :rtype: tuple
     """
-    return node[1].string, int(node[3].string), int(node[4].string), int(node[5].string)
+    if after17:
+        return node[1].string, int(node[3].string), int(node[4].string), int(node[5].string)
+    else:
+        # 投手名を切り出す
+        m = _search_or_error(r'([^\s]+)\s（[^）]+）', node[1].string)
 
-    # 投手名を切り出す
-    m = _search_or_error(r'([^\s]+)\s（[^）]+）', node[1].string)
-
-    # タプルに変換する
-    return m.group(1), int(node[2].string), int(node[3].string), int(node[4].string)
+        # タプルに変換する
+        return m.group(1), int(node[2].string), int(node[3].string), int(node[4].string)
 
 
 def _parse_day(url):
