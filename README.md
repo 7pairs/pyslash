@@ -5,15 +5,15 @@
 
 ## 概要
 
-"pyslash" は [nikkansports.com](http://www.nikkansports.com/) からプロ野球の試合結果を取得し、プレーンテキストで見やすいように整形するツールです。
-[ねことくまとへび](http://seven-pairs.hatenablog.jp/) というブログでライオンズ戦の戦評を書くときに利用しています。
-PythonでHTMLをslashし、プレーンテキストとして再構築することから "pyslash" と名付けました。
+"pyslash" は [nikkansports.com](http://www.nikkansports.com/) からプロ野球の試合結果を取得し、プレーンテキストとして整形するツールです。
+[StarterNotFoundException](http://lions.blue/) というブログで埼玉西武ライオンズ戦の戦評を書く際に利用しています。
+PythonでHTMLを切り刻み、プレーンテキストとして再構築することから "pyslash" と名付けました。
 それ以上の深い意味はありません。
 たぶん。
 
 ## バージョン
 
-Python3.4での動作を確認しています。また、Python3.2および3.3でもユニットテストを実施しています。
+Python3.6での動作を確認しています。また、Python3.2〜3.5でもユニットテストを実施しています。
 
 ## インストール
 
@@ -29,7 +29,7 @@ pipを利用して、GitHubから直接インストールすることもでき�
 $ pip install git+https://github.com/7pairs/pyslash.git
 ```
 
-## 実行方法
+## 実行
 
 ### チームと試合日を指定する
 
@@ -38,40 +38,50 @@ $ pyslash -t <team> [-d <day>]
 ```
 
 `<team>` には以下のいずれかの略号を指定してください。
-オリックス、横浜DeNAの略号に違和感があるかもしれませんが、nikkansports.com内での表記に準拠するためにこのような形になっています。
+横浜DeNA、オリックスの略号に違和感があるかもしれませんが、nikkansports.com内での表記に準拠するためこのような形になっています。
 
-|略号|チーム          |
-|----|----------------|
-|bs  |横浜DeNA        |
-|bu  |オリックス      |
-|c   |広島東洋        |
-|d   |中日            |
-|e   |東北楽天        |
-|f   |北海道日本ハム  |
-|g   |読売            |
-|h   |福岡ソフトバンク|
-|l   |埼玉西武        |
-|m   |千葉ロッテ      |
-|s   |東京ヤクルト    |
-|t   |阪神            |
+| 略号 | チーム           |
+|------|------------------|
+| bs   | 横浜DeNA         |
+| bu   | オリックス       |
+| c    | 広島東洋         |
+| d    | 中日             |
+| e    | 東北楽天         |
+| f    | 北海道日本ハム   |
+| g    | 読売             |
+| h    | 福岡ソフトバンク |
+| l    | 埼玉西武         |
+| m    | 千葉ロッテ       |
+| s    | 東京ヤクルト     |
+| t    | 阪神             |
 
 `<day>` には以下のいずれかの書式で試合日を指定してください。
 
-|書式      |解釈                              |
-|----------|----------------------------------|
-|`YYYYMMDD`|YYYY年MM月DD日として処理をします。|
-|`MMDD`    |今年のMM月DD日として処理をします。|
-|`DD`      |今月のDD日として処理をします。    |
+| 書式       | 処理                               |
+|------------|------------------------------------|
+| `YYYYMMDD` | YYYY年MM月DD日として処理をします。 |
+| `MMDD`     | 今年のMM月DD日として処理をします。 |
+| `DD`       | 今月のDD日として処理をします。     |
 
-なお、 `<day>` を指定しなかった場合は、nikkansports.comのトップページからリンクされている試合（当日の試合であることが多いでしょう）を対象とします。
+なお、 `-d` オプションを省略した場合は、nikkansports.comのトップページからリンクされている試合を対象として処理します。
 
 ### スコアのURLを指定する
 
-```
+```console
 $ pyslash -u <url>
 ```
 
 `<url>` にはnikkansports.com内のスコアのページのURLを指定してください。
+
+## ライブラリ
+
+pyslashでは下記のライブラリを利用しています。
+
+- [beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4)
+- [docopt](https://pypi.python.org/pypi/docopt)
+- [enum34](https://pypi.python.org/pypi/enum34)
+- [nose](https://pypi.python.org/pypi/nose)
+- [mock](https://pypi.python.org/pypi/mock)
 
 ## ライセンス
 
