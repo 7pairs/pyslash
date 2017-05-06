@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# Copyright 2015 Jun-ya HASEBA
+# Copyright 2014-2017 Jun-ya HASEBA
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,15 +21,19 @@ from setuptools import find_packages, setup
 from pyslash import __version__
 
 
+# セットアップを実行する
 setup(
     name='pyslash',
     version=__version__,
-    description='Tools for parsing nikkansports.com',
+    description='Tools for parsing "nikkansports.com".',
     author='Jun-ya HASEBA',
     author_email='7pairs@gmail.com',
     url='https://github.com/7pairs/pyslash',
     packages=find_packages(exclude=['tests']),
-    install_requires=['beautifulsoup4', 'docopt'],
+    install_requires=[
+        'beautifulsoup4',
+        'docopt'
+    ],
     entry_points="""\
     [console_scripts]
     pyslash = pyslash.executor:main
