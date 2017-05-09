@@ -170,7 +170,7 @@ def create_result(team, day):
     # テーブルスコアのURLを取得する
     url = _get_table_score_url(team, day) if day else _get_today_table_score_url(team)
 
-    nonlocal after17
+    global after17
     after17 = True if not day else day >= datetime.date(2017, 1, 1)
 
     # 試合結果を返す
@@ -191,7 +191,7 @@ def create_result_by_url(url):
     score_data = _parse_table_score(html)
     day = _parse_day(url)
 
-    nonlocal after17
+    global after17
     after17 = day >= datetime.date(2017, 1, 1)
 
     return _format_result(score_data, day)
