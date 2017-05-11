@@ -107,6 +107,56 @@ class BaseballTest(TestCase):
         )
         self.assertEqual(expected, result)
 
+    def test_get_score_table_by_url_02(self):
+        """
+        get_score_table_by_url()：引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
+        （不具合対応 #122）
+        """
+        baseball.after17 = True
+        expected = textwrap.dedent("""\
+            【北海道日本ハム vs 埼玉西武 第1回戦】
+            （2017年3月31日／札幌ドーム）
+            
+            埼玉西武　　　  0 2 0  0 0 4  1 0 1  8
+            北海道日本ハム  0 0 0  0 1 0  0 0 0  1
+            
+            [勝] 菊池 1勝0敗0Ｓ
+            [敗] 有原 0勝1敗0Ｓ
+            
+            [本塁打]
+              5回裏 市川  1号 ソロ （菊池）
+              9回表 浅村  1号 ソロ （武田）
+        """)
+        result = baseball.create_result_by_url(
+            'http://www.nikkansports.com/baseball/professional/score/2017/pl2017033104.html'
+        )
+        self.assertEqual(expected, result)
+
+    def test_get_score_table_by_url_03(self):
+        """
+        get_score_table_by_url()：引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
+        （不具合対応 #123）
+        """
+        baseball.after17 = True
+        expected = textwrap.dedent("""\
+            【北海道日本ハム vs 埼玉西武 第2回戦】
+            （2017年4月1日／札幌ドーム）
+            
+            埼玉西武　　　  0 0 0  1 0 0  0 0 0  1
+            北海道日本ハム  0 0 2  0 1 0  0 0 x  3
+            
+            [勝] メンドーサ 1勝0敗0Ｓ
+            [Ｓ] マーティン 0勝0敗1Ｓ
+            [敗] 野上　　　 0勝1敗0Ｓ
+            
+            [本塁打]
+              3回裏 西川  1号 ソロ （野上）
+        """)
+        result = baseball.create_result_by_url(
+            'http://www.nikkansports.com/baseball/professional/score/2017/pl2017040104.html'
+        )
+        self.assertEqual(expected, result)
+
     def test_get_game_url_01(self):
         """
         get_game_url()：引数に有効なチーム、試合日を指定したとき、スコアテーブルのURLを返すことを確認する。
