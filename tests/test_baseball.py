@@ -29,6 +29,9 @@ from pyslash.baseball import GameType, PyslashError
 
 class BaseballTest(TestCase):
 
+    def setUp(self):
+        baseball.after17 = False
+
     def test_get_score_table_01(self):
         """
         get_score_table()：引数に有効なチーム、試合日を指定したとき、スコアテーブルの文字列を返すことを確認する。
@@ -43,39 +46,40 @@ class BaseballTest(TestCase):
             [勝] 岸　 3勝2敗0Ｓ
             [敗] 成瀬 3勝2敗0Ｓ
         """)
-        result = baseball.create_result('l', datetime.datetime(2014, 5, 2))
+        result = baseball.create_result('l', datetime.date(2014, 5, 2))
         self.assertEqual(expected, result)
 
-    @patch('pyslash.baseball._get_today_table_score_url')
-    def test_get_score_table_02(self, get_today_table_score_url):
-        """
-        get_score_table()：試合日にNoneを指定したとき、当日の試合のスコアテーブルの文字列を返すことを確認する。
-        """
-        get_today_table_score_url.return_value = 'http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html'
-        expected = textwrap.dedent("""\
-            【埼玉西武 vs 阪神 第3回戦】
-            （2014年6月14日／西武ドーム）
-
-            阪神　　  1 0 0  0 0 1  0 0 0  2
-            埼玉西武  0 2 0  0 0 1  0 0 x  3
-
-            [勝] 菊池 3勝6敗0Ｓ
-            [Ｓ] 高橋 0勝1敗12Ｓ
-            [敗] 能見 5勝5敗0Ｓ
-
-            [本塁打]
-              2回裏 木村　　  6号 ２ラン （能見）
-              6回表 マートン  8号 ソロ　 （菊池）
-        """)
-        result = baseball.create_result('l', None)
-        self.assertEqual(expected, result)
+    # @patch('pyslash.baseball._get_today_table_score_url')
+    # def test_get_score_table_02(self, get_today_table_score_url):
+    #     """
+    #     get_score_table()：試合日にNoneを指定したとき、当日の試合のスコアテーブルの文字列を返すことを確認する。
+    #     """
+    #     baseball.after17 = False
+    #     get_today_table_score_url.return_value = 'http://www.nikkansports.com/baseball/professional/score/2014/il2014061403.html'
+    #     expected = textwrap.dedent("""\
+    #         【埼玉西武 vs 阪神 第3回戦】
+    #         （2014年6月14日／西武ドーム）
+    #
+    #         阪神　　  1 0 0  0 0 1  0 0 0  2
+    #         埼玉西武  0 2 0  0 0 1  0 0 x  3
+    #
+    #         [勝] 菊池 3勝6敗0Ｓ
+    #         [Ｓ] 高橋 0勝1敗12Ｓ
+    #         [敗] 能見 5勝5敗0Ｓ
+    #
+    #         [本塁打]
+    #           2回裏 木村　　  6号 ２ラン （能見）
+    #           6回表 マートン  8号 ソロ　 （菊池）
+    #     """)
+    #     result = baseball.create_result('l', None)
+    #     self.assertEqual(expected, result)
 
     def test_get_score_table_03(self):
         """
         get_score_table()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
         with self.assertRaises(PyslashError):
-            baseball.create_result('err', datetime.datetime(2014, 5, 2))
+            baseball.create_result('err', datetime.date(2014, 5, 2))
 
     def test_get_score_table_04(self):
         """
@@ -103,11 +107,61 @@ class BaseballTest(TestCase):
         )
         self.assertEqual(expected, result)
 
+    def test_get_score_table_by_url_02(self):
+        """
+        get_score_table_by_url()：引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
+        （不具合対応 #122）
+        """
+        baseball.after17 = True
+        expected = textwrap.dedent("""\
+            【北海道日本ハム vs 埼玉西武 第1回戦】
+            （2017年3月31日／札幌ドーム）
+            
+            埼玉西武　　　  0 2 0  0 0 4  1 0 1  8
+            北海道日本ハム  0 0 0  0 1 0  0 0 0  1
+            
+            [勝] 菊池 1勝0敗0Ｓ
+            [敗] 有原 0勝1敗0Ｓ
+            
+            [本塁打]
+              5回裏 市川  1号 ソロ （菊池）
+              9回表 浅村  1号 ソロ （武田）
+        """)
+        result = baseball.create_result_by_url(
+            'http://www.nikkansports.com/baseball/professional/score/2017/pl2017033104.html'
+        )
+        self.assertEqual(expected, result)
+
+    def test_get_score_table_by_url_03(self):
+        """
+        get_score_table_by_url()：引数に有効なURLを指定したとき、スコアテーブルの文字列を返すことを確認する。
+        （不具合対応 #123）
+        """
+        baseball.after17 = True
+        expected = textwrap.dedent("""\
+            【北海道日本ハム vs 埼玉西武 第2回戦】
+            （2017年4月1日／札幌ドーム）
+            
+            埼玉西武　　　  0 0 0  1 0 0  0 0 0  1
+            北海道日本ハム  0 0 2  0 1 0  0 0 x  3
+            
+            [勝] メンドーサ 1勝0敗0Ｓ
+            [Ｓ] マーティン 0勝0敗1Ｓ
+            [敗] 野上　　　 0勝1敗0Ｓ
+            
+            [本塁打]
+              3回裏 西川  1号 ソロ （野上）
+        """)
+        result = baseball.create_result_by_url(
+            'http://www.nikkansports.com/baseball/professional/score/2017/pl2017040104.html'
+        )
+        self.assertEqual(expected, result)
+
     def test_get_game_url_01(self):
         """
         get_game_url()：引数に有効なチーム、試合日を指定したとき、スコアテーブルのURLを返すことを確認する。
         """
-        result = baseball._get_table_score_url('l', datetime.datetime(2014, 5, 2))
+        result = baseball._get_table_score_url('l', datetime.date(2014, 5, 2))
         self.assertEqual('http://www.nikkansports.com/baseball/professional/score/2014/pl2014050203.html', result)
 
     def test_get_game_url_02(self):
@@ -115,13 +169,13 @@ class BaseballTest(TestCase):
         get_game_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
         with self.assertRaises(PyslashError):
-            baseball._get_calendar_url('err', datetime.datetime(2014, 5, 2))
+            baseball._get_calendar_url('err', datetime.date(2014, 5, 2))
 
     def test_get_calendar_url_01(self):
         """
         get_calendar_url()：引数に有効なチーム、試合日を指定したとき、カレンダーのURLを返すことを確認する。
         """
-        result = baseball._get_calendar_url('l', datetime.datetime(2014, 4, 1))
+        result = baseball._get_calendar_url('l', datetime.date(2014, 4, 1))
         self.assertEqual('http://www.nikkansports.com/baseball/professional/schedule/2014/l201404.html', result)
 
     def test_get_calender_url_02(self):
@@ -129,7 +183,7 @@ class BaseballTest(TestCase):
         get_calendar_url()：引数に無効なチームを指定したとき、InvalidTeamErrorが送出されることを確認する。
         """
         with self.assertRaises(PyslashError):
-            baseball._get_calendar_url('err', datetime.datetime(2014, 4, 1))
+            baseball._get_calendar_url('err', datetime.date(2014, 4, 1))
 
     def test_get_html_01(self):
         """
