@@ -5,8 +5,8 @@
 
 ## 概要
 
-"pyslash" は [nikkansports.com](http://www.nikkansports.com/) からプロ野球の試合結果を取得し、プレーンテキストとして整形するツールです。
-[StarterNotFoundException](http://lions.blue/) というブログで埼玉西武ライオンズ戦の戦評を書く際に利用しています。
+"pyslash" は [nikkansports.com](http://www.nikkansports.com/) からプロ野球の試合結果を取得し、整形されたプレーンテキストとして出力するツールです。
+[ねことくまとへび](http://lions.blue/) というブログで戦評を書く際に利用しています。
 PythonでHTMLを切り刻み、プレーンテキストとして再構築することから "pyslash" と名付けました。
 それ以上の深い意味はありません。
 たぶん。
@@ -14,19 +14,19 @@ PythonでHTMLを切り刻み、プレーンテキストとして再構築する�
 ## バージョン
 
 Python3.6での動作を確認しています。
-また、Python3.2〜3.5でもユニットテストを実施しています。
+また、Python3.3〜3.5でもユニットテストを実施しています。
 
 ## インストール
 
 同梱の `setup.py` を実行してください。
 
-```console
+```
 $ python setup.py install
 ```
 
-pipを利用して、GitHubから直接インストールすることもできます。
+pipを利用して、GitHubのリポジトリから直接インストールすることもできます。
 
-```console
+```
 $ pip install git+https://github.com/7pairs/pyslash.git
 ```
 
@@ -34,7 +34,7 @@ $ pip install git+https://github.com/7pairs/pyslash.git
 
 ### チームと試合日を指定する
 
-```console
+```
 $ pyslash -t <team> [-d <day>]
 ```
 
@@ -68,7 +68,7 @@ $ pyslash -t <team> [-d <day>]
 
 ### スコアのURLを指定する
 
-```console
+```
 $ pyslash -u <url>
 ```
 
@@ -79,6 +79,7 @@ $ pyslash -u <url>
 pyslashでは下記のライブラリを利用しています。
 
 - [beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4)
+- [click](https://pypi.python.org/pypi/click)
 - [docopt](https://pypi.python.org/pypi/docopt)
 - [enum34](https://pypi.python.org/pypi/enum34)
 - [nose](https://pypi.python.org/pypi/nose)
