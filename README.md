@@ -6,7 +6,7 @@
 ## 概要
 
 "pyslash" は [nikkansports.com](http://www.nikkansports.com/) からプロ野球の試合結果を取得し、整形されたプレーンテキストとして出力するツールです。
-[ねことくまとへび](http://lions.blue/) というブログで戦評を書く際に利用しています。
+ブログ『 [ねことくまとへび](http://lions.blue/) 』で戦評を書く際に利用しています。
 PythonでHTMLを切り刻み、プレーンテキストとして再構築することから "pyslash" と名付けました。
 それ以上の深い意味はありません。
 たぶん。
@@ -43,18 +43,18 @@ $ pyslash -t <team> [-d <day>]
 
 | 略号 | チーム           |
 |------|------------------|
-| bs   | 横浜DeNA         |
-| bu   | オリックス       |
-| c    | 広島東洋         |
-| d    | 中日             |
-| e    | 東北楽天         |
-| f    | 北海道日本ハム   |
-| g    | 読売             |
-| h    | 福岡ソフトバンク |
-| l    | 埼玉西武         |
-| m    | 千葉ロッテ       |
-| s    | 東京ヤクルト     |
-| t    | 阪神             |
+| `bs` | 横浜DeNA         |
+| `bu` | オリックス       |
+| `c`  | 広島東洋         |
+| `d`  | 中日             |
+| `e`  | 東北楽天         |
+| `f`  | 北海道日本ハム   |
+| `g`  | 読売             |
+| `h`  | 福岡ソフトバンク |
+| `l`  | 埼玉西武         |
+| `m`  | 千葉ロッテ       |
+| `s`  | 東京ヤクルト     |
+| `t`  | 阪神             |
 
 `<day>` には以下のいずれかの書式で試合日を指定してください。
 
@@ -80,7 +80,6 @@ pyslashでは下記のライブラリを利用しています。
 
 - [beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4)
 - [click](https://pypi.python.org/pypi/click)
-- [docopt](https://pypi.python.org/pypi/docopt)
 - [enum34](https://pypi.python.org/pypi/enum34)
 - [nose](https://pypi.python.org/pypi/nose)
 - [mock](https://pypi.python.org/pypi/mock)
