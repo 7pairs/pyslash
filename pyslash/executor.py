@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# Copyright 2014-2017 Jun-ya HASEBA
+# Copyright 2014-2018 Jun-ya HASEBA
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import datetime
 import os
 import sys
 
-from docopt import docopt
+import click
 
 try:
     # setup.py実行後
@@ -49,17 +49,18 @@ except ImportError:
     from pyslash import __version__
 
 
-def main():
+@click.command()
+@click.option('--team', '-t')
+@click.option('--day', '-d')
+@click.option('--url', '-u')
+def main(team, day, url):
     """
     テーブルスコアを標準出力に書き出す。
     """
-    # 引数を取得する
-    args = docopt(__doc__, version=__version__)
-
     # スコアテーブルを出力する
-    if args.get('-t'):
+    if team:
         today = datetime.date.today()
-        day_str = args.get('-d') or ''
+        day_str = day or ''
         day_str_len = len(day_str)
         if day_str_len == 8:
             day = datetime.datetime.strptime(day_str, '%Y%m%d').date()
@@ -71,9 +72,9 @@ def main():
             day = day.replace(year=today.year, month=today.month)
         else:
             day = None
-        print(baseball.create_result(args['-t'], day))
-    elif args.get('-u'):
-        print(baseball.create_result_by_url(args['-u']))
+        print(baseball.create_result(team, day))
+    elif url:
+        print(baseball.create_result_by_url(url))
 
 
 if __name__ == '__main__':
