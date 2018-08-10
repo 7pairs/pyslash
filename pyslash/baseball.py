@@ -19,10 +19,10 @@
 from collections import defaultdict
 import datetime
 import re
-import urllib.request
 
 from bs4 import BeautifulSoup
 from enum import Enum
+import requests
 
 
 # 試合日が2017年以降か否か
@@ -251,9 +251,8 @@ def _get_html(url):
     :rtype: str
     """
     # 指定されたURLのHTMLを取得する
-    with urllib.request.urlopen(url) as response:
-        encoding = response.headers.get_content_charset() or 'utf-8'
-        return response.read().decode(encoding, 'ignore')
+    response = requests.get(url)
+    return response.text
 
 
 def _get_today_table_score_url(team):
