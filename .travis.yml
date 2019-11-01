@@ -11,7 +11,7 @@ install:
   - pipenv install coveralls
 
 script:
-  - pipenv run nosetests --with-coverage --cover-package=pyslash
+  - pipenv run coverage run -m py.test
 
 after_success:
   - pipenv run coveralls
