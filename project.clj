@@ -17,7 +17,9 @@
   :url "https://github.com/7pairs/pyslash"
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
-  :dependencies [[org.clojure/clojure "1.10.1"]]
+  :dependencies [[org.clojure/clojure "1.10.1"]
+                 [enlive "1.1.6"]
+                 [http-kit "2.3.0"]]
   :profiles {:uberjar {:main pyslash.core, :aot :all}}
   :main pyslash.core
   :repl-options {:init-ns pyslash.core})
