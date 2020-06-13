@@ -19,7 +19,7 @@
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [enlive "1.1.6"]
-                 [http-kit "2.3.0"]]
+                 [http-kit "2.4.0-alpha6"]]
   :profiles {:uberjar {:main pyslash.core, :aot :all}}
   :main pyslash.core
   :repl-options {:init-ns pyslash.core})
