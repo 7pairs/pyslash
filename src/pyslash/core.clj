@@ -82,11 +82,21 @@
         m (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
     (m 1)))
 
+(defn get-round
+  [node]
+  (let [time (-> node
+                 (html/select [(html/id= (add-quote "time"))])
+                 (first)
+                 (html/text))
+        m (re-find #"(\d+)勝(\d+)敗(\d+)分け$" time)]
+    (reduce + (map #(Integer/parseInt %) [(m 1) (m 2) (m 3)]))))
+
 (defn -main
   [& args]
   (let [response-body {:body @(http/get (first args) {:client client})}
         root-node (get-root-node response-body)
         teams (get-teams root-node)
         date (get-date root-node)
-        stadium (get-stadium root-node)]
-    (print stadium)))
+        stadium (get-stadium root-node)
+        round (get-round root-node)]
+    (print round)))
