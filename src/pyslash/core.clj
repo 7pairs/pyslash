@@ -72,10 +72,21 @@
                     (html/text))]
     (re-find #"^\d+年\d+月\d+日" up-date)))
 
+(defn get-stadium
+  [node]
+  (let [data (-> node
+                 (html/select [:p])
+                 (html/select [(html/attr= :class (add-quote "data"))])
+                 (first)
+                 (html/text))
+        m (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
+    (m 1)))
+
 (defn -main
   [& args]
   (let [response-body {:body @(http/get (first args) {:client client})}
         root-node (get-root-node response-body)
         teams (get-teams root-node)
-        date (get-date root-node)]
-    (print date)))
+        date (get-date root-node)
+        stadium (get-stadium root-node)]
+    (print stadium)))
