@@ -58,16 +58,24 @@
 (defn get-teams
   [node]
   (let [card-title (-> node
-                       (html/select [:h4])
                        (html/select [(html/id= (add-quote "cardTitle"))])
                        (first)
                        (html/text))
         m (re-find #"^(\S+)\s*対\s*(\S+)$" card-title)]
-    (map #(-> % remove-nbsp get-formal-name) [(m 1) (m 2)])))
+    (map #(-> % (remove-nbsp) (get-formal-name)) [(m 1) (m 2)])))
+
+(defn get-date
+  [node]
+  (let [up-date (-> node
+                    (html/select [(html/id= (add-quote "upDate")) :span])
+                    (first)
+                    (html/text))]
+    (re-find #"^\d+年\d+月\d+日" up-date)))
 
 (defn -main
   [& args]
   (let [response-body {:body @(http/get (first args) {:client client})}
         root-node (get-root-node response-body)
-        teams (get-teams root-node)]
-    (print teams)))
+        teams (get-teams root-node)
+        date (get-date root-node)]
+    (print date)))
