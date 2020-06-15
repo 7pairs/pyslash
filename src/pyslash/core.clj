@@ -27,10 +27,6 @@
 
 (def client (http/make-client {:ssl-configurer sni-configurer}))
 
-(defn add-quote
-  [target]
-  (str "\\\"" target "\\\""))
-
 (defn remove-nbsp
   [target]
   (string/replace target "\u00a0" ""))
@@ -51,52 +47,60 @@
 
 (defn get-root-node
   [response-body]
-  (-> response-body
-      (html/html-snippet)
-      (html/select [:body])))
+  (html/html-snippet response-body))
 
 (defn get-teams
   [node]
-  (let [card-title (-> node
-                       (html/select [(html/id= (add-quote "cardTitle"))])
-                       (first)
-                       (html/text))
-        m (re-find #"^(\S+)\s*対\s*(\S+)$" card-title)]
+  (let [card (-> node
+                 (html/select [:h4#cardTitle])
+                 (first)
+                 (:content)
+                 (first))
+        m (re-find #"^(\S+)\s*対\s*(\S+)$" card)]
     (map #(-> % (remove-nbsp) (get-formal-name)) [(m 1) (m 2)])))
 
 (defn get-date
   [node]
-  (let [up-date (-> node
-                    (html/select [(html/id= (add-quote "upDate")) :span])
-                    (first)
-                    (html/text))]
-    (re-find #"^\d+年\d+月\d+日" up-date)))
+  (let [update-time (-> node
+                        (html/select [:p#upDate :span])
+                        (first)
+                        (:content)
+                        (first))]
+    (re-find #"^\d+年\d+月\d+日" update-time)))
 
 (defn get-stadium
   [node]
   (let [data (-> node
-                 (html/select [:p])
-                 (html/select [(html/attr= :class (add-quote "data"))])
+                 (html/select [:p.data])
                  (first)
-                 (html/text))
+                 (:content)
+                 (first))
         m (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
     (m 1)))
 
 (defn get-round
   [node]
-  (let [time (-> node
-                 (html/select [(html/id= (add-quote "time"))])
-                 (first)
-                 (html/text))
-        m (re-find #"(\d+)勝(\d+)敗(\d+)分け$" time)]
+  (let [win-loss (-> node
+                     (html/select [:p#time])
+                     (first)
+                     (:content)
+                     (first))
+        m (re-find #"(\d+)勝(\d+)敗(\d+)分け$" win-loss)]
     (reduce + (map #(Integer/parseInt %) [(m 1) (m 2) (m 3)]))))
+
+(defn get-score
+  [node]
+  (map #(map (fn [x] (first (:content x)))
+             (drop-last (drop 1 (html/select % [:td]))))
+       (drop 1 (html/select node [:table.scoreTable :tr]))))
 
 (defn -main
   [& args]
-  (let [response-body {:body @(http/get (first args) {:client client})}
+  (let [response-body (:body @(http/get (first args) {:client client}))
         root-node (get-root-node response-body)
         teams (get-teams root-node)
         date (get-date root-node)
         stadium (get-stadium root-node)
-        round (get-round root-node)]
-    (print round)))
+        round (get-round root-node)
+        score (get-score root-node)]
+    (println score)))
