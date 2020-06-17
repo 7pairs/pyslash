@@ -17,9 +17,19 @@
             [net.cgrand.enlive-html :as html]
             [blue.lions.pyslash.net :as net]))
 
+(import '(java.text Normalizer Normalizer$Form))
+
 (defn- remove-nbsp
   [target]
   (string/replace target "\u00a0" ""))
+
+(defn- full->half
+  [target]
+  (Normalizer/normalize target Normalizer$Form/NFKC))
+
+(defn- indices
+  [pred coll]
+  (keep-indexed #(when (pred %2) %1) coll))
 
 (defn- get-formal-team-name
   [target]
@@ -103,6 +113,27 @@
   [node]
   (get-pitcher node "●"))
 
+(defn- get-homerun-ininngs
+  [table top-bottom]
+  (let [ininngs (map #(-> % (:content) (first) (remove-nbsp) (full->half))
+                     (drop 9 (html/select (first (html/select table [:tr])) [:th])))]
+    (map #(str (nth ininngs %) "回" top-bottom)
+         (flatten (map #(indices (fn [x] (re-find #".本" (first (:content x))))
+                                 (drop 9 (html/select % [:td])))
+                       (drop 1 (html/select table [:tr])))))))
+
+(defn- get-homeruns
+  [node]
+  (let [tables (html/select node [:table.batter])
+        homerun-ininngs (sort #(compare %1 %2)
+                              (flatten [(get-homerun-ininngs (first tables) "表")
+                                        (get-homerun-ininngs (last tables) "裏")]))
+        homeruns (map #(-> % (:content) (first) (full->half))
+                      (html/select (filter #(= (first (:content (first (html/select % [:dt])))) "◇本塁打")
+                                           (html/select node [:dl.data])) [:dd]))
+        matches (map #(re-find #"^(\D+)(\d)号\((\D+)\d+m=([^\)]+)\)$" %) homeruns)]
+    (map #(vector %1 (%2 1) (%2 2) (%2 3) (%2 4)) homerun-ininngs matches)))
+
 (defn -main
   [& args]
   (let [html (net/request-html (first args))
@@ -114,5 +145,6 @@
         score (get-score root-node)
         win (get-win root-node)
         save (get-save root-node)
-        lose (get-lose root-node)]
-    (println win save lose)))
+        lose (get-lose root-node)
+        homeruns (get-homeruns root-node)]
+    (println {:teams teams :date date :stadium stadium :round round :score score :win win :save save :lose lose :homeruns homeruns})))
