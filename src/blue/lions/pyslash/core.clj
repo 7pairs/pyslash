@@ -12,26 +12,16 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-(ns pyslash.core
+(ns blue.lions.pyslash.core
   (:require [clojure.string :as string]
             [net.cgrand.enlive-html :as html]
-            [org.httpkit.client :as http]))
+            [blue.lions.pyslash.net :as net]))
 
-(import '(javax.net.ssl SNIHostName))
-
-(defn sni-configurer
-  [ssl-engine uri]
-  (let [ssl-parameters (.getSSLParameters ssl-engine)]
-    (.setServerNames ssl-parameters [(SNIHostName. (.getHost uri))])
-    (.setSSLParameters ssl-engine ssl-parameters)))
-
-(def client (http/make-client {:ssl-configurer sni-configurer}))
-
-(defn remove-nbsp
+(defn- remove-nbsp
   [target]
   (string/replace target "\u00a0" ""))
 
-(defn get-formal-name
+(defn- get-formal-team-name
   [target]
   (case target
     "西武" "埼玉西武"
@@ -45,11 +35,11 @@
     "ヤクルト" "東京ヤクルト"
     target))
 
-(defn get-root-node
-  [response-body]
-  (html/html-snippet response-body))
+(defn- get-root-node
+  [html]
+  (html/html-snippet html))
 
-(defn get-teams
+(defn- get-teams
   [node]
   (let [card (-> node
                  (html/select [:h4#cardTitle])
@@ -57,9 +47,9 @@
                  (:content)
                  (first))
         m (re-find #"^(\S+)\s*対\s*(\S+)$" card)]
-    (map #(-> % (remove-nbsp) (get-formal-name)) [(m 1) (m 2)])))
+    (map #(-> % (remove-nbsp) (get-formal-team-name)) [(m 1) (m 2)])))
 
-(defn get-date
+(defn- get-date
   [node]
   (let [update-time (-> node
                         (html/select [:p#upDate :span])
@@ -68,7 +58,7 @@
                         (first))]
     (re-find #"^\d+年\d+月\d+日" update-time)))
 
-(defn get-stadium
+(defn- get-stadium
   [node]
   (let [data (-> node
                  (html/select [:p.data])
@@ -78,7 +68,7 @@
         m (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
     (m 1)))
 
-(defn get-round
+(defn- get-round
   [node]
   (let [win-loss (-> node
                      (html/select [:p#time])
@@ -88,19 +78,41 @@
         m (re-find #"(\d+)勝(\d+)敗(\d+)分け$" win-loss)]
     (reduce + (map #(Integer/parseInt %) [(m 1) (m 2) (m 3)]))))
 
-(defn get-score
+(defn- get-score
   [node]
   (map #(map (fn [x] (first (:content x)))
              (drop-last (drop 1 (html/select % [:td]))))
        (drop 1 (html/select node [:table.scoreTable :tr]))))
 
+(defn- get-pitcher
+  [node sign]
+  (let [pitcher (first (filter #(= (first (:content (first %))) sign)
+                               (map #(html/select % [:td])
+                                    (drop 1 (html/select node [:table.pitcher :tr])))))]
+    (map #(first (:content %)) [(nth pitcher 1) (nth pitcher 3) (nth pitcher 4) (nth pitcher 5)])))
+
+(defn- get-win
+  [node]
+  (get-pitcher node "○"))
+
+(defn- get-save
+  [node]
+  (get-pitcher node "Ｓ"))
+
+(defn- get-lose
+  [node]
+  (get-pitcher node "●"))
+
 (defn -main
   [& args]
-  (let [response-body (:body @(http/get (first args) {:client client}))
-        root-node (get-root-node response-body)
+  (let [html (net/request-html (first args))
+        root-node (get-root-node html)
         teams (get-teams root-node)
         date (get-date root-node)
         stadium (get-stadium root-node)
         round (get-round root-node)
-        score (get-score root-node)]
-    (println score)))
+        score (get-score root-node)
+        win (get-win root-node)
+        save (get-save root-node)
+        lose (get-lose root-node)]
+    (println win save lose)))
