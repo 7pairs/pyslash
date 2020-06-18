@@ -99,7 +99,8 @@
   (let [pitcher (first (filter #(= (first (:content (first %))) sign)
                                (map #(html/select % [:td])
                                     (drop 1 (html/select node [:table.pitcher :tr])))))]
-    (map #(first (:content %)) [(nth pitcher 1) (nth pitcher 3) (nth pitcher 4) (nth pitcher 5)])))
+    (map #(when-let [reslut (first (:content %))] (full->half reslut))
+         [(nth pitcher 1) (nth pitcher 3) (nth pitcher 4) (nth pitcher 5)])))
 
 (defn- get-win
   [node]
@@ -134,6 +135,27 @@
         matches (map #(re-find #"^(\D+)(\d)号\((\D+)\d+m=([^\)]+)\)$" %) homeruns)]
     (map #(vector %1 (%2 1) (%2 2) (%2 3) (%2 4)) homerun-ininngs matches)))
 
+(defn- output
+  [data]
+  (let [top-team (last (:teams data))
+        bottom-team (first (:teams data))
+        top-space (string/join (take (max (- (count bottom-team) (count top-team)) 0) (repeat "\u3000")))
+        bottom-space (string/join (take (max (- (count top-team) (count bottom-team)) 0) (repeat "\u3000")))]
+    (println (str "【" bottom-team " vs " top-team " 第" (:round data) "回戦】"))
+    (println (str "（" (:date data) "／" (:stadium data) "）"))
+    (println)
+    (println (str top-team top-space "  " (string/join " " (first (:score data))) "  " (reduce + (map #(Integer/parseInt %) (first (:score data))))))
+    (println (str bottom-team bottom-space "  " (string/join " " (last (:score data))) "  " (reduce + (map #(Integer/parseInt %) (last (:score data))))))
+    (println)
+    (when (first (:win data)) (println (str "[勝] " (nth (:win data) 0) " " (nth (:win data) 1) "勝" (nth (:win data) 2) "敗" (nth (:win data) 3) "Ｓ")))
+    (when (first (:save data)) (println (str "[Ｓ] " (nth (:save data) 0) " " (nth (:save data) 1) "勝" (nth (:save data) 2) "敗" (nth (:save data) 3) "Ｓ")))
+    (when (first (:lose data)) (println (str "[敗] " (nth (:lose data) 0) " " (nth (:lose data) 1) "勝" (nth (:lose data) 2) "敗" (nth (:lose data) 3) "Ｓ")))
+    (println)
+    (when (:homeruns data)
+      (println "[本塁打]")
+      (doseq [homerun (:homeruns data)] (println (str "  " (homerun 0) " " (homerun 1) " " (homerun 2) "号 " (homerun 3) " （" (homerun 4) "）"))))
+    ))
+
 (defn -main
   [& args]
   (let [html (net/request-html (first args))
@@ -147,4 +169,4 @@
         save (get-save root-node)
         lose (get-lose root-node)
         homeruns (get-homeruns root-node)]
-    (println {:teams teams :date date :stadium stadium :round round :score score :win win :save save :lose lose :homeruns homeruns})))
+    (output {:teams teams :date date :stadium stadium :round round :score score :win win :save save :lose lose :homeruns homeruns})))
