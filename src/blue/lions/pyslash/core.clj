@@ -15,21 +15,16 @@
 (ns blue.lions.pyslash.core
   (:require [clojure.string :as string]
             [net.cgrand.enlive-html :as html]
-            [blue.lions.pyslash.net :as net]))
+            [blue.lions.pyslash.net :as net]
+            [blue.lions.pyslash.util :as util]))
 
-(import '(java.text Normalizer Normalizer$Form))
+(defn- select-one
+  [node selector]
+  (first (html/select node selector)))
 
-(defn- remove-nbsp
-  [target]
-  (string/replace target "\u00a0" ""))
-
-(defn- full->half
-  [target]
-  (Normalizer/normalize target Normalizer$Form/NFKC))
-
-(defn- indices
-  [pred coll]
-  (keep-indexed #(when (pred %2) %1) coll))
+(defn- first-content
+  [coll]
+  (first (:content coll)))
 
 (defn- get-formal-team-name
   [target]
@@ -52,54 +47,46 @@
 (defn- get-teams
   [node]
   (let [card (-> node
-                 (html/select [:h4#cardTitle])
-                 (first)
-                 (:content)
-                 (first))
-        m (re-find #"^(\S+)\s*対\s*(\S+)$" card)]
-    (map #(-> % (remove-nbsp) (get-formal-team-name)) [(m 1) (m 2)])))
+                 (select-one [:h4#cardTitle])
+                 (first-content))
+        match (re-find #"^(\S+)\s*対\s*(\S+)$" card)]
+    (map #(-> % (util/remove-nbsp) (get-formal-team-name)) [(match 1) (match 2)])))
 
 (defn- get-date
   [node]
   (let [update-time (-> node
-                        (html/select [:p#upDate :span])
-                        (first)
-                        (:content)
-                        (first))]
+                        (select-one [:p#upDate :span])
+                        (first-content))]
     (re-find #"^\d+年\d+月\d+日" update-time)))
 
 (defn- get-stadium
   [node]
   (let [data (-> node
-                 (html/select [:p.data])
-                 (first)
-                 (:content)
-                 (first))
-        m (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
-    (m 1)))
+                 (select-one [:p.data])
+                 (first-content))
+        match (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
+    (match 1)))
 
 (defn- get-round
   [node]
   (let [win-loss (-> node
-                     (html/select [:p#time])
-                     (first)
-                     (:content)
-                     (first))
-        m (re-find #"(\d+)勝(\d+)敗(\d+)分け$" win-loss)]
-    (reduce + (map #(Integer/parseInt %) [(m 1) (m 2) (m 3)]))))
+                     (select-one [:p#time])
+                     (first-content))
+        match (re-find #"(\d+)勝(\d+)敗(\d+)分け$" win-loss)]
+    (reduce + (map #(Integer/parseInt %) [(match 1) (match 2) (match 3)]))))
 
 (defn- get-score
   [node]
-  (map #(map (fn [x] (first (:content x)))
+  (map #(map (fn [x] (first-content x))
              (drop-last (drop 1 (html/select % [:td]))))
        (drop 1 (html/select node [:table.scoreTable :tr]))))
 
 (defn- get-pitcher
   [node sign]
-  (let [pitcher (first (filter #(= (first (:content (first %))) sign)
+  (let [pitcher (first (filter #(= (first-content (first %)) sign)
                                (map #(html/select % [:td])
                                     (drop 1 (html/select node [:table.pitcher :tr])))))]
-    (map #(when-let [reslut (first (:content %))] (full->half reslut))
+    (map #(when-let [reslut (first-content %)] (util/convert-to-half reslut))
          [(nth pitcher 1) (nth pitcher 3) (nth pitcher 4) (nth pitcher 5)])))
 
 (defn- get-win
@@ -116,11 +103,11 @@
 
 (defn- get-homerun-ininngs
   [table top-bottom]
-  (let [ininngs (map #(-> % (:content) (first) (remove-nbsp) (full->half))
-                     (drop 9 (html/select (first (html/select table [:tr])) [:th])))]
+  (let [ininngs (map #(-> % (first-content) (util/remove-nbsp) (util/convert-to-half))
+                     (drop 9 (html/select (select-one table [:tr]) [:th])))]
     (map #(str (nth ininngs %) "回" top-bottom)
-         (flatten (map #(indices (fn [x] (re-find #".本" (first (:content x))))
-                                 (drop 9 (html/select % [:td])))
+         (flatten (map #(util/index-of (fn [x] (re-find #".本" (first-content x)))
+                                       (drop 9 (html/select % [:td])))
                        (drop 1 (html/select table [:tr])))))))
 
 (defn- get-homeruns
@@ -129,8 +116,8 @@
         homerun-ininngs (sort #(compare %1 %2)
                               (flatten [(get-homerun-ininngs (first tables) "表")
                                         (get-homerun-ininngs (last tables) "裏")]))
-        homeruns (map #(-> % (:content) (first) (full->half))
-                      (html/select (filter #(= (first (:content (first (html/select % [:dt])))) "◇本塁打")
+        homeruns (map #(-> % (first-content) (util/convert-to-half))
+                      (html/select (filter #(= (first-content (select-one % [:dt])) "◇本塁打")
                                            (html/select node [:dl.data])) [:dd]))
         matches (map #(re-find #"^(\D+)(\d)号\((\D+)\d+m=([^\)]+)\)$" %) homeruns)]
     (map #(vector %1 (%2 1) (%2 2) (%2 3) (%2 4)) homerun-ininngs matches)))
@@ -145,7 +132,7 @@
     (println (str "（" (:date data) "／" (:stadium data) "）"))
     (println)
     (println (str top-team top-space "  " (string/join " " (first (:score data))) "  " (reduce + (map #(Integer/parseInt %) (first (:score data))))))
-    (println (str bottom-team bottom-space "  " (string/join " " (last (:score data))) "  " (reduce + (map #(Integer/parseInt %) (last (:score data))))))
+    (println (str bottom-team bottom-space "  " (string/join " " (last (:score data))) "  " (reduce + (map #(if (= % "X") 0 (Integer/parseInt %)) (last (:score data))))))
     (println)
     (when (first (:win data)) (println (str "[勝] " (nth (:win data) 0) " " (nth (:win data) 1) "勝" (nth (:win data) 2) "敗" (nth (:win data) 3) "Ｓ")))
     (when (first (:save data)) (println (str "[Ｓ] " (nth (:save data) 0) " " (nth (:save data) 1) "勝" (nth (:save data) 2) "敗" (nth (:save data) 3) "Ｓ")))
