@@ -40,6 +40,10 @@
     "ヤクルト" "東京ヤクルト"
     target))
 
+(defn- yoza
+  [target]
+  (if (= target "与座") "與座" target))
+
 (defn- get-root-node
   [html]
   (html/html-snippet html))
@@ -122,25 +126,46 @@
         matches (map #(re-find #"^(\D+)(\d)号\((\D+)\d+m=([^\)]+)\)$" %) homeruns)]
     (map #(vector %1 (%2 1) (%2 2) (%2 3) (%2 4)) homerun-ininngs matches)))
 
+(defn- pad-right
+  [target filler]
+  (let [max-length (apply max (map #(count %) target))]
+    (map #(str % (string/join (take (- max-length (count %)) (repeat filler)))) target)))
+
+(defn- format-score
+  [target]
+  (string/join "  " (map #(string/join " " %) (partition 3 target))))
+
+(defn- calc-run
+  [target]
+  (reduce + (map #(try
+                    (Integer/parseInt %)
+                    (catch Exception _
+                      0)) target)))
+
 (defn- output
   [data]
-  (let [top-team (last (:teams data))
-        bottom-team (first (:teams data))
-        top-space (string/join (take (max (- (count bottom-team) (count top-team)) 0) (repeat "\u3000")))
-        bottom-space (string/join (take (max (- (count top-team) (count bottom-team)) 0) (repeat "\u3000")))]
-    (println (str "【" bottom-team " vs " top-team " 第" (:round data) "回戦】"))
+  (let [base-top-team (last (:teams data))
+        base-bottom-team (first (:teams data))
+        [bottom-team top-team] (pad-right (:teams data) "\u3000")
+        top-score (format-score (first (:score data)))
+        bottom-score (format-score (last (:score data)))
+        top-run (calc-run (first (:score data)))
+        bottom-run (calc-run (last (:score data)))
+        [win lose save] (pad-right (map #(yoza %)
+                                        [(first (:win data)) (first (:lose data)) (first (:save data))]) "\u3000")]
+    (println (str "【" base-bottom-team " vs " base-top-team " 第" (:round data) "回戦】"))
     (println (str "（" (:date data) "／" (:stadium data) "）"))
     (println)
-    (println (str top-team top-space "  " (string/join " " (first (:score data))) "  " (reduce + (map #(Integer/parseInt %) (first (:score data))))))
-    (println (str bottom-team bottom-space "  " (string/join " " (last (:score data))) "  " (reduce + (map #(if (= % "X") 0 (Integer/parseInt %)) (last (:score data))))))
+    (println (str top-team "  " top-score "  " top-run))
+    (println (str bottom-team "  " bottom-score "  " bottom-run))
     (println)
-    (when (first (:win data)) (println (str "[勝] " (nth (:win data) 0) " " (nth (:win data) 1) "勝" (nth (:win data) 2) "敗" (nth (:win data) 3) "Ｓ")))
-    (when (first (:save data)) (println (str "[Ｓ] " (nth (:save data) 0) " " (nth (:save data) 1) "勝" (nth (:save data) 2) "敗" (nth (:save data) 3) "Ｓ")))
-    (when (first (:lose data)) (println (str "[敗] " (nth (:lose data) 0) " " (nth (:lose data) 1) "勝" (nth (:lose data) 2) "敗" (nth (:lose data) 3) "Ｓ")))
+    (when win (println (str "[勝] " win " " (nth (:win data) 1) "勝" (nth (:win data) 2) "敗" (nth (:win data) 3) "Ｓ")))
+    (when save (println (str "[Ｓ] " save " " (nth (:save data) 1) "勝" (nth (:save data) 2) "敗" (nth (:save data) 3) "Ｓ")))
+    (when lose (println (str "[敗] " lose " " (nth (:lose data) 1) "勝" (nth (:lose data) 2) "敗" (nth (:lose data) 3) "Ｓ")))
     (println)
     (when (:homeruns data)
       (println "[本塁打]")
-      (doseq [homerun (:homeruns data)] (println (str "  " (homerun 0) " " (homerun 1) " " (homerun 2) "号 " (homerun 3) " （" (homerun 4) "）"))))
+      (doseq [homerun (:homeruns data)] (println (str "  " (homerun 0) " " (homerun 1) " " (homerun 2) "号 " (homerun 3) " （" (yoza (homerun 4)) "）"))))
     ))
 
 (defn -main
