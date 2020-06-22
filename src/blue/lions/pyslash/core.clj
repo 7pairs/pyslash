@@ -142,6 +142,10 @@
                     (catch Exception _
                       0)) target)))
 
+(defn- gen-pitcher
+  [result]
+  (str (nth (:win result) 0) "勝" (nth (:win result) 1) "敗" (nth (:win result) 2) "Ｓ"))
+
 (defn- output
   [data]
   (let [base-top-team (last (:teams data))
@@ -152,16 +156,19 @@
         top-run (calc-run (first (:score data)))
         bottom-run (calc-run (last (:score data)))
         [win lose save] (pad-right (map #(yoza %)
-                                        [(first (:win data)) (first (:lose data)) (first (:save data))]) "\u3000")]
+                                        (remove nil? [(first (:win data)) (first (:lose data)) (first (:save data))])) "\u3000")
+        win-result (gen-pitcher (drop 1 (:win data)))
+        save-result (gen-pitcher (drop 1 (:save data)))
+        lose-result (gen-pitcher (drop 1 (:lose data)))]
     (println (str "【" base-bottom-team " vs " base-top-team " 第" (:round data) "回戦】"))
     (println (str "（" (:date data) "／" (:stadium data) "）"))
     (println)
     (println (str top-team "  " top-score "  " top-run))
     (println (str bottom-team "  " bottom-score "  " bottom-run))
     (println)
-    (when win (println (str "[勝] " win " " (nth (:win data) 1) "勝" (nth (:win data) 2) "敗" (nth (:win data) 3) "Ｓ")))
-    (when save (println (str "[Ｓ] " save " " (nth (:save data) 1) "勝" (nth (:save data) 2) "敗" (nth (:save data) 3) "Ｓ")))
-    (when lose (println (str "[敗] " lose " " (nth (:lose data) 1) "勝" (nth (:lose data) 2) "敗" (nth (:lose data) 3) "Ｓ")))
+    (when win (println (str "[勝] " win " " win-result)))
+    (when save (println (str "[Ｓ] " save " " save-result)))
+    (when lose (println (str "[敗] " lose " " lose-result)))
     (println)
     (when (:homeruns data)
       (println "[本塁打]")
