@@ -144,7 +144,7 @@
 
 (defn- gen-pitcher
   [result]
-  (str (nth (:win result) 0) "勝" (nth (:win result) 1) "敗" (nth (:win result) 2) "Ｓ"))
+  (str (nth result 0) "勝" (nth result 1) "敗" (nth result 2) "Ｓ"))
 
 (defn- output
   [data]
@@ -170,7 +170,7 @@
     (when save (println (str "[Ｓ] " save " " save-result)))
     (when lose (println (str "[敗] " lose " " lose-result)))
     (println)
-    (when (:homeruns data)
+    (when (not-empty (:homeruns data))
       (println "[本塁打]")
       (doseq [homerun (:homeruns data)] (println (str "  " (homerun 0) " " (homerun 1) " " (homerun 2) "号 " (homerun 3) " （" (yoza (homerun 4)) "）"))))
     ))
