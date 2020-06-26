@@ -14,8 +14,8 @@
 
 (ns blue.lions.pyslash.core-test
   (:require [clojure.test :refer :all]
-            [pyslash.core :refer :all]))
+            [blue.lions.pyslash.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest test-get-formal-team-name
+  (testing "埼玉西武ライオンズ"
+    (is (= (get-formal-team-name "西武") "埼玉西武"))))

@@ -26,7 +26,7 @@
   [coll]
   (first (:content coll)))
 
-(defn- get-formal-team-name
+(defn get-formal-team-name
   [target]
   (case target
     "西武" "埼玉西武"
