@@ -18,4 +18,6 @@
 
 (deftest test-get-formal-team-name
   (testing "埼玉西武ライオンズ"
-    (is (= (get-formal-team-name "西武") "埼玉西武"))))
+    (is (= (get-formal-team-name "西武") "埼玉西武")))
+  (testing "福岡ソフトバンクホークス"
+    (is (= (get-formal-team-name "ソフトバンク") "福岡ソフトバンク")))
