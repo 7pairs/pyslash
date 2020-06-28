@@ -13,11 +13,19 @@
 ; limitations under the License.
 
 (ns blue.lions.pyslash.core-test
-  (:require [clojure.test :refer :all]
-            [blue.lions.pyslash.core :refer :all]))
+  (:require [clojure.test :refer [deftest is testing]]
+            [blue.lions.pyslash.core :as core]))
 
 (deftest test-get-formal-team-name
   (testing "埼玉西武ライオンズ"
-    (is (= (get-formal-team-name "西武") "埼玉西武")))
+    (is (= (core/get-formal-team-name "西武") "埼玉西武")))
   (testing "福岡ソフトバンクホークス"
-    (is (= (get-formal-team-name "ソフトバンク") "福岡ソフトバンク")))
+    (is (= (core/get-formal-team-name "ソフトバンク") "福岡ソフトバンク")))
+  (testing "東北楽天ゴールデンイーグルス"
+    (is (= (core/get-formal-team-name "楽天") "東北楽天")))
+  (testing "千葉ロッテマリーンズ"
+    (is (= (core/get-formal-team-name "ロッテ") "千葉ロッテ")))
+  (testing "北海道日本ハムファイターズ"
+    (is (= (core/get-formal-team-name "日本ハム") "北海道日本ハム")))
+  (testing "オリックスバファローズ"
+    (is (= (core/get-formal-team-name "オリックス") "オリックス"))))
