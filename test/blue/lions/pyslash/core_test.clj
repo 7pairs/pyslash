@@ -29,3 +29,9 @@
     (is (= (core/get-formal-team-name "日本ハム") "北海道日本ハム")))
   (testing "オリックスバファローズ"
     (is (= (core/get-formal-team-name "オリックス") "オリックス"))))
+
+(deftest test-yoza
+  (testing "与座"
+    (is (= (core/yoza "与座") "與座")))
+  (testing "ニール"
+    (is (= (core/yoza "ニール") "ニール"))))

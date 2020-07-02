@@ -40,7 +40,7 @@
     "ヤクルト" "東京ヤクルト"
     target))
 
-(defn- yoza
+(defn yoza
   [target]
   (if (= target "与座") "與座" target))
 
