@@ -28,7 +28,19 @@
   (testing "北海道日本ハムファイターズ"
     (is (= (core/get-formal-team-name "日本ハム") "北海道日本ハム")))
   (testing "オリックスバファローズ"
-    (is (= (core/get-formal-team-name "オリックス") "オリックス"))))
+    (is (= (core/get-formal-team-name "オリックス") "オリックス")))
+  (testing "読売ジャイアンツ"
+    (is (= (core/get-formal-team-name "巨人") "読売")))
+  (testing "横浜ＤｅＮＡベイスターズ"
+    (is (= (core/get-formal-team-name "ＤｅＮＡ") "横浜ＤｅＮＡ")))
+  (testing "阪神タイガース"
+    (is (= (core/get-formal-team-name "阪神") "阪神")))
+  (testing "広島東洋カープ"
+    (is (= (core/get-formal-team-name "広島") "広島東洋")))
+  (testing "中日ドラゴンズ"
+    (is (= (core/get-formal-team-name "中日") "中日")))
+  (testing "東京ヤクルトスワローズ"
+    (is (= (core/get-formal-team-name "ヤクルト") "東京ヤクルト"))))
 
 (deftest test-yoza
   (testing "与座"
