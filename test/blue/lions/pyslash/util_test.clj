@@ -17,5 +17,7 @@
             [blue.lions.pyslash.util :as util]))
 
 (deftest test-index-of
-  (testing "3件目"
-    (is (= (util/index-of #(= % "山川") ["栗山" "岡田" "山川" "山野辺" "外崎"]) (list 2)))))
+  (testing "存在"
+    (is (= (util/index-of #(= % "山川") ["栗山" "岡田" "山川" "山野辺" "外崎"]) (list 2))))
+  (testing "非存在"
+    (is (= (util/index-of #(= % "源田") ["栗山" "岡田" "山川" "山野辺" "外崎"]) (list)))))
