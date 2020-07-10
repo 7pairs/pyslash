@@ -40,6 +40,12 @@
     "ヤクルト" "東京ヤクルト"
     target))
 
+(defn get-formal-stadium-name
+  [target]
+  (case target
+    "ＺＯＺＯマリン" "ZOZOマリンスタジアム"
+    target))
+
 (defn yoza
   [target]
   (if (= target "与座") "與座" target))
@@ -69,7 +75,7 @@
                  (select-one [:p.data])
                  (first-content))
         match (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
-    (match 1)))
+    (get-formal-stadium-name (match 1))))
 
 (defn- get-round
   [node]
