@@ -74,7 +74,7 @@
   (let [data (-> node
                  (select-one [:p.data])
                  (first-content))
-        match (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
+        match (re-find #"^◇[^◇]+◇[^◇]+◇([^◇]+)" data)]
     (get-formal-stadium-name (match 1))))
 
 (defn- get-round
