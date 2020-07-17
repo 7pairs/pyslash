@@ -44,6 +44,7 @@
   [target]
   (case target
     "ＺＯＺＯマリン" "ZOZOマリンスタジアム"
+    "楽天生命パーク" "楽天生命パーク宮城"
     target))
 
 (defn yoza
