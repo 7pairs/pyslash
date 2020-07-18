@@ -42,6 +42,10 @@
   (testing "東京ヤクルトスワローズ"
     (is (= (core/get-formal-team-name "ヤクルト") "東京ヤクルト"))))
 
+(deftest test-get-formal-stadium-name
+  (testing "ZOZOマリンスタジアム"
+    (is (= (core/get-formal-stadium-name "ＺＯＺＯマリン") "ZOZOマリンスタジアム"))))
+
 (deftest test-yoza
   (testing "与座"
     (is (= (core/yoza "与座") "與座")))
