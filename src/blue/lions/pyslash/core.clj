@@ -130,7 +130,7 @@
         homeruns (map #(-> % (first-content) (util/convert-to-half))
                       (html/select (filter #(= (first-content (select-one % [:dt])) "◇本塁打")
                                            (html/select node [:dl.data])) [:dd]))
-        matches (map #(re-find #"^(\D+)(\d)号\((ソロ|2ラン|3ラン|満塁)\d+m=([^\)]+)\)$" %) homeruns)]
+        matches (map #(re-find #"^(\D+)(\d+)号\((ソロ|2ラン|3ラン|満塁)\d+m=([^\)]+)\)$" %) homeruns)]
     (map #(vector %1 (%2 1) (%2 2) (%2 3) (%2 4)) homerun-ininngs matches)))
 
 (defn- pad-right
