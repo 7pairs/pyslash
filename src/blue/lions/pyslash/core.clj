@@ -43,6 +43,7 @@
 (defn get-formal-stadium-name
   [target]
   (case target
+    "ペイペイドーム" "福岡PayPayドーム"
     "ＺＯＺＯマリン" "ZOZOマリンスタジアム"
     "楽天生命パーク" "楽天生命パーク宮城"
     target))
