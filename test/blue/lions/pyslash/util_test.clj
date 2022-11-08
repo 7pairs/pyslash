@@ -12,15 +12,12 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-(defproject pyslash "2.0.0"
-  :description "Parse and format baseball scores."
-  :url "https://github.com/7pairs/pyslash"
-  :license {:name "Apache License, Version 2.0"
-            :url "https://www.apache.org/licenses/LICENSE-2.0"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
-                 [enlive "1.1.6"]
-                 [http-kit "2.4.0-alpha6"]]
-  :plugins [[lein-cloverage "1.1.2"]]
-  :profiles {:uberjar {:main blue.lions.pyslash.core, :aot :all}}
-  :main blue.lions.pyslash.core
-  :repl-options {:init-ns blue.lions.pyslash.core})
+(ns blue.lions.pyslash.util-test
+  (:require [clojure.test :refer [deftest is testing]]
+            [blue.lions.pyslash.util :as util]))
+
+(deftest test-index-of
+  (testing "存在"
+    (is (= (util/index-of #(= % "山川") ["栗山" "岡田" "山川" "山野辺" "外崎"]) (list 2))))
+  (testing "非存在"
+    (is (= (util/index-of #(= % "源田") ["栗山" "岡田" "山川" "山野辺" "外崎"]) (list)))))

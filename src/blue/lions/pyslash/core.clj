@@ -26,7 +26,7 @@
   [coll]
   (first (:content coll)))
 
-(defn- get-formal-team-name
+(defn get-formal-team-name
   [target]
   (case target
     "西武" "埼玉西武"
@@ -40,7 +40,15 @@
     "ヤクルト" "東京ヤクルト"
     target))
 
-(defn- yoza
+(defn get-formal-stadium-name
+  [target]
+  (case target
+    "ペイペイドーム" "福岡PayPayドーム"
+    "ＺＯＺＯマリン" "ZOZOマリンスタジアム"
+    "楽天生命パーク" "楽天生命パーク宮城"
+    target))
+
+(defn yoza
   [target]
   (if (= target "与座") "與座" target))
 
@@ -68,8 +76,8 @@
   (let [data (-> node
                  (select-one [:p.data])
                  (first-content))
-        match (re-find #"^◇[^◇]+◇[^◇]+◇(\S+)$" data)]
-    (match 1)))
+        match (re-find #"^◇[^◇]+◇[^◇]+◇([^◇]+)" data)]
+    (get-formal-stadium-name (match 1))))
 
 (defn- get-round
   [node]
@@ -123,7 +131,7 @@
         homeruns (map #(-> % (first-content) (util/convert-to-half))
                       (html/select (filter #(= (first-content (select-one % [:dt])) "◇本塁打")
                                            (html/select node [:dl.data])) [:dd]))
-        matches (map #(re-find #"^(\D+)(\d)号\((\D+)\d+m=([^\)]+)\)$" %) homeruns)]
+        matches (map #(re-find #"^(\D+)(\d+)号\((ソロ|2ラン|3ラン|満塁)\d+m=([^\)]+)\)$" %) homeruns)]
     (map #(vector %1 (%2 1) (%2 2) (%2 3) (%2 4)) homerun-ininngs matches)))
 
 (defn- pad-right
