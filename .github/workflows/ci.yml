@@ -9,6 +9,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: 17
+          distribution: adopt
       - uses: DeLaGuardo/setup-clojure@10.0
         with:
           lein: 2.9.10
