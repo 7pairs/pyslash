@@ -17,10 +17,10 @@
   :url "https://github.com/7pairs/pyslash"
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[org.clojure/clojure "1.11.1"]
                  [enlive "1.1.6"]
-                 [http-kit "2.4.0-alpha6"]]
-  :plugins [[lein-cloverage "1.1.2"]]
+                 [http-kit "2.6.0"]]
+  :plugins [[lein-cloverage "1.2.4"]]
   :profiles {:uberjar {:main blue.lions.pyslash.core, :aot :all}}
   :main blue.lions.pyslash.core
   :repl-options {:init-ns blue.lions.pyslash.core})
