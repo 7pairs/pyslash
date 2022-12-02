@@ -28,9 +28,12 @@
   [node selector]
   (first (html/select node selector)))
 
-(defn- first-content
-  [coll]
-  (first (:content coll)))
+(defn first-content
+  "要素内の先頭の{@code content}を返す。
+   @param element 要素
+   @return 先頭の{@code content}"
+  [element]
+  (first (:content element)))
 
 (defn get-formal-team-name
   [target]
