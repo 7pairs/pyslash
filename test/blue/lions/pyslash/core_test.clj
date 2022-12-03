@@ -45,6 +45,26 @@
                                    </html>")]
       (is (nil? (core/first-element node [:ol :li]))))))
 
+(deftest test-for-first-content
+  (testing "要素内にcontentが存在する場合、先頭のcontentを返すこと。"
+    (let [node (html/html-snippet "<!DOCTYPE html>
+                                   <html>
+                                     <body>
+                                       <p>栗山<br>中村<br>外崎<br>源田</p>
+                                     </body>
+                                   </html>")]
+      (is (= (core/first-content (first (html/select node [:p]))) "栗山"))))
+  (testing "要素内にcontentが存在しない場合、nilを返すこと。"
+    (let [node (html/html-snippet "<!DOCTYPE html>
+                                   <html>
+                                     <body>
+                                       <p>
+                                         <img src='https://www.seibulions.jp/cmn/images/player/2022/ph_player01.jpg'>
+                                       </p>
+                                     </body>
+                                   </html>")]
+      (is (nil? (core/first-content (first (html/select node [:img]))))))))
+
 (deftest test-get-formal-team-name
   (testing "埼玉西武ライオンズ"
     (is (= (core/get-formal-team-name "西武") "埼玉西武")))
