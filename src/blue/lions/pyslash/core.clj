@@ -35,18 +35,23 @@
   [element]
   (first (:content element)))
 
-(defn get-formal-team-name
+;;; 表記変換用ヘルパー関数
+
+(defn formal-team-name
+  "チームの正式名称を返す。
+   @param target チーム名の新聞表記
+   @return チームの正式名称"
   [target]
   (case target
     "西武" "埼玉西武"
     "ソフトバンク" "福岡ソフトバンク"
-    "楽天" "東北楽天"
-    "ロッテ" "千葉ロッテ"
     "日本ハム" "北海道日本ハム"
+    "ロッテ" "千葉ロッテ"
     "巨人" "読売"
     "ＤｅＮＡ" "横浜ＤｅＮＡ"
     "広島" "広島東洋"
     "ヤクルト" "東京ヤクルト"
+    "楽天" "東北楽天"
     target))
 
 (defn get-formal-stadium-name
@@ -71,7 +76,7 @@
                  (first-element [:h4#cardTitle])
                  (first-content))
         match (re-find #"^(\S+)\s*対\s*(\S+)$" card)]
-    (map #(-> % (util/remove-nbsp) (get-formal-team-name)) [(match 1) (match 2)])))
+    (map #(-> % (util/remove-nbsp) (formal-team-name)) [(match 1) (match 2)])))
 
 (defn- get-date
   [node]
