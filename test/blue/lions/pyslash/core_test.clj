@@ -65,31 +65,31 @@
                                    </html>")]
       (is (nil? (core/first-content (first (html/select node [:img]))))))))
 
-(deftest test-get-formal-team-name
-  (testing "埼玉西武ライオンズ"
-    (is (= (core/get-formal-team-name "西武") "埼玉西武")))
-  (testing "福岡ソフトバンクホークス"
-    (is (= (core/get-formal-team-name "ソフトバンク") "福岡ソフトバンク")))
-  (testing "東北楽天ゴールデンイーグルス"
-    (is (= (core/get-formal-team-name "楽天") "東北楽天")))
-  (testing "千葉ロッテマリーンズ"
-    (is (= (core/get-formal-team-name "ロッテ") "千葉ロッテ")))
-  (testing "北海道日本ハムファイターズ"
-    (is (= (core/get-formal-team-name "日本ハム") "北海道日本ハム")))
-  (testing "オリックスバファローズ"
-    (is (= (core/get-formal-team-name "オリックス") "オリックス")))
-  (testing "読売ジャイアンツ"
-    (is (= (core/get-formal-team-name "巨人") "読売")))
-  (testing "横浜ＤｅＮＡベイスターズ"
-    (is (= (core/get-formal-team-name "ＤｅＮＡ") "横浜ＤｅＮＡ")))
-  (testing "阪神タイガース"
-    (is (= (core/get-formal-team-name "阪神") "阪神")))
-  (testing "広島東洋カープ"
-    (is (= (core/get-formal-team-name "広島") "広島東洋")))
-  (testing "中日ドラゴンズ"
-    (is (= (core/get-formal-team-name "中日") "中日")))
-  (testing "東京ヤクルトスワローズ"
-    (is (= (core/get-formal-team-name "ヤクルト") "東京ヤクルト"))))
+(deftest test-formal-team-name
+  (testing "埼玉西武ライオンズの正式名称に変換されること。"
+    (is (= (core/formal-team-name "西武") "埼玉西武")))
+  (testing "オリックスバファローズの正式名称に変換されること。"
+    (is (= (core/formal-team-name "オリックス") "オリックス")))
+  (testing "福岡ソフトバンクホークスの正式名称に変換されること。"
+    (is (= (core/formal-team-name "ソフトバンク") "福岡ソフトバンク")))
+  (testing "北海道日本ハムファイターズの正式名称に変換されること。"
+    (is (= (core/formal-team-name "日本ハム") "北海道日本ハム")))
+  (testing "千葉ロッテマリーンズの正式名称に変換されること。"
+    (is (= (core/formal-team-name "ロッテ") "千葉ロッテ")))
+  (testing "読売ジャイアンツの正式名称に変換されること。"
+    (is (= (core/formal-team-name "巨人") "読売")))
+  (testing "中日ドラゴンズの正式名称に変換されること。"
+    (is (= (core/formal-team-name "中日") "中日")))
+  (testing "横浜ＤｅＮＡベイスターズの正式名称に変換されること。"
+    (is (= (core/formal-team-name "ＤｅＮＡ") "横浜ＤｅＮＡ")))
+  (testing "阪神タイガースの正式名称に変換されること。"
+    (is (= (core/formal-team-name "阪神") "阪神")))
+  (testing "広島東洋カープの正式名称に変換されること。"
+    (is (= (core/formal-team-name "広島") "広島東洋")))
+  (testing "東京ヤクルトスワローズの正式名称に変換されること。"
+    (is (= (core/formal-team-name "ヤクルト") "東京ヤクルト")))
+  (testing "東北楽天ゴールデンイーグルスの正式名称に変換されること。"
+    (is (= (core/formal-team-name "楽天") "東北楽天"))))
 
 (deftest test-get-formal-stadium-name
   (testing "ZOZOマリンスタジアム"
