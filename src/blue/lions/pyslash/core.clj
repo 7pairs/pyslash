@@ -54,11 +54,19 @@
     "楽天" "東北楽天"
     target))
 
-(defn get-formal-stadium-name
+(defn formal-stadium-name
+  "球場の正式名称を返す。
+   @param target 球場名の新聞表記
+   @return 球場の正式名称"
   [target]
   (case target
     "ペイペイドーム" "福岡PayPayドーム"
     "ＺＯＺＯマリン" "ZOZOマリンスタジアム"
+    "バンテリンドーム" "バンテリンドームナゴヤ"
+    "横浜" "横浜スタジアム"
+    "甲子園" "阪神甲子園球場"
+    "マツダスタジアム" "Mazda Zoom-Zoomスタジアム広島"
+    "神宮" "明治神宮野球場"
     "楽天生命パーク" "楽天生命パーク宮城"
     target))
 
