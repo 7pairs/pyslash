@@ -91,9 +91,31 @@
   (testing "東北楽天ゴールデンイーグルスの正式名称に変換されること。"
     (is (= (core/formal-team-name "楽天") "東北楽天"))))
 
-(deftest test-get-formal-stadium-name
-  (testing "ZOZOマリンスタジアム"
-    (is (= (core/get-formal-stadium-name "ＺＯＺＯマリン") "ZOZOマリンスタジアム"))))
+(deftest test-for-formal-stadium-name
+  (testing "ベルーナドームの正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "ベルーナドーム") "ベルーナドーム")))
+  (testing "京セラドーム大阪の正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "京セラドーム大阪") "京セラドーム大阪")))
+  (testing "福岡PayPayドームの正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "ペイペイドーム") "福岡PayPayドーム")))
+  (testing "札幌ドームの正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "札幌ドーム") "札幌ドーム")))
+  (testing "ZOZOマリンスタジアムの正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "ＺＯＺＯマリン") "ZOZOマリンスタジアム")))
+  (testing "東京ドームの正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "東京ドーム") "東京ドーム")))
+  (testing "バンテリンドームナゴヤの正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "バンテリンドーム") "バンテリンドームナゴヤ")))
+  (testing "横浜スタジアムの正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "横浜スタジアム") "横浜スタジアム")))
+  (testing "阪神甲子園球場の正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "甲子園") "阪神甲子園球場")))
+  (testing "Mazda Zoom-Zoomスタジアム広島の正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "マツダスタジアム") "Mazda Zoom-Zoomスタジアム広島")))
+  (testing "明治神宮野球場の正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "神宮") "明治神宮野球場")))
+  (testing "楽天生命パーク宮城の正式名称に変換されること。"
+    (is (= (core/formal-stadium-name "楽天生命パーク") "楽天生命パーク宮城"))))
 
 (deftest test-yoza
   (testing "与座"
