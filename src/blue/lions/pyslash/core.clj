@@ -71,6 +71,9 @@
     target))
 
 (defn yoza
+  "與座の表記を旧字体に変換する。
+   @param target 選手名の新聞表記
+   @return 変換後の選手名"
   [target]
   (if (= target "与座") "與座" target))
 
