@@ -117,8 +117,8 @@
   (testing "楽天生命パーク宮城の正式名称に変換されること。"
     (is (= (core/formal-stadium-name "楽天生命パーク") "楽天生命パーク宮城"))))
 
-(deftest test-yoza
-  (testing "与座"
+(deftest test-for-yoza
+  (testing "「与座」が「與座」に変換されること。"
     (is (= (core/yoza "与座") "與座")))
-  (testing "ニール"
-    (is (= (core/yoza "ニール") "ニール"))))
+  (testing "「今井」が変換されないこと。"
+    (is (= (core/yoza "今井") "今井"))))
