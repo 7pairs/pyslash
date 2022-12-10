@@ -77,6 +77,10 @@
   [target]
   (if (= target "与座") "與座" target))
 
+(defn remove-nbsp 
+  [target]
+  (string/replace target "\u00a0" ""))
+
 (defn- get-root-node
   [html]
   (html/html-snippet html))
@@ -102,7 +106,7 @@
                  (first-element [:p.data])
                  (first-content))
         match (re-find #"^◇[^◇]+◇[^◇]+◇([^◇]+)" data)]
-    (get-formal-stadium-name (match 1))))
+    (formal-stadium-name (match 1))))
 
 (defn- get-round
   [node]
